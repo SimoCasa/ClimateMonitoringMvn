@@ -337,13 +337,16 @@
             <MatteColorBorder/>
           </Border>
         </Property>
-        <Property name="text" type="java.lang.String" value="CLIMATE MONITORING 1.0.0"/>
+        <Property name="text" type="java.lang.String" value="CLIMATE MONITORING 2.0.0"/>
         <Property name="enabled" type="boolean" value="false"/>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Arial Black" size="12" style="0"/>
         </Property>
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jFormattedTextField1ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JFormattedTextField" name="viewOffset">
       <Properties>

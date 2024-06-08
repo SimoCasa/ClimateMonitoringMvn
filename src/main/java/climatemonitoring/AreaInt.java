@@ -100,7 +100,7 @@ public class AreaInt extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel2.setText("Citt√†");
+        jLabel2.setText("Citt‡");
 
         jLabel3.setText("Sigla Stato");
 
@@ -141,10 +141,10 @@ public class AreaInt extends javax.swing.JDialog {
                         .addComponent(lonField, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel6))
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel2))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(codeField, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)

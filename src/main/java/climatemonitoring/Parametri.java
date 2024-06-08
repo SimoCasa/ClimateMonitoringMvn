@@ -145,7 +145,7 @@ public class Parametri extends JDialog {
 
         jLabel4.setText("Vento");
 
-        jLabel5.setText("UmiditÃ ");
+        jLabel5.setText("Umidità");
 
         centriDrop.addItem("");
         centroANDareaDropInitialize();
@@ -184,7 +184,7 @@ public class Parametri extends JDialog {
 
         jLabel8.setText("hPa");
 
-        jLabel15.setText("Â°C");
+        jLabel15.setText("°C");
 
         jLabel16.setText("mm");
 

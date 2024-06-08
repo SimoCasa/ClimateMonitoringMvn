@@ -221,10 +221,15 @@ public class Home extends JFrame {
 
         jFormattedTextField1.setEditable(false);
         jFormattedTextField1.setBorder(new javax.swing.border.MatteBorder(null));
-        jFormattedTextField1.setText("CLIMATE MONITORING 1.0.0");
+        jFormattedTextField1.setText("CLIMATE MONITORING 2.0.0");
         jFormattedTextField1.setEnabled(false);
         jFormattedTextField1.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
         jFormattedTextField1.setOpaque(true);
+        jFormattedTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFormattedTextField1ActionPerformed(evt);
+            }
+        });
 
         viewOffset.setText(String.valueOf(offsetSlide.getValue()));
         viewOffset.setEditable(false);
@@ -389,22 +394,24 @@ public class Home extends JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jSeparator1)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(106, 106, 106)
-                                .addComponent(latField, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lonField, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(addCentro)
-                                .addGap(18, 18, 18)
-                                .addComponent(addParam)
-                                .addGap(18, 18, 18)
-                                .addComponent(addArea))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 633, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(cancel)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(106, 106, 106)
+                                        .addComponent(latField, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(lonField, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(addCentro)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(addParam)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(addArea))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 633, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(cancel)))
                                 .addGap(0, 14, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -950,6 +957,10 @@ public class Home extends JFrame {
     private void addAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAreaActionPerformed
         new AreaInt(this, true);
     }//GEN-LAST:event_addAreaActionPerformed
+
+    private void jFormattedTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jFormattedTextField1ActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -1021,7 +1032,7 @@ public class Home extends JFrame {
             }
 
             if (count == 0) {
-                JOptionPane.showMessageDialog(null, "Non Ã¨ stato trovato alcun risultato!", "Errore di ricerca", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Non è stato trovato alcun risultato!", "Errore di ricerca", JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (SQLException e) {
