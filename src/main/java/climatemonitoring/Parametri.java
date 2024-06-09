@@ -9,7 +9,7 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.ClimateMonitor.sep;
+import static climatemonitoring.User.sep;
 import static climatemonitoring.Home.DB_PASS;
 import static climatemonitoring.Home.DB_URL;
 import static climatemonitoring.Home.DB_USER;
@@ -145,7 +145,7 @@ public class Parametri extends JDialog {
 
         jLabel4.setText("Vento");
 
-        jLabel5.setText("Umidità");
+        jLabel5.setText("Umiditï¿½");
 
         centriDrop.addItem("");
         centroANDareaDropInitialize();
@@ -184,7 +184,7 @@ public class Parametri extends JDialog {
 
         jLabel8.setText("hPa");
 
-        jLabel15.setText("°C");
+        jLabel15.setText("ï¿½C");
 
         jLabel16.setText("mm");
 
@@ -313,7 +313,15 @@ public class Parametri extends JDialog {
         /**
          * Variabili impostate su valore iniziale
          */
-        boolean check = true;
+       inserisciParametriClimatici();
+    }//GEN-LAST:event_inserisciActionPerformed
+    /**
+     * Metodo esegue l'inserimento dei parametri della localitÃ  scelta (richiama metodi 'calcoli degli score')
+     * verifica se mancano i parametri richiesti
+     * @throws Exception eccezione generica
+     */
+    public void inserisciParametriClimatici(){
+         boolean check = true;
         ArrayList<String> errore = new ArrayList<String>();
         int c = 0;
 
@@ -327,7 +335,7 @@ public class Parametri extends JDialog {
             check = false; errore.add("Vento"); c++;
         }
         if (umiditaField.getText().equals("")) {
-            check = false; errore.add("Umidità"); c++;
+            check = false; errore.add("UmiditÃ "); c++;
         }
         if (pressioneField.getText().equals("")) {
             check = false; errore.add("Pressione"); c++;
@@ -411,8 +419,7 @@ public class Parametri extends JDialog {
                 JOptionPane.showMessageDialog(null, "Devi inserire un numero!", "Errore!", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }//GEN-LAST:event_inserisciActionPerformed
-    
+    }
 
     /**
      * Metodo per il calcolo del punteggio del vento

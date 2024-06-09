@@ -9,7 +9,7 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.ClimateMonitor.sep;
+import static climatemonitoring.User.sep;
 import static climatemonitoring.Home.DB_PASS;
 import static climatemonitoring.Home.DB_URL;
 import static climatemonitoring.Home.DB_USER;
@@ -388,11 +388,9 @@ public class Accesso extends javax.swing.JDialog {
                 hh.addCentro.setVisible(true);
                 hh.addParam.setVisible(true);
                 hh.addArea.setVisible(true);
-
                 hh.nomeU = nome;
                 hh.cogU = cognome;
                 hh.codFisc = codfisc;
-
                 hh.newLabel.setText("Benvenuto " + nome + " " + cognome);
 
                 this.dispose();

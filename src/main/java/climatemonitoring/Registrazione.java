@@ -9,7 +9,7 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.ClimateMonitor.sep;
+import static climatemonitoring.User.sep;
 import static climatemonitoring.Home.DB_PASS;
 import static climatemonitoring.Home.DB_URL;
 import static climatemonitoring.Home.DB_USER;

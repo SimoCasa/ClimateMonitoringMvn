@@ -9,7 +9,7 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.ClimateMonitor.sep;
+import static climatemonitoring.User.sep;
 /**
  * Richiamo Librerie.
  */
@@ -23,7 +23,16 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -47,6 +56,11 @@ public class Home extends JFrame {
      */
     String user,pass,nomeU,cogU,codFisc,citta;
     long geo;
+    /**
+     * Dichiarazione variabili per collegamento al server RMI
+     */
+    static Registry registry;
+    static ClimateInterface stub;
      /**
       * Costruttore <strong>base</strong> (senza parametri)
       */
@@ -997,6 +1011,15 @@ public class Home extends JFrame {
                  * Metodo per rendere visibile la finestra Home
                  */
                 new Home().setVisible(true);
+                try {
+                    registry = LocateRegistry.getRegistry("localhost", 1099);
+                    stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
+                } catch (RemoteException ex) {
+                    Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NotBoundException ex) {
+                    Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            
             }
         });
     }
@@ -1007,44 +1030,23 @@ public class Home extends JFrame {
      * Gestita eccezione: IOException eccezione per mancanza file, directory errata
      */
     public void cercaAreaGeografica(String nome){
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
         try {
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+            List<Map<String, String>> results = stub.cercaAreaGeograficaDB(nome);
 
-            String sql = "SELECT GeoNameID, Name, CountryName, CountryCode FROM CoordinateMonitoraggio WHERE LOWER(Name) LIKE LOWER(?)";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, "%" + nome + "%");
+            if (results.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Non Ã¨ stato trovato alcun risultato!", "Errore di ricerca", JOptionPane.ERROR_MESSAGE);
+            } else {
+                for (Map<String, String> row : results) {
+                    String id = row.get("GeoNameID");
+                    String nomeArea = row.get("Name");
+                    String nomeStato = row.get("CountryName");
+                    String codiceStato = row.get("CountryCode");
 
-            rs = pstmt.executeQuery();
-
-            int count = 0;
-            while (rs.next()) {
-                String id = rs.getString("GeoNameID");
-                String nomeArea = rs.getString("Name");
-                String nomeStato = rs.getString("CountryName");
-                String codiceStato = rs.getString("CountryCode");
-
-                addRowTable(new String[]{id, nomeArea, nomeStato, codiceStato});
-                count++;
+                    addRowTable(new String[]{id, nomeArea, nomeStato, codiceStato});
+                }
             }
-
-            if (count == 0) {
-                JOptionPane.showMessageDialog(null, "Non è stato trovato alcun risultato!", "Errore di ricerca", JOptionPane.ERROR_MESSAGE);
-            }
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Database Error!", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage(), "Database Error!", JOptionPane.ERROR_MESSAGE);
-            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Remote Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -1056,65 +1058,23 @@ public class Home extends JFrame {
      * Gestita eccezione: IOException eccezione per mancanza file, directory errata
      */
     public static void cercaAreaGeografica(double lat, double lon, int offset){
-         Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
         try {
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+            List<Map<String, String>> results = stub.cercaAreaGeograficaDB(lat, lon, offset);
 
-            // Calcola l'offset modificato
-            double offset_mod = offset * 0.01;
-
-            // Query SQL per estrarre latitudine e longitudine dalla colonna "coordinates"
-            String sql = "SELECT GeoNameID, Name, CountryName, CountryCode, " +
-                         "CAST(SPLIT_PART(Coordinates, ', ', 1) AS DOUBLE PRECISION) AS Latitudine, " +
-                         "CAST(SPLIT_PART(Coordinates, ', ', 2) AS DOUBLE PRECISION) AS Longitudine " +
-                         "FROM CoordinateMonitoraggio " +
-                         "WHERE (CAST(SPLIT_PART(Coordinates, ', ', 1) AS DOUBLE PRECISION) BETWEEN ? AND ?) " +
-                         "AND (CAST(SPLIT_PART(Coordinates, ', ', 2) AS DOUBLE PRECISION) BETWEEN ? AND ?)";
-            
-            pstmt = conn.prepareStatement(sql);
-
-            // Imposta i parametri della query
-            pstmt.setDouble(1, lat - offset_mod);
-            pstmt.setDouble(2, lat + offset_mod);
-            pstmt.setDouble(3, lon - offset_mod);
-            pstmt.setDouble(4, lon + offset_mod);
-
-            rs = pstmt.executeQuery();
-
-            int count = 0;
-            ArrayList<String[]> risultati = new ArrayList<>();
-
-            while (rs.next()) {
-                String id = rs.getString("GeoNameID");
-                String nomeArea = rs.getString("Name");
-                String nomeStato = rs.getString("CountryName");
-                String codiceStato = rs.getString("CountryCode");
-
-                risultati.add(new String[]{id, nomeArea, nomeStato, codiceStato});
-                count++;
-            }
-
-            for (String[] risultato : risultati) {
-                addRowTable(risultato);
-            }
-
-            if (count == 0) {
+            if (results.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Non sono state trovate aree nelle vicinanze", "Errore di ricerca", JOptionPane.ERROR_MESSAGE);
-            }
+            }else{
+                for (Map<String, String> row : results) {
+                    String id = row.get("GeoNameID");
+                    String nomeArea = row.get("Name");
+                    String nomeStato = row.get("CountryName");
+                    String codiceStato = row.get("CountryCode");
 
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Database Error!", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage(), "Database Error!", JOptionPane.ERROR_MESSAGE);
+                    addRowTable(new String[]{id, nomeArea, nomeStato, codiceStato});
+                }
             }
+        }catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Remote Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
     

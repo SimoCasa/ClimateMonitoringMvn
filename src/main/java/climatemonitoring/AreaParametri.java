@@ -9,7 +9,7 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.ClimateMonitor.sep;
+import static climatemonitoring.User.sep;
 import java.awt.Color;
 import java.awt.Component;
 /**
@@ -150,7 +150,7 @@ public class AreaParametri extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Vento", "Umidit‡", "Pressione", "Temperatura", "Precipitazioni", "Altitudine Ghiacciai", "Massa Ghiacciai"
+                "Vento", "Umidit√†", "Pressione", "Temperatura", "Precipitazioni", "Altitudine Ghiacciai", "Massa Ghiacciai"
             }
         ) {
             Class[] types = new Class [] {
@@ -281,7 +281,7 @@ public class AreaParametri extends javax.swing.JDialog {
     
      /**
      * Metodo per la ricerca dei parametri climatici dato il GeoID
-     * Senza parametri perchÈ recuperati dalle TextField
+     * Senza parametri perch√® recuperati dalle TextField
      * Gestita eccezione: IOException eccezione per mancanza file, directory errata
      */
     public void visualizzaParametriClimatici(){
@@ -333,7 +333,7 @@ public class AreaParametri extends javax.swing.JDialog {
                 /**
                  * Generazione finestra di errore con specifica dell'errore (Parametri climatici assenti)
                  */
-                JOptionPane.showMessageDialog(null, "Non sono disponibili parametri climatici per la seguente citt‡!", "Avvertenza!!", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Non sono disponibili parametri climatici per la seguente citt√†!", "Avvertenza!!", JOptionPane.WARNING_MESSAGE);
                 ck=false;
                 dispose();
             } else {

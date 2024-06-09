@@ -5,7 +5,7 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.ClimateMonitor.sep;
+import static climatemonitoring.User.sep;
 import static climatemonitoring.Home.DB_PASS;
 import static climatemonitoring.Home.DB_URL;
 import static climatemonitoring.Home.DB_USER;
@@ -100,7 +100,7 @@ public class AreaInt extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel2.setText("Città");
+        jLabel2.setText("Cittï¿½");
 
         jLabel3.setText("Sigla Stato");
 
