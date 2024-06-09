@@ -202,7 +202,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="centriDropActionPerformed"/>
       </Events>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="//ArrayList model&lt;String&gt;=new ArrayList&lt;String&gt;();&#xa;centriDropSelector();"/>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="//ArrayList model&lt;String&gt;=new ArrayList&lt;String&gt;();"/>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="//centriDrop.setSelectedIndex(null);"/>
         <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="centriDrop.addItem(&quot;&quot;);"/>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>

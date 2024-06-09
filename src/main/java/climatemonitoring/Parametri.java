@@ -9,7 +9,7 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.User.sep;
+import static climatemonitoring.ClientCM.sep;
 import static climatemonitoring.Home.DB_PASS;
 import static climatemonitoring.Home.DB_URL;
 import static climatemonitoring.Home.DB_USER;
@@ -21,6 +21,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -28,6 +32,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -44,6 +51,11 @@ public class Parametri extends JDialog {
      */
     static boolean ck = true; 
     public String IDAREA = null;
+    /**
+     * Dichiarazione variabili per collegamento al server RMI
+     */
+    static Registry registry;
+    static ClimateInterface stub;
     /**
      * Variabile oggetto di tipo 'Home'
      */
@@ -71,9 +83,20 @@ public class Parametri extends JDialog {
          */
         this.setTitle("Inserisci Parametri");
         /**
+         * Metodi per eseguire il setting del client e visualizzare gli elementi della dropdown
+         */
+        try {
+            setClient();
+        } catch (RemoteException ex) {
+            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NotBoundException ex) {
+            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        /**
          * Metodo base di Netbeans (Swing designer, parte grafica) per inizializzare il componente
          */
         initComponents();
+        
         /**
          * Metodo per recuperare la dimensione del display, per creare una finestra coerente
          */
@@ -145,7 +168,7 @@ public class Parametri extends JDialog {
 
         jLabel4.setText("Vento");
 
-        jLabel5.setText("Umidit�");
+        jLabel5.setText("Umidità");
 
         centriDrop.addItem("");
         centroANDareaDropInitialize();
@@ -184,7 +207,7 @@ public class Parametri extends JDialog {
 
         jLabel8.setText("hPa");
 
-        jLabel15.setText("�C");
+        jLabel15.setText("°C");
 
         jLabel16.setText("mm");
 
@@ -301,6 +324,14 @@ public class Parametri extends JDialog {
                         .addGap(58, 58, 58))))
         );
 
+        try {
+            setClient();
+        } catch (RemoteException ex) {
+            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NotBoundException ex) {
+            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
     /**
@@ -321,103 +352,43 @@ public class Parametri extends JDialog {
      * @throws Exception eccezione generica
      */
     public void inserisciParametriClimatici(){
-         boolean check = true;
-        ArrayList<String> errore = new ArrayList<String>();
+        boolean check = true;
+        ArrayList<String> errore = new ArrayList<>();
         int c = 0;
 
-        if (centriDrop.getSelectedItem() == "") {
-            check = false; errore.add("Centro Monitoraggio"); c++;
-        }
-        if (areaDrop.getSelectedItem() == "") {
-            check = false; errore.add("Area Interesse"); c++;
-        }
-        if (ventoField.getText().equals("")) {
-            check = false; errore.add("Vento"); c++;
-        }
-        if (umiditaField.getText().equals("")) {
-            check = false; errore.add("Umidità"); c++;
-        }
-        if (pressioneField.getText().equals("")) {
-            check = false; errore.add("Pressione"); c++;
-        }
-        if (temperaturaField.getText().equals("")) {
-            check = false; errore.add("Temperatura"); c++;
-        }
-        if (precipitazioniField.getText().equals("")) {
-            check = false; errore.add("Precipitazioni"); c++;
-        }
-        if (altField.getText().equals("")) {
-            check = false; errore.add("Altitudine Ghiacciai"); c++;
-        }
-        if (massField.getText().equals("")) {
-            check = false; errore.add("Massa Ghiacciai"); c++;
-        }
+        if (centriDrop.getSelectedItem() == null || centriDrop.getSelectedItem().toString().isEmpty()) { check = false; errore.add("Centro Monitoraggio"); c++; }
+        if (areaDrop.getSelectedItem() == null || areaDrop.getSelectedItem().toString().isEmpty()) { check = false; errore.add("Area Interesse"); c++; }
+        if (ventoField.getText().isEmpty()) { check = false; errore.add("Vento"); c++; }
+        if (umiditaField.getText().isEmpty()) { check = false; errore.add("Umidità"); c++; }
+        if (pressioneField.getText().isEmpty()) { check = false; errore.add("Pressione"); c++; }
+        if (temperaturaField.getText().isEmpty()) { check = false; errore.add("Temperatura"); c++; }
+        if (precipitazioniField.getText().isEmpty()) { check = false; errore.add("Precipitazioni"); c++; }
+        if (altField.getText().isEmpty()) { check = false; errore.add("Altitudine Ghiacciai"); c++; }
+        if (massField.getText().isEmpty()) { check = false; errore.add("Massa Ghiacciai"); c++; }
 
         if (!check) {
-            String f = "";
-            for (String s : errore) { f += "\n-" + s; }
-            JOptionPane.showMessageDialog(null, "Non hai inserito: " + f, "Errore!", JOptionPane.ERROR_MESSAGE);
+            StringBuilder f = new StringBuilder("Non hai inserito:");
+            for (String s : errore) { f.append("\n-").append(s); }
+            JOptionPane.showMessageDialog(null, f.toString(), "Errore!", JOptionPane.ERROR_MESSAGE);
         } else {
-            String NomeCentro = (String) centriDrop.getSelectedItem();
-            String NomeArea = (String) areaDrop.getSelectedItem();
-            long GeoID = 0;
-            int IDCentro = 0;
+            String nomeCentro = centriDrop.getSelectedItem().toString();
+            String nomeArea = areaDrop.getSelectedItem().toString();
+            String vento = ventoField.getText();
+            String umidita = umiditaField.getText();
+            String pressione = pressioneField.getText();
+            String temperatura = temperaturaField.getText();
+            String precipitazioni = precipitazioniField.getText();
+            String alt = altField.getText();
+            String mass = massField.getText();
+            String note = noteArea.getText();
 
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
-                // Retrieve IDCentro
-                String sqlCentro = "SELECT idcentro FROM CentroMonitoraggio WHERE nome = ?";
-                try (PreparedStatement psCentro = conn.prepareStatement(sqlCentro)) {
-                    psCentro.setString(1, NomeCentro);
-                    try (ResultSet rsCentro = psCentro.executeQuery()) {
-                        if (rsCentro.next()) {
-                            IDCentro = rsCentro.getInt("idcentro");
-                        }
-                    }
-                }
-
-                // Retrieve GeoID
-                String sqlGeo = "SELECT GeonameID FROM CoordinateMonitoraggio WHERE name = ?";
-                try (PreparedStatement psGeo = conn.prepareStatement(sqlGeo)) {
-                    psGeo.setString(1, NomeArea);
-                    try (ResultSet rsGeo = psGeo.executeQuery()) {
-                        if (rsGeo.next()) {
-                            GeoID = rsGeo.getLong("geonameid");
-                        }
-                    }
-                }
-
-                // Insert climatic parameters
-                String sqlInsert = "INSERT INTO ParametriClimatici (GeonameID, IDCentro, Vento, Umidita, Pressione, Temperatura, Precipitazione, Altitudineghiacciai, Massaghiacciai, Note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                try (PreparedStatement psInsert = conn.prepareStatement(sqlInsert)) {
-                    int vento = Integer.parseInt(ventoField.getText());
-                    int umidita = Integer.parseInt(umiditaField.getText());
-                    int pressione = Integer.parseInt(pressioneField.getText());
-                    int temperatura = Integer.parseInt(temperaturaField.getText());
-                    int precipitazioni = Integer.parseInt(precipitazioniField.getText());
-                    int alt = Integer.parseInt(altField.getText());
-                    int mass = Integer.parseInt(massField.getText());
-
-                    psInsert.setLong(1, GeoID);
-                    psInsert.setInt(2, IDCentro);
-                    psInsert.setInt(3, vento);
-                    psInsert.setInt(4, umidita);
-                    psInsert.setInt(5, pressione);
-                    psInsert.setInt(6, temperatura);
-                    psInsert.setInt(7, precipitazioni);
-                    psInsert.setInt(8, alt);
-                    psInsert.setInt(9, mass);
-                    psInsert.setString(10, noteArea.getText().isEmpty() ? "Nessun commento disponibile!" : noteArea.getText());
-
-                    psInsert.executeUpdate();
-                    JOptionPane.showMessageDialog(null, "Inserimento effettuato con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
-                    this.dispose();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Errore durante l'inserimento dei dati nel database: " + e.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Devi inserire un numero!", "Errore!", JOptionPane.ERROR_MESSAGE);
+            try {
+                stub.inserisciParametriClimatici(nomeCentro, nomeArea, Integer.parseInt(vento), Integer.parseInt(umidita), Integer.parseInt(pressione), Integer.parseInt(temperatura), Integer.parseInt(precipitazioni), Integer.parseInt(alt), Integer.parseInt(mass), note);
+            } catch (RemoteException ex) {
+                Logger.getLogger(Parametri.class.getName()).log(Level.SEVERE, null, ex);
             }
+            JOptionPane.showMessageDialog(null, "Inserimento effettuato con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
         }
     }
 
@@ -671,96 +642,54 @@ public class Parametri extends JDialog {
     }
     
     private void centroANDareaDropInitialize() {
-        boolean ck = false;
-        boolean ck2 = false;
-        String line = null;
-        String IDArea = null;
-        String line2 = null;
-        FileReader in = null;
-        FileReader in2 = null;
-        Connection conn = null;
-        PreparedStatement stmtOperatore = null;
-        PreparedStatement stmtCentro = null;
-        ResultSet rsOperatore = null;
-        ResultSet rsCentro = null;
-
         try {
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+            List<String> centri = stub.getCentriMonitoraggio(reg.codFisc);
+            centriDrop.removeAllItems();
+            centriDrop.addItem(""); // Aggiunge un elemento vuoto come prima opzione
+            for (String centro : centri) {
+                centriDrop.addItem(centro);
+            }
 
-            // Query per ottenere le aree di interesse dell'operatore
-            String queryOperatore = "SELECT c.areainteresse FROM operatori o JOIN rapporti r ON o.codFisc = r.codFisc AND o.email=r.email JOIN centromonitoraggio c ON r.idCentro = c.idcentro WHERE o.codFisc = ?";
-            stmtOperatore = conn.prepareStatement(queryOperatore);
-            stmtOperatore.setString(1, reg.codFisc);
-            rsOperatore = stmtOperatore.executeQuery();
-
-            if (rsOperatore.next()) {
-                String[] IdArea = rsOperatore.getString("areaInteresse").split(", ");
-
-                // Query per ottenere i centri di monitoraggio
-                String queryCentro = "SELECT nome, areaInteresse FROM CentroMonitoraggio";
-                stmtCentro = conn.prepareStatement(queryCentro);
-                rsCentro = stmtCentro.executeQuery();
-
-                while (rsCentro.next()) {
-                    String nomeCentro = rsCentro.getString("nome");
-                    String[] areeCentro = rsCentro.getString("areaInteresse").split(", ");
-
-                    for (String area : IdArea) {
-                        if (Arrays.asList(areeCentro).contains(area)) {
-                            centriDrop.addItem(nomeCentro);
-                            break;
+            centriDrop.addActionListener(e -> {
+                // Rimuove la selezione automatica del primo elemento
+                if (!centriDrop.getSelectedItem().toString().isEmpty()) {
+                    areaDrop.setEnabled(false);
+                    areaDrop.removeAllItems();
+                    String nomeCentro = (String) centriDrop.getSelectedItem();
+                    if (nomeCentro != null) {
+                        try {
+                            List<String> aree = stub.getAreeInteresse(nomeCentro);
+                            for (String area : aree) {
+                                areaDrop.addItem(area);
+                            }
+                            areaDrop.setEnabled(true);
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "Errore durante il recupero delle aree di interesse", "Errore!", JOptionPane.ERROR_MESSAGE);
                         }
                     }
+                } else {
+                    areaDrop.setEnabled(false); // Disabilita areaDrop se nessun centro è selezionato
                 }
-            }
-        } catch (SQLException e) {
+            });
+
+            // Disabilita areaDrop inizialmente
+            areaDrop.setEnabled(false);
+
+        } catch (RemoteException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rsOperatore != null) rsOperatore.close();
-                if (stmtOperatore != null) stmtOperatore.close();
-                if (rsCentro != null) rsCentro.close();
-                if (stmtCentro != null) stmtCentro.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            JOptionPane.showMessageDialog(null, "Errore durante il recupero dei centri di monitoraggio", "Errore!", JOptionPane.ERROR_MESSAGE);
         }
-
-        // Imposta areaDrop come disabilitato inizialmente
-        areaDrop.setEnabled(false);
-        String NomeCentro = (String) centriDrop.getSelectedItem();
-
-        // Seleziona le aree di interesse per il centro selezionato
-        if (NomeCentro != null) {
-            try {
-                conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-
-                // Query per ottenere le aree di interesse del centro selezionato
-                String query = "SELECT areaInteresse FROM CentroMonitoraggio WHERE nome = ?";
-                PreparedStatement stmt = conn.prepareStatement(query);
-                stmt.setString(1, NomeCentro);
-                ResultSet rs = stmt.executeQuery();
-
-                if (rs.next()) {
-                    String[] areeInteresse = rs.getString("areaInteresse").split(", ");
-                    for (String area : areeInteresse) {
-                        areaDrop.addItem(area);
-                    }
-                    areaDrop.setEnabled(true);
-                }
-
-                rs.close();
-                stmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (conn != null) conn.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+    }
+    
+    void setClient() throws RemoteException, NotBoundException {
+        try {
+            registry = LocateRegistry.getRegistry("localhost", 1099);
+            stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
+            System.out.println("Stub inizializzato con successo.");
+        } catch (RemoteException | NotBoundException e) {
+            System.err.println("Errore impostando il client RMI: " + e.getMessage());
+            throw e; // Rilancia l'eccezione per segnalare il problema
         }
     }
 

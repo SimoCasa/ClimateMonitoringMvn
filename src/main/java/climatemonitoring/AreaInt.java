@@ -5,15 +5,21 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.User.sep;
+import static climatemonitoring.ClientCM.sep;
 import static climatemonitoring.Home.DB_PASS;
 import static climatemonitoring.Home.DB_URL;
 import static climatemonitoring.Home.DB_USER;
+import static climatemonitoring.Registrazione.registry;
+import static climatemonitoring.Registrazione.stub;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +29,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import sun.awt.AWTAccessor;
 
 /**
  * @author 753546 Badrous Giorgio William
@@ -36,6 +43,11 @@ public class AreaInt extends javax.swing.JDialog {
       * Creo una finistra speculare alla Home, in versione 'Operatore' con privilegi e funzioni aggiuntive.
       */
     static Home hh;
+    /**
+     * Dichiarazione variabili per collegamento al server RMI
+     */
+    static Registry registry;
+    static ClimateInterface stub;
     /**
      * Costruttore <strong>parametrizzato</strong> per bloccare la finestra sottostante
      * @param hh oggetto, di tipo 'Home'
@@ -292,59 +304,29 @@ public class AreaInt extends javax.swing.JDialog {
      * @throws IOException eccezione per mancanza file, directory errata
      */
     public void inserisciAreaInt() throws IOException{
-        // Dichiarare la query SQL per l'inserimento dei dati
-        String query = "INSERT INTO coordinatemonitoraggio (geonameid, name, asciiname, countrycode, countryname, coordinates) VALUES (?, ?, ?, ?, ?, ?)";
-        try (
-            // Creare una connessione al database
-            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-            // Preparare lo statement SQL per l'inserimento
-            PreparedStatement pstmt = conn.prepareStatement(query)
-        ) {
-            // Impostare i parametri della query con i valori dalle caselle di testo
-            long geonameid = generateUniqueGeonameId(); // Genera un geonameid univoco
-            pstmt.setLong(1, geonameid);
-            pstmt.setString(2, cittaField.getText());
-            pstmt.setString(3, toAscii(cittaField.getText()));
-            pstmt.setString(4, codeField.getText());
-            pstmt.setString(5, countryField.getText());
-            pstmt.setString(6, latField.getText() + ", " + lonField.getText());
-
-            // Eseguire la query di inserimento
-            pstmt.executeUpdate();
-
-            // Mostrare un messaggio di conferma
+        try {
+            setClient();
+            // Chiamata al metodo remoto del server per l'inserimento
+            stub.inserisciAreaDB(cittaField.getText(), codeField.getText(), countryField.getText(), latField.getText(), lonField.getText());
             JOptionPane.showMessageDialog(null, "Dati inseriti con successo!");
-
-            // Chiudere la finestra di dialogo dopo l'inserimento
             this.dispose();
-        } catch (SQLException ex) {
-            // Gestire eventuali errori durante l'inserimento nel database
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Errore durante l'inserimento dei dati", "Errore", JOptionPane.ERROR_MESSAGE);
+        } catch (NotBoundException ex) {
             Logger.getLogger(AreaInt.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null, "Errore durante l'inserimento dei dati nel database.", "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
     
-    private long generateUniqueGeonameId() {
-        return 12510668 + (long)(Math.random() * (12910668 - 12510668));
-    }
-    
-    /**
-     * Metodo per la conversione del nome inserito in 'ASCII'
-     * @param accented nome con accenti/caratteri speciali
-     * Senza gestione di eccezioni.
-     */
-    private static String toAscii(String accented){
-        final String normalized = Normalizer.normalize( accented, Normalizer.Form.NFD );
-        StringBuilder sb = new StringBuilder( accented.length() );
-        for ( int i = 0; i < normalized.length(); i++ )
-            {
-            char c = normalized.charAt( i );
-            if ( Character.getType( c ) != Character.NON_SPACING_MARK )
-                {
-                sb.append(c);
-                }
-            }
-        return sb.toString();
+    void setClient() throws RemoteException, NotBoundException {
+        try {
+            registry = LocateRegistry.getRegistry("localhost", 1099);
+            stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
+            System.out.println("Stub inizializzato con successo.");
+        } catch (RemoteException | NotBoundException e) {
+            System.err.println("Errore impostando il client RMI: " + e.getMessage());
+            throw e; // Rilancia l'eccezione per segnalare il problema
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -17,7 +17,7 @@ import java.io.File;
  * @version Software 1.0.0
  * @version JDK 17 
  */
-public class User {
+public class ClientCM {
     /**
      *Dichiarazione variabile 'sep' (separatore) di tipo stringa, uso il metodo 'File.separator' per recuperarlo dal sistema operativo corrente
      */

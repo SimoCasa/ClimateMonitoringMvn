@@ -9,15 +9,18 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.User.sep;
-import static climatemonitoring.Home.DB_PASS;
-import static climatemonitoring.Home.DB_URL;
-import static climatemonitoring.Home.DB_USER;
+import static climatemonitoring.Registrazione.registry;
+import static climatemonitoring.Registrazione.stub;
+import static climatemonitoring.ClientCM.sep;
 /**
  * Richiamo Librerie di Java
  */
 import java.awt.Dimension;
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -39,6 +42,11 @@ public class CentroMonitoraggio extends javax.swing.JDialog {
      */
     static Home hh;
     /**
+     * Dichiarazione variabili per collegamento al server RMI
+     */
+    static Registry registry;
+    static ClimateInterface stub;
+    /**
      * Costruttore <strong>parametrizzato</strong> per bloccare la finestra sottostante e creare il form di inserimento
      * @param hh oggetto, di tipo 'Home'
      * @param ck boolean, da classe finestra home 'base'
@@ -56,6 +64,16 @@ public class CentroMonitoraggio extends javax.swing.JDialog {
          * Metodo base di Netbeans (Swing designer, parte grafica) per inizializzare il componente
          */
         initComponents();
+        /**
+         * Metodi per eseguire il setting del client
+         */
+        try {
+            setClient();
+        } catch (RemoteException ex) {
+            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NotBoundException ex) {
+            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
+        }
         /**
          * Metodo per recuperare la dimensione del display, per creare una finestra coerente
          */
@@ -296,60 +314,46 @@ public class CentroMonitoraggio extends javax.swing.JDialog {
      */
     public void registraCentroAree() throws IOException{
         boolean check = true;
-        ArrayList<String> errore = new ArrayList<String>();
-        int c = 0;
+        StringBuilder errorMessage = new StringBuilder("Non hai inserito:");
 
-        if (nomeCentro.getText().equals("")) {
+        if (nomeCentro.getText().isEmpty()) {
             check = false;
-            errore.add("Nome Centro Monitoraggio");
-            c++;
+            errorMessage.append("\n- Nome Centro Monitoraggio");
         }
 
-        if (indirizzo.getText().equals("")) {
+        if (indirizzo.getText().isEmpty()) {
             check = false;
-            errore.add("Indirizzo fisico");
-            c++;
+            errorMessage.append("\n- Indirizzo fisico");
         }
 
-        if (area.getText().equals("")) {
+        if (area.getText().isEmpty()) {
             check = false;
-            errore.add("Elenco aree di interesse");
-            c++;
+            errorMessage.append("\n- Elenco aree di interesse");
         }
 
         if (!check) {
-            String f = "";
-            for (String s : errore) {
-                f += "\n-" + s;
-            }
-            JOptionPane.showMessageDialog(null, "Non hai inserito: " + f, "Errore!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, errorMessage.toString(), "Errore!", JOptionPane.ERROR_MESSAGE);
         } else {
-            Connection conn = null;
-            PreparedStatement stmt = null;
-
             try {
-                conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-
-                String query = "INSERT INTO centromonitoraggio (nome, indirizzo, areainteresse) VALUES (?, ?, ?)";
-                stmt = conn.prepareStatement(query);
-                stmt.setString(1, nomeCentro.getText());
-                stmt.setString(2, indirizzo.getText());
-                stmt.setString(3, area.getText());
-                stmt.executeUpdate();
-
+                // Chiama il metodo remoto del server per registrare il centro di monitoraggio
+                stub.inserisciCentroMonitoraggio(nomeCentro.getText(), indirizzo.getText(), area.getText());
                 JOptionPane.showMessageDialog(null, "Centro di monitoraggio inserito con successo!");
-
                 this.dispose();
-            } catch (SQLException ex) {
-                Logger.getLogger(CentroMonitoraggio.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    if (stmt != null) stmt.close();
-                    if (conn != null) conn.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(CentroMonitoraggio.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Errore durante l'operazione", "Errore!", JOptionPane.ERROR_MESSAGE);
             }
+        }
+    }
+    
+    void setClient() throws RemoteException, NotBoundException {
+        try {
+            registry = LocateRegistry.getRegistry("localhost", 1099);
+            stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
+            System.out.println("Stub inizializzato con successo.");
+        } catch (RemoteException | NotBoundException e) {
+            System.err.println("Errore impostando il client RMI: " + e.getMessage());
+            throw e; // Rilancia l'eccezione per segnalare il problema
         }
     }
 

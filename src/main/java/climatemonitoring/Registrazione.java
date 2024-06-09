@@ -9,7 +9,9 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.User.sep;
+import static climatemonitoring.Accesso.registry;
+import static climatemonitoring.Accesso.stub;
+import static climatemonitoring.ClientCM.sep;
 import static climatemonitoring.Home.DB_PASS;
 import static climatemonitoring.Home.DB_URL;
 import static climatemonitoring.Home.DB_USER;
@@ -21,6 +23,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,6 +40,8 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -43,6 +52,11 @@ import java.time.LocalDate;
  */
 public class Registrazione extends JDialog {
     /**
+     * Dichiarazione variabili per collegamento al server RMI
+     */
+    static Registry registry;
+    static ClimateInterface stub;
+    /**
      * Costruttore <strong>base</strong> (senza parametri)
      */
     public Registrazione(){}
@@ -51,7 +65,7 @@ public class Registrazione extends JDialog {
      * @param reg oggetto, di tipo 'Home'
      * @param ck boolean, da classe finestra home 'base'
      */
-    public Registrazione(Home reg, boolean ck) {
+    public Registrazione(Home reg, boolean ck){
         /**
          * 'Super' per puntare alla classe genitore, da cui eredito metodi e parametri
          */
@@ -64,6 +78,17 @@ public class Registrazione extends JDialog {
          * Metodo base di Netbeans (Swing designer, parte grafica) per inizializzare il componente
          */
         initComponents();
+        /**
+         * Metodi per eseguire il setting del client e visualizzare gli elementi della dropdown
+         */
+        try {
+            setClient();
+            centriDropSelector();
+        } catch (RemoteException ex) {
+            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NotBoundException ex) {
+            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
+        }
         /**
          * Metodo per recuperare la dimensione del display, per creare una finestra coerente
          */
@@ -223,7 +248,6 @@ public class Registrazione extends JDialog {
         );
 
         //ArrayList model<String>=new ArrayList<String>();
-        centriDropSelector();
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -300,10 +324,11 @@ public class Registrazione extends JDialog {
      * @throws IOException eccezione per mancanza file, directory errata
     */
     public void reg() throws IOException{
+        
         boolean check = true;
         ArrayList<String> errore = new ArrayList<>();
         int c = 0;
-        
+
         if (nome.getText().equals("")) { check = false; errore.add("Nome"); c++; }
         if (cognome.getText().equals("")) { check = false; errore.add("Cognome"); c++; }
         if (email.getText().equals("")) { check = false; errore.add("Email"); c++; }
@@ -311,7 +336,7 @@ public class Registrazione extends JDialog {
         if (codFisc.getText().equals("")) { check = false; errore.add("Codice Fiscale"); c++; }
         if (password.getText().equals("")) { check = false; errore.add("Password"); c++; }
         if (centriDrop.getSelectedItem().equals("")) { check = false; errore.add("Centro Monitoraggio"); c++; }
-        
+
         if (!check) {
             String f = "";
             for (int i = 0; i < c; i++) {
@@ -319,52 +344,13 @@ public class Registrazione extends JDialog {
             }
             JOptionPane.showMessageDialog(null, "Dati Mancanti : \n" + f, "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
+            try {
                 String centroNome = centriDrop.getSelectedItem().toString();
-                String getCentroIdSql = "SELECT idcentro FROM centromonitoraggio WHERE nome = ?";
-                PreparedStatement getCentroIdStmt = conn.prepareStatement(getCentroIdSql);
-                getCentroIdStmt.setString(1, centroNome);
-                ResultSet rs = getCentroIdStmt.executeQuery();
-
-                if (rs.next()) {
-                    int centroId = rs.getInt("idcentro");
-
-                    String sql = "INSERT INTO operatori (nome, cognome, codfisc, email, userid, password, id_centro) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                    PreparedStatement statement = conn.prepareStatement(sql);
-                    statement.setString(1, nome.getText());
-                    statement.setString(2, cognome.getText());
-                    statement.setString(3, codFisc.getText());
-                    statement.setString(4, email.getText());
-                    statement.setString(5, username.getText());
-                    statement.setString(6, new String(password.getPassword())); // Converting char[] to String
-                    statement.setInt(7, centroId);
-
-                    int rowsInserted = statement.executeUpdate();
-                    if (rowsInserted > 0) {
-                        // Inserimento nella tabella rapporti
-                        String insertRapportiSql = "INSERT INTO rapporti (idcentro, codfisc, email, data) VALUES (?, ?, ?, ?)";
-                        PreparedStatement insertRapportiStmt = conn.prepareStatement(insertRapportiSql);
-                        insertRapportiStmt.setInt(1, centroId);
-                        insertRapportiStmt.setString(2, codFisc.getText());
-                        insertRapportiStmt.setString(3, email.getText());
-                        insertRapportiStmt.setDate(4, java.sql.Date.valueOf(LocalDate.now())); // Inserisce la data odierna
-
-                        int rapportiRowsInserted = insertRapportiStmt.executeUpdate();
-                        if (rapportiRowsInserted > 0) {
-                            JOptionPane.showMessageDialog(this, "Registrazione avvenuta con successo!");
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Errore durante l'inserimento nei rapporti.", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Errore durante la registrazione.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "Centro di monitoraggio non trovato!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(this, "Errore durante la registrazione: \n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                stub.registrazione(nome.getText(), cognome.getText(), codFisc.getText(), email.getText(), username.getText(), password.getText(), centroNome);
+            } catch (RemoteException e) {
+                // Gestione dell'eccezione remota
+                Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, e);
+                JOptionPane.showMessageDialog(this, "Errore durante la registrazione: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -372,42 +358,26 @@ public class Registrazione extends JDialog {
      * Metodo per creare la lista dei centri di monitoraggio
      * nella JComboBox dal DB
     */
-    private void centriDropSelector() {
-        boolean ck = false;
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            // Connessione al database
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-
-            // Query per selezionare i nomi dei centri
-            String query = "SELECT nome FROM centromonitoraggio";
-            stmt = conn.prepareStatement(query);
-
-            // Esegui la query
-            rs = stmt.executeQuery();
-
-            // Processa i risultati
-            while (rs.next()) {
-                String nomeCentro = rs.getString("nome");
-                centriDrop.addItem(nomeCentro);
-                ck = true;
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                System.out.println(ex);
-            }
+    private void centriDropSelector() throws RemoteException {
+        List<String> centri = stub.getCentriMonitoraggio();
+        centriDrop.removeAllItems();
+        for (String centro : centri) {
+            centriDrop.addItem(centro);
+            System.out.println("Client: "+centro);
         }
     }
+    
+    void setClient() throws RemoteException, NotBoundException {
+        try {
+            registry = LocateRegistry.getRegistry("localhost", 1099);
+            stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
+            System.out.println("Stub inizializzato con successo.");
+        } catch (RemoteException | NotBoundException e) {
+            System.err.println("Errore impostando il client RMI: " + e.getMessage());
+            throw e; // Rilancia l'eccezione per segnalare il problema
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Registrati;
     private javax.swing.JComboBox<String> centriDrop;

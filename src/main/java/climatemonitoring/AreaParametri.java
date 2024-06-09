@@ -9,7 +9,9 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.User.sep;
+import static climatemonitoring.Registrazione.registry;
+import static climatemonitoring.Registrazione.stub;
+import static climatemonitoring.ClientCM.sep;
 import java.awt.Color;
 import java.awt.Component;
 /**
@@ -19,6 +21,10 @@ import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -26,7 +32,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -45,12 +54,13 @@ import javax.swing.table.TableColumnModel;
  */
 public class AreaParametri extends javax.swing.JDialog {
     /**
-      * Creo oggetto di nome 'hh' di tipo 'Home' 
-      * Creo una finistra speculare alla Home, in versione 'Operatore' con privilegi e funzioni aggiuntive.
-      */
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/ClimateMonitoring";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "password";
+     * Dichiarazione variabili per collegamento al server RMI
+     */
+    static Registry registry;
+    static ClimateInterface stub;
+    /**
+     * Note dei parametri climatici
+     */
     private static  String note = null;
     /**
      * Variabile oggetto di tipo 'Home'
@@ -96,10 +106,17 @@ public class AreaParametri extends javax.swing.JDialog {
          * Metodo base di Netbeans (Swing designer, parte grafica) per inizializzare il componente
          */
         initComponents();
-        /**
-         * Richiamo funzione per Visualizzare i Parametri Climatici
-         */
-        visualizzaParametriClimatici();
+        try {
+            setClient();
+            /**
+             * Richiamo funzione per Visualizzare i Parametri Climatici
+             */
+            visualizzaParametriClimatici();
+        } catch (RemoteException ex) {
+            Logger.getLogger(AreaParametri.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NotBoundException ex) {
+            Logger.getLogger(AreaParametri.class.getName()).log(Level.SEVERE, null, ex);
+        }
         /**
          * Controllo per vedere se sono presenti parametri climatici nel file
          */
@@ -126,7 +143,6 @@ public class AreaParametri extends javax.swing.JDialog {
              */
             setResizable(false);
         }
-        
     }
 
     /**
@@ -284,78 +300,30 @@ public class AreaParametri extends javax.swing.JDialog {
      * Senza parametri perchè recuperati dalle TextField
      * Gestita eccezione: IOException eccezione per mancanza file, directory errata
      */
-    public void visualizzaParametriClimatici(){
-        /*
-         * Imposto la connessione e la query su valore 'nullo' iniziale
-         */
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        try {
-            /**
-             * Connessione al database
-             * Sostituire 'db_url', 'db_user', 'db_password' con le credenziali del proprio database
-             */
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-
-            /**
-             * Query per recuperare i parametri climatici in base al GeoNameID
-             */
-            String query = "SELECT vento, umidita, pressione, temperatura, precipitazione, altitudineghiacciai, massaghiacciai, note FROM ParametriClimatici WHERE GeoNameID = ?";
-            pstmt = conn.prepareStatement(query);
-            pstmt.setLong(1, geo);
-
-            /**
-             * Esecuzione della query
-             */
-            rs = pstmt.executeQuery();
-
-            /**
-             * Se la query restituisce risultati, popola la tabella
-             */
-            boolean hasData = false;
-            while (rs.next()) {
+    public void visualizzaParametriClimatici() throws RemoteException{
+        // Chiamata remota al server per ottenere i parametri climatici
+        List<Map<String, String>> parametriClimatici = stub.visualizzaParametriClimaticiDB(Long.toString(geo));
+        boolean hasData = !parametriClimatici.isEmpty();
+        if (hasData) {
+            ck=true;
+            // Se ci sono dati, popola la tabella
+            for (Map<String, String> riga : parametriClimatici) {
                 addRowTable(new String[]{
-                    rs.getString("vento"),
-                    rs.getString("umidita"),
-                    rs.getString("pressione"),
-                    rs.getString("temperatura"),
-                    rs.getString("precipitazione"),
-                    rs.getString("altitudineghiacciai"),
-                    rs.getString("massaghiacciai")
+                    riga.get("vento"),
+                    riga.get("umidita"),
+                    riga.get("pressione"),
+                    riga.get("temperatura"),
+                    riga.get("precipitazione"),
+                    riga.get("altitudineghiacciai"),
+                    riga.get("massaghiacciai")
                 });
-                noteList.add(rs.getString("note"));
-                hasData = true;
+                noteList.add(riga.get("note"));
             }
-
-            if (!hasData) {
-                /**
-                 * Generazione finestra di errore con specifica dell'errore (Parametri climatici assenti)
-                 */
-                JOptionPane.showMessageDialog(null, "Non sono disponibili parametri climatici per la seguente città!", "Avvertenza!!", JOptionPane.WARNING_MESSAGE);
-                ck=false;
-                dispose();
-            } else {
-                ck = true;
-            }
-        } catch (SQLException e) {
-            /**
-             * Cattura errore in caso di mancato funzionamento del metodo 'visualizzaParametriClimatici'
-             * Scrittura su riga di comando dell'errore per debug
-             */
-            System.out.print(e);
-        } finally {
-            /**
-             * Chiusura delle risorse
-             */
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                System.out.print(e);
-            }
+        } else {
+            // Altrimenti, mostra un messaggio di avvertimento
+            JOptionPane.showMessageDialog(null, "Non sono disponibili parametri climatici per la seguente città!", "Avvertenza!!", JOptionPane.WARNING_MESSAGE);
+            ck = false;
+            dispose();
         }
     }
     /**
@@ -393,6 +361,16 @@ public class AreaParametri extends javax.swing.JDialog {
         JOptionPane.showMessageDialog(this, scrollPane, "Note", JOptionPane.INFORMATION_MESSAGE);
     }
     
+    void setClient() throws RemoteException, NotBoundException {
+        try {
+            registry = LocateRegistry.getRegistry("localhost", 1099);
+            stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
+            System.out.println("Stub inizializzato con successo.");
+        } catch (RemoteException | NotBoundException e) {
+            System.err.println("Errore impostando il client RMI: " + e.getMessage());
+            throw e; // Rilancia l'eccezione per segnalare il problema
+        }
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel cityLabel;

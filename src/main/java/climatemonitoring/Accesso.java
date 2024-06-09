@@ -9,7 +9,7 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.User.sep;
+import static climatemonitoring.ClientCM.sep;
 import static climatemonitoring.Home.DB_PASS;
 import static climatemonitoring.Home.DB_URL;
 import static climatemonitoring.Home.DB_USER;
@@ -19,11 +19,17 @@ import static climatemonitoring.Home.DB_USER;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.io.*;
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +48,11 @@ public class Accesso extends javax.swing.JDialog {
       * Creo una finistra speculare alla Home, in versione 'Operatore' con privilegi e funzioni aggiuntive.
       */
     Home hh;
+    /**
+     * Dichiarazione variabili per collegamento al server RMI
+     */
+    static Registry registry;
+    static ClimateInterface stub;
      /**
       * Costruttore <strong>base</strong> (senza parametri)
       */
@@ -239,6 +250,8 @@ public class Accesso extends javax.swing.JDialog {
                  * Cattura errore in caso di mancato funzionamento del metodo 'accedi'
                  */
                 Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NotBoundException ex) {
+                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_AccediActionPerformed
@@ -246,19 +259,47 @@ public class Accesso extends javax.swing.JDialog {
      * Ascoltatore con implementazione della tastiera
      */
     private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){log();}
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
+            log();
+            } catch (RemoteException ex) {
+                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NotBoundException ex) {
+                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
+            }
+}
     }//GEN-LAST:event_passwordFieldKeyPressed
 
     private void usernameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_usernameFieldKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){log();}
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
+            log();
+            } catch (RemoteException ex) {
+                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NotBoundException ex) {
+                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
+            }
+}
     }//GEN-LAST:event_usernameFieldKeyPressed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){log();}
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
+            log();
+            } catch (RemoteException ex) {
+                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NotBoundException ex) {
+                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
+            }
+}
     }//GEN-LAST:event_formKeyPressed
 
     private void AccediKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_AccediKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){log();}
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
+            log();
+            } catch (RemoteException ex) {
+                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NotBoundException ex) {
+                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
+            }
+}
     }//GEN-LAST:event_AccediKeyPressed
 
     /**
@@ -311,7 +352,7 @@ public class Accesso extends javax.swing.JDialog {
      * Gestita eccezione: IOException eccezione per mancanza file, directory errata
      */
 
-    public void log(){
+    public void log() throws RemoteException, NotBoundException{
          /**
           * Gestione errori in caso di mancata compilazione dei parametri richiesti, da parte dell'utente
           */
@@ -358,30 +399,16 @@ public class Accesso extends javax.swing.JDialog {
      * Senza parametri perché recuperati dalle TextField
      * @throws IOException eccezione per mancanza file, directory errata
      */
-    public void accedi() throws IOException{
-        /**
-         * Imposto la linea e il lettore su valore 'nullo' iniziale
-         */
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-
+    public void accedi() throws IOException, RemoteException, NotBoundException{
         try {
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-
-            String sql = "SELECT nome, cognome, codfisc FROM operatori WHERE userid = ? AND password = ?";
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, usernameField.getText());
-            stmt.setString(2, new String(passwordField.getPassword()));
-
-            rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                // Login effettuato
-                String nome = rs.getString("nome");
-                String cognome = rs.getString("cognome");
-                String codfisc = rs.getString("codfisc");
-
+            registry = LocateRegistry.getRegistry("localhost", 1099);
+            stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
+            //L'utente esiste
+            List<String> userInfo=stub.getUtente(usernameField.getText(), passwordField.getText());
+            if(!userInfo.isEmpty()){
+                String nome = userInfo.get(0);
+                String cognome = userInfo.get(1);
+                String codfisc = userInfo.get(2);
                 hh.logout.setVisible(true);
                 hh.accedi.setVisible(false);
                 hh.registrati.setVisible(false);
@@ -392,24 +419,23 @@ public class Accesso extends javax.swing.JDialog {
                 hh.cogU = cognome;
                 hh.codFisc = codfisc;
                 hh.newLabel.setText("Benvenuto " + nome + " " + cognome);
-
                 this.dispose();
-                } else {
-                    // Credenziali errate
-                    JOptionPane.showMessageDialog(null, "Le credenziali sono errate!", "Errore!", JOptionPane.ERROR_MESSAGE);
-                }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Errore di connessione al database!", "Errore!", JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    try {
-                        if (rs != null) rs.close();
-                        if (stmt != null) stmt.close();
-                        if (conn != null) conn.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
+            } else {
+                // Credenziali errate, mostra un messaggio di errore
+                JOptionPane.showMessageDialog(null, "Le credenziali sono errate!", "Errore!", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (RemoteException e) {
+            // Gestisci l'eccezione RMI
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Errore di connessione al server!", "Errore!", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                // Chiudi la connessione al server RMI
+                stub.dbDisconnection();
+            } catch (SQLException ex) {
+                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
 
