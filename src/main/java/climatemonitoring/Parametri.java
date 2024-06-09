@@ -7,13 +7,6 @@
  */
 package climatemonitoring;
 /**
- * Importazione del separatore dalla classe main 'ClimateMonitor'
- */
-import static climatemonitoring.ClientCM.sep;
-import static climatemonitoring.Home.DB_PASS;
-import static climatemonitoring.Home.DB_URL;
-import static climatemonitoring.Home.DB_USER;
-/**
  * Richiamo Librerie.
  */
 import java.awt.Dimension;
@@ -570,34 +563,7 @@ public class Parametri extends JDialog {
      * @throws Exception eccezione generica
     */
     private void centriDropItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_centriDropItemStateChanged
-       if (!centriDrop.getSelectedItem().equals("")) {
-            areaDrop.removeAllItems();
-            areaDrop.setEnabled(true);
-
-            String NomeCentro = (String) centriDrop.getSelectedItem();
-
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
-                // Query to get areas related to the selected center
-                String sql = "SELECT AreaInteresse FROM CentroMonitoraggio WHERE Nome = ?";
-                try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setString(1, NomeCentro);
-                    try (ResultSet rs = ps.executeQuery()) {
-                        if (rs.next()) {
-                            String[] aree = rs.getString("AreaInteresse").split(", ");
-                            for (String s : aree) {
-                                areaDrop.addItem(s);
-                            }
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Errore durante il recupero delle aree: " + e.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            areaDrop.removeAllItems();
-            areaDrop.setEnabled(false);
-        }
+        
     }//GEN-LAST:event_centriDropItemStateChanged
      
     
@@ -669,6 +635,9 @@ public class Parametri extends JDialog {
                         }
                     }
                 } else {
+                    areaDrop.removeAllItems(); // Rimuove tutti gli elementi
+                    areaDrop.addItem(""); // Aggiunge un elemento vuoto
+                    areaDrop.setSelectedIndex(0); // Seleziona l'elemento vuoto
                     areaDrop.setEnabled(false); // Disabilita areaDrop se nessun centro è selezionato
                 }
             });
