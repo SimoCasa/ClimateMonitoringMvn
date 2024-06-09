@@ -7,23 +7,10 @@
  */
 package climatemonitoring;
 /**
- * Importazione del separatore dalla classe main 'ClimateMonitor'
- */
-import static climatemonitoring.Accesso.registry;
-import static climatemonitoring.Accesso.stub;
-import static climatemonitoring.ClientCM.sep;
-import static climatemonitoring.Home.DB_PASS;
-import static climatemonitoring.Home.DB_URL;
-import static climatemonitoring.Home.DB_USER;
-/**
  * Richiamo Librerie di Java
  */
 import java.awt.Dimension;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -33,15 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import javax.swing.JOptionPane;
-import java.sql.ResultSet;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -50,7 +29,7 @@ import java.util.Map;
  * @author 754772 Biavaschi Raffaele
  * @author 755531 Bonacina Davide
  */
-public class Registrazione extends JDialog {
+public final class Registrazione extends JDialog {
     /**
      * Dichiarazione variabili per collegamento al server RMI
      */
@@ -84,9 +63,7 @@ public class Registrazione extends JDialog {
         try {
             setClient();
             centriDropSelector();
-        } catch (RemoteException ex) {
-            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NotBoundException ex) {
+        } catch (RemoteException | NotBoundException ex) {
             Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
         }
         /**
@@ -167,11 +144,6 @@ public class Registrazione extends JDialog {
 
         centriDrop.addItem("");
         //centriDrop.setSelectedIndex(null);
-        centriDrop.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                centriDropActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -268,13 +240,6 @@ public class Registrazione extends JDialog {
     
 
     /**
-     * Metodo non utilizzato
-     */
-    private void centriDropActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_centriDropActionPerformed
-        // ...
-    }//GEN-LAST:event_centriDropActionPerformed
-
-    /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -290,15 +255,14 @@ public class Registrazione extends JDialog {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Registrazione.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Registrazione.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Registrazione.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Registrazione.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -307,13 +271,11 @@ public class Registrazione extends JDialog {
         /**
          * Creazione e visualizzazione del form di inserimento (per registrazione) 
          */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                /**
-                 * Metodo per rendere visibile il form d'inserimento
-                 */
-                new Registrazione().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            /**
+             * Metodo per rendere visibile il form d'inserimento
+             */
+            new Registrazione().setVisible(true);
         });
     }
     /**

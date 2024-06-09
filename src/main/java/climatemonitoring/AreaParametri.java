@@ -7,39 +7,20 @@
  */
 package climatemonitoring;
 /**
- * Importazione del separatore dalla classe main 'ClimateMonitor'
- */
-import static climatemonitoring.Registrazione.registry;
-import static climatemonitoring.Registrazione.stub;
-import static climatemonitoring.ClientCM.sep;
-import java.awt.Color;
-import java.awt.Component;
-/**
  * Richiamo Librerie.
  */
 import java.awt.Dimension;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -52,16 +33,12 @@ import javax.swing.table.TableColumnModel;
  * @author 754772 Biavaschi Raffaele
  * @author 755531 Bonacina Davide
  */
-public class AreaParametri extends javax.swing.JDialog {
+public final class AreaParametri extends javax.swing.JDialog {
     /**
      * Dichiarazione variabili per collegamento al server RMI
      */
     static Registry registry;
     static ClimateInterface stub;
-    /**
-     * Note dei parametri climatici
-     */
-    private static  String note = null;
     /**
      * Variabile oggetto di tipo 'Home'
      */
@@ -96,8 +73,8 @@ public class AreaParametri extends javax.swing.JDialog {
         /**
          * 'This' per puntare al riferimento di una oggetto presente nella classe corrente
          */
-        this.hh = hh;
-        this.geo=geo;
+        AreaParametri.hh = hh;
+        AreaParametri.geo=geo;
         /**
          * 'This' per puntare al riferimento di una metodo presente nella classe corrente (setto titolo)
          */
@@ -112,9 +89,7 @@ public class AreaParametri extends javax.swing.JDialog {
              * Richiamo funzione per Visualizzare i Parametri Climatici
              */
             visualizzaParametriClimatici();
-        } catch (RemoteException ex) {
-            Logger.getLogger(AreaParametri.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NotBoundException ex) {
+        } catch (RemoteException | NotBoundException ex) {
             Logger.getLogger(AreaParametri.class.getName()).log(Level.SEVERE, null, ex);
         }
         /**
@@ -271,26 +246,18 @@ public class AreaParametri extends javax.swing.JDialog {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AreaParametri.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AreaParametri.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AreaParametri.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AreaParametri.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         /**
          * Creazione e visualizzazione della pagina dei Parametri Climatici
          */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                /**
-                 * Metodo per rendere visibile la finestra di visualizzazione
-                 */
-                new AreaParametri().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            /**
+             * Metodo per rendere visibile la finestra di visualizzazione
+             */
+            new AreaParametri().setVisible(true);
         });
     }
     
@@ -299,6 +266,7 @@ public class AreaParametri extends javax.swing.JDialog {
      * Metodo per la ricerca dei parametri climatici dato il GeoID
      * Senza parametri perchè recuperati dalle TextField
      * Gestita eccezione: IOException eccezione per mancanza file, directory errata
+     * @throws java.rmi.RemoteException
      */
     public void visualizzaParametriClimatici() throws RemoteException{
         // Chiamata remota al server per ottenere i parametri climatici

@@ -7,12 +7,6 @@
  */
 package climatemonitoring;
 /**
- * Importazione del separatore dalla classe main 'ClimateMonitor'
- */
-import static climatemonitoring.Registrazione.registry;
-import static climatemonitoring.Registrazione.stub;
-import static climatemonitoring.ClientCM.sep;
-/**
  * Richiamo Librerie di Java
  */
 import java.awt.Dimension;
@@ -21,10 +15,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,7 +26,7 @@ import javax.swing.JOptionPane;
  * @author 754772 Biavaschi Raffaele
  * @author 755531 Bonacina Davide
  */
-public class CentroMonitoraggio extends javax.swing.JDialog {
+public final class CentroMonitoraggio extends javax.swing.JDialog {
     /**
      * Creo oggetto statico di nome 'hh' di tipo 'Home' 
      */
@@ -59,7 +49,7 @@ public class CentroMonitoraggio extends javax.swing.JDialog {
         /**
          * 'This' per puntare al riferimento di una oggetto presente nella classe corrente
          */
-        this.hh=hh;
+        CentroMonitoraggio.hh=hh;
         /**
          * Metodo base di Netbeans (Swing designer, parte grafica) per inizializzare il componente
          */
@@ -69,9 +59,7 @@ public class CentroMonitoraggio extends javax.swing.JDialog {
          */
         try {
             setClient();
-        } catch (RemoteException ex) {
-            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NotBoundException ex) {
+        } catch (RemoteException | NotBoundException ex) {
             Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
         }
         /**
@@ -134,12 +122,6 @@ public class CentroMonitoraggio extends javax.swing.JDialog {
         inserisci.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inserisciActionPerformed(evt);
-            }
-        });
-
-        area.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                areaFocusGained(evt);
             }
         });
 
@@ -207,7 +189,7 @@ public class CentroMonitoraggio extends javax.swing.JDialog {
         /**
          * Variabili impostate su valore iniziale
          */
-        boolean check=true; ArrayList<String> errore=new ArrayList<String>();int c=0;
+        boolean check=true; ArrayList<String> errore=new ArrayList<>();int c=0;
         /**
          * Controlla se nomeCentro uguale a ' ' (vuoto), se vuoto check su valore 'falso'
          */
@@ -255,12 +237,6 @@ public class CentroMonitoraggio extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_inserisciActionPerformed
-    /**
-     * Metodo non utilizzato
-     */
-    private void areaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_areaFocusGained
-        // ...
-    }//GEN-LAST:event_areaFocusGained
 
     /**
      * @param args the command line arguments
@@ -278,31 +254,25 @@ public class CentroMonitoraggio extends javax.swing.JDialog {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CentroMonitoraggio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CentroMonitoraggio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CentroMonitoraggio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(CentroMonitoraggio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /**
          * Creazione e visualizzazione del form di inserimento (per inserimento valori) 
          */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                CentroMonitoraggio dialog = new CentroMonitoraggio(hh, true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            CentroMonitoraggio dialog = new CentroMonitoraggio(hh, true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
     /**
@@ -340,7 +310,6 @@ public class CentroMonitoraggio extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(null, "Centro di monitoraggio inserito con successo!");
                 this.dispose();
             } catch (RemoteException ex) {
-                ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Errore durante l'operazione", "Errore!", JOptionPane.ERROR_MESSAGE);
             }
         }

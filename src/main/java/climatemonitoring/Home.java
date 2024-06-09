@@ -7,28 +7,15 @@
  */
 package climatemonitoring;
 /**
- * Importazione del separatore dalla classe main 'ClimateMonitor'
- */
-import static climatemonitoring.ClientCM.sep;
-/**
  * Richiamo Librerie.
  */
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.ResultSet;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -46,15 +33,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Home extends JFrame {
     /**
-    * Dichirazione dettagli per la connessione al Database
-    */
-    static final String DB_URL = "jdbc:postgresql://localhost:5432/ClimateMonitoring";
-    static final String DB_USER = "postgres";
-    static final String DB_PASS = "password";
-    /**
      * Dichiarazione variabili utente registrato
-     */
-    String user,pass,nomeU,cogU,codFisc,citta;
+     */String nomeU,cogU,codFisc,citta;
     long geo;
     /**
      * Dichiarazione variabili per collegamento al server RMI
@@ -174,22 +154,12 @@ public class Home extends JFrame {
 
         jLabel2.setText("Coordinate");
 
-        lonField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lonFieldActionPerformed(evt);
-            }
-        });
         lonField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 lonFieldKeyPressed(evt);
             }
         });
 
-        latField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                latFieldActionPerformed(evt);
-            }
-        });
         latField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 latFieldKeyPressed(evt);
@@ -212,11 +182,6 @@ public class Home extends JFrame {
         offsetSlide.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 offsetSlideStateChanged(evt);
-            }
-        });
-        offsetSlide.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                offsetSlideFocusGained(evt);
             }
         });
         offsetSlide.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -251,11 +216,6 @@ public class Home extends JFrame {
         viewOffset.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         viewOffset.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         viewOffset.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        viewOffset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewOffsetActionPerformed(evt);
-            }
-        });
 
         resLabel.setVisible(false);
 
@@ -549,7 +509,7 @@ public class Home extends JFrame {
         /**
          * Dichiarazione variabili latidutine e longitudine su valore base
          */
-        double lat=0,lon=0;
+        double lat, lon;
         /**
          * Verifica corrispondenza coordinate con valore ' ' (vuoto) e restituzione errore in case di risultato = 'vero'
          */
@@ -593,25 +553,7 @@ public class Home extends JFrame {
             }
         }
     }//GEN-LAST:event_coordButtonActionPerformed
-    /**
-     * Metodo non utilizzato
-     */
-    private void latFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_latFieldActionPerformed
-        // ...
-    }//GEN-LAST:event_latFieldActionPerformed
-    /**
-     * Metodo non utilizzato
-     */
-    private void offsetSlideFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_offsetSlideFocusGained
-        // ...
-    }//GEN-LAST:event_offsetSlideFocusGained
-    /**
-     * Metodo non utilizzato
-     */
-    private void lonFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lonFieldActionPerformed
-        // ...
-    }//GEN-LAST:event_lonFieldActionPerformed
-    /**
+   /**
      * Metodo che al movimento dello slider del range di distanza, delle coordinate, setta il valore dell offset da controllare
      * @param evt movimento dello slider (valore annesso)
      * eccezione non gestita
@@ -625,7 +567,7 @@ public class Home extends JFrame {
      * eccezione non gestita
      */
     private void accediActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accediActionPerformed
-        new Accesso(this,true);
+         new Accesso(this,true);
     }//GEN-LAST:event_accediActionPerformed
     /**
      * Metodo che al click del bottone 'Registrati' crea la finestra di dialogo per la registrazione
@@ -666,10 +608,7 @@ public class Home extends JFrame {
          * Metodo per non rendere visibile il bottone di 'aggiunta Area Interesse'
          */ 
         addArea.setVisible(false);
-        /**
-         * Settaggio variabili utente su valore 'null'
-         */
-        user=null; pass=null; nomeU=null; cogU=null; codFisc=null;
+        nomeU=null; cogU=null; codFisc=null;
         /**
          * Creazione label con messaggio di benvenuto
          */
@@ -687,13 +626,8 @@ public class Home extends JFrame {
     private void addCentroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCentroActionPerformed
         new CentroMonitoraggio(this,true);
     }//GEN-LAST:event_addCentroActionPerformed
-    /**
-     * Metodo non utilizzato
-     */
-    private void viewOffsetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewOffsetActionPerformed
-        // ...
-    }//GEN-LAST:event_viewOffsetActionPerformed
-    /**
+
+   /**
      * Metodo che al click del bottone 'cancella' elimina i risultati mostrati nella Table 
      * @param evt click del bottone
      * eccezione non gestita
@@ -793,7 +727,7 @@ public class Home extends JFrame {
             /**
              * Dichiarazione variabili latidutine e longitudine su valore base
              */
-            double lat=0,lon=0;
+            double lat,lon;
             /**
              * Verifica corrispondenza coordinate con valore ' ' (vuoto) e restituzione errore in case di risultato = 'vero'
              */
@@ -857,7 +791,7 @@ public class Home extends JFrame {
             /**
              * Dichiarazione variabili latidutine e longitudine su valore base
              */
-            double lat=0,lon=0;
+            double lat,lon;
             /**
              * Verifica corrispondenza coordinate con valore ' ' (vuoto) e restituzione errore in case di risultato = 'vero'
              */
@@ -922,7 +856,7 @@ public class Home extends JFrame {
             /**
              * Dichiarazione variabili latidutine e longitudine su valore base
              */
-            double lat=0,lon=0;
+            double lat,lon;
             /**
              * Verifica corrispondenza coordinate con valore ' ' (vuoto) e restituzione errore in case di risultato = 'vero'
              */
@@ -1005,21 +939,16 @@ public class Home extends JFrame {
         /**
          * Creazione e visualizzazione della pagina Home
          */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                /**
-                 * Metodo per rendere visibile la finestra Home
-                 */
-                new Home().setVisible(true);
-                try {
-                    registry = LocateRegistry.getRegistry("localhost", 1099);
-                    stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
-                } catch (RemoteException ex) {
-                    Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (NotBoundException ex) {
-                    Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            
+        java.awt.EventQueue.invokeLater(() -> {
+            /**
+             * Metodo per rendere visibile la finestra Home
+             */
+            new Home().setVisible(true);
+            try {
+                registry = LocateRegistry.getRegistry("localhost", 1099);
+                stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
+            } catch (RemoteException | NotBoundException ex) {
+                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
@@ -1045,7 +974,7 @@ public class Home extends JFrame {
                     addRowTable(new String[]{id, nomeArea, nomeStato, codiceStato});
                 }
             }
-        } catch (Exception e) {
+        } catch (HeadlessException | RemoteException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Remote Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -1073,7 +1002,7 @@ public class Home extends JFrame {
                     addRowTable(new String[]{id, nomeArea, nomeStato, codiceStato});
                 }
             }
-        }catch (Exception e) {
+        }catch (HeadlessException | RemoteException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Remote Error!", JOptionPane.ERROR_MESSAGE);
         }
     }

@@ -7,30 +7,17 @@
  */
 package climatemonitoring;
 /**
- * Importazione del separatore dalla classe main 'ClimateMonitor'
- */
-import static climatemonitoring.ClientCM.sep;
-import static climatemonitoring.Home.DB_PASS;
-import static climatemonitoring.Home.DB_URL;
-import static climatemonitoring.Home.DB_USER;
-/**
  * Richiamo Librerie di Java
  */
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.io.*;
-import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -127,11 +114,6 @@ public class Accesso extends javax.swing.JDialog {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("ACCEDI");
 
-        usernameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                usernameFieldActionPerformed(evt);
-            }
-        });
         usernameField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 usernameFieldKeyPressed(evt);
@@ -202,13 +184,8 @@ public class Accesso extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    /**
-     * Non utilizzato
-     */
-    private void usernameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameFieldActionPerformed
-        //...
-    }//GEN-LAST:event_usernameFieldActionPerformed
-    /**
+
+   /**
      * Metodo che al click del bottone esegue la ricerca username e passoword per l'accesso (richiama metodo 'Accedi')
      * verifica se mancano parte delle credenziali richieste, o entrambe 
      * nel caso manchino restituisce un pannello con l'errore
@@ -245,12 +222,10 @@ public class Accesso extends javax.swing.JDialog {
                  * Richiamo funzione accesso
                  */
                 accedi();
-            } catch (IOException ex) {
+            } catch (IOException | NotBoundException ex) {
                 /**
                  * Cattura errore in caso di mancato funzionamento del metodo 'accedi'
                  */
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NotBoundException ex) {
                 Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -261,9 +236,7 @@ public class Accesso extends javax.swing.JDialog {
     private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
             log();
-            } catch (RemoteException ex) {
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NotBoundException ex) {
+            } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
             }
 }
@@ -272,9 +245,7 @@ public class Accesso extends javax.swing.JDialog {
     private void usernameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_usernameFieldKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
             log();
-            } catch (RemoteException ex) {
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NotBoundException ex) {
+            } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
             }
 }
@@ -283,9 +254,7 @@ public class Accesso extends javax.swing.JDialog {
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
             log();
-            } catch (RemoteException ex) {
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NotBoundException ex) {
+            } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
             }
 }
@@ -294,9 +263,7 @@ public class Accesso extends javax.swing.JDialog {
     private void AccediKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_AccediKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
             log();
-            } catch (RemoteException ex) {
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NotBoundException ex) {
+            } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
             }
 }
@@ -318,15 +285,14 @@ public class Accesso extends javax.swing.JDialog {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Accesso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Accesso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Accesso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Accesso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -335,14 +301,11 @@ public class Accesso extends javax.swing.JDialog {
         /**
          * Creazione e visualizzazione della pagina di inserimento dati d'accesso 
          */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                /*Metodo per rendere visibile la finestra d'accesso*/
-                new Accesso().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            /*Metodo per rendere visibile la finestra d'accesso*/
+            new Accesso().setVisible(true);
         });
     }
-    private static boolean auth;
     
     /**
      * Metodo preliminare per l'accesso (richiama metodo 'Accedi')
@@ -350,6 +313,8 @@ public class Accesso extends javax.swing.JDialog {
      * nel caso manchino restituisce un pannello con l'errore
      * Senza parametri perché recuperati dalle TextField
      * Gestita eccezione: IOException eccezione per mancanza file, directory errata
+     * @throws java.rmi.RemoteException
+     * @throws java.rmi.NotBoundException
      */
 
     public void log() throws RemoteException, NotBoundException{
@@ -398,6 +363,8 @@ public class Accesso extends javax.swing.JDialog {
      * con implementazione dell'eccezioni (se presenti)
      * Senza parametri perché recuperati dalle TextField
      * @throws IOException eccezione per mancanza file, directory errata
+     * @throws java.rmi.RemoteException
+     * @throws java.rmi.NotBoundException
      */
     public void accedi() throws IOException, RemoteException, NotBoundException{
         try {
@@ -426,7 +393,6 @@ public class Accesso extends javax.swing.JDialog {
             }
         } catch (RemoteException e) {
             // Gestisci l'eccezione RMI
-            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Errore di connessione al server!", "Errore!", JOptionPane.ERROR_MESSAGE);
         } finally {
             try {

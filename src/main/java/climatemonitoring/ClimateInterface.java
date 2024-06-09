@@ -4,7 +4,6 @@
  */
 package climatemonitoring;
 
-import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;

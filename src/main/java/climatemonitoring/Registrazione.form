@@ -198,9 +198,6 @@
           <StringArray count="0"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="centriDropActionPerformed"/>
-      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="//ArrayList model&lt;String&gt;=new ArrayList&lt;String&gt;();"/>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="//centriDrop.setSelectedIndex(null);"/>

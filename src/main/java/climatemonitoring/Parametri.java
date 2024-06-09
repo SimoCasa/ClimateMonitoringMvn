@@ -10,21 +10,12 @@ package climatemonitoring;
  * Richiamo Librerie.
  */
 import java.awt.Dimension;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.awt.event.ActionEvent;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,12 +29,11 @@ import javax.swing.JOptionPane;
  * @author 755531 Bonacina Davide
  */
 
-public class Parametri extends JDialog {
-    /**
+public final class Parametri extends JDialog {
+/**
      * Dichirazione variabili per controllo di eventuali errori di conversione
      */
-    static boolean ck = true; 
-    public String IDAREA = null;
+        public String IDAREA = null;
     /**
      * Dichiarazione variabili per collegamento al server RMI
      */
@@ -80,9 +70,7 @@ public class Parametri extends JDialog {
          */
         try {
             setClient();
-        } catch (RemoteException ex) {
-            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NotBoundException ex) {
+        } catch (RemoteException | NotBoundException ex) {
             Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
         }
         /**
@@ -165,11 +153,6 @@ public class Parametri extends JDialog {
 
         centriDrop.addItem("");
         centroANDareaDropInitialize();
-        centriDrop.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                centriDropItemStateChanged(evt);
-            }
-        });
 
         jLabel9.setText("Pressione");
 
@@ -342,7 +325,6 @@ public class Parametri extends JDialog {
     /**
      * Metodo esegue l'inserimento dei parametri della località scelta (richiama metodi 'calcoli degli score')
      * verifica se mancano i parametri richiesti
-     * @throws Exception eccezione generica
      */
     public void inserisciParametriClimatici(){
         boolean check = true;
@@ -405,7 +387,6 @@ public class Parametri extends JDialog {
             score_vento=5;
         } else {
             JOptionPane.showMessageDialog(null, "Valore inserito per il vento non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
-            ck=false;
         }
         return score_vento;
     }
@@ -429,7 +410,6 @@ public class Parametri extends JDialog {
             score_umidita=5;
         } else {
             JOptionPane.showMessageDialog(null, "Valore inserito per l'umidità non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
-            ck=false;
         }
         return score_umidita;
     }
@@ -453,7 +433,6 @@ public class Parametri extends JDialog {
             score_pressione=5;
         } else {
             JOptionPane.showMessageDialog(null, "Valore inserito per la pressione non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
-            ck=false;
         }
         return score_pressione;
     }
@@ -477,7 +456,6 @@ public class Parametri extends JDialog {
             score_temperatura=5;
         } else {
            JOptionPane.showMessageDialog(null, "Valore inserito per la temperatura non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
-           ck=false;
         }
         return score_temperatura;
     }
@@ -501,7 +479,6 @@ public class Parametri extends JDialog {
             score_precipitazioni=5;
         } else {
             JOptionPane.showMessageDialog(null, "Valore inserito per le precipitazioni non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
-            ck=false;
         }
         return score_precipitazioni;
     }
@@ -525,7 +502,6 @@ public class Parametri extends JDialog {
             score_altitudine_ghiacciai=5;
         } else {
             JOptionPane.showMessageDialog(null, "Valore inserito per l'altidudine dei ghiacciai non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
-            ck=false;
         }
         return score_altitudine_ghiacciai;
     }
@@ -549,24 +525,9 @@ public class Parametri extends JDialog {
             score_massa_ghiacciai=5;
         } else {
            JOptionPane.showMessageDialog(null, "Valore inserito per la massa dei ghiacciai non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
-           ck=false;
         }
         return score_massa_ghiacciai;
-    }
-    
-    
-    
-    
-    /**
-     * Metodo per assegnare al DropDown i centri di monitoraggio assegnati all'utente corrente
-     * @param evt click del dropdown
-     * @throws Exception eccezione generica
-    */
-    private void centriDropItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_centriDropItemStateChanged
-        
-    }//GEN-LAST:event_centriDropItemStateChanged
-     
-    
+    }    
     /**
      * @param args the command line arguments
      */
@@ -583,27 +544,21 @@ public class Parametri extends JDialog {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Registrazione.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Registrazione.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Registrazione.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Registrazione.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /**
          * Creazione e visualizzazione del form di inserimento (per inserimento valori) 
          */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                /**
-                 * Metodo per rendere visibile la finestra d'inserimento
-                 */
-                new Registrazione().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            /**
+             * Metodo per rendere visibile la finestra d'inserimento
+             */
+            new Registrazione().setVisible(true);
         });
     }
     
@@ -616,7 +571,7 @@ public class Parametri extends JDialog {
                 centriDrop.addItem(centro);
             }
 
-            centriDrop.addActionListener(e -> {
+            centriDrop.addActionListener((ActionEvent e) -> {
                 // Rimuove la selezione automatica del primo elemento
                 if (!centriDrop.getSelectedItem().toString().isEmpty()) {
                     areaDrop.setEnabled(false);
@@ -630,7 +585,6 @@ public class Parametri extends JDialog {
                             }
                             areaDrop.setEnabled(true);
                         } catch (RemoteException ex) {
-                            ex.printStackTrace();
                             JOptionPane.showMessageDialog(null, "Errore durante il recupero delle aree di interesse", "Errore!", JOptionPane.ERROR_MESSAGE);
                         }
                     }
@@ -646,7 +600,6 @@ public class Parametri extends JDialog {
             areaDrop.setEnabled(false);
 
         } catch (RemoteException e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Errore durante il recupero dei centri di monitoraggio", "Errore!", JOptionPane.ERROR_MESSAGE);
         }
     }

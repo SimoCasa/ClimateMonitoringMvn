@@ -4,7 +4,6 @@
  */
 package climatemonitoring;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -31,9 +30,9 @@ import java.util.logging.Logger;
  * @author simoc
  */
 public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
-    private String DB_URL;
-    private String DB_USER;
-    private String DB_PASS;
+    private final String DB_URL;
+    private final String DB_USER;
+    private final String DB_PASS;
     private Connection conn=null;
     private PreparedStatement pstmt=null;
     private ResultSet rs = null;
@@ -150,7 +149,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         if (email.isEmpty()) { check = false; errore.add("Email"); c++; }
         if (username.isEmpty()) { check = false; errore.add("Username"); c++; }
         if (codFisc.isEmpty()) { check = false; errore.add("Codice Fiscale"); c++; }
-        if (new String(password).isEmpty()) { check = false; errore.add("Password"); c++; }
+        if (password.isEmpty()) { check = false; errore.add("Password"); c++; }
         if (centroNome.isEmpty()) { check = false; errore.add("Centro Monitoraggio"); c++; }
         if (!check) {
             String f = "";
@@ -181,7 +180,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                     statement.setString(3, codFisc);
                     statement.setString(4, email);
                     statement.setString(5, username);
-                    statement.setString(6, new String(password));
+                    statement.setString(6, password);
                     statement.setInt(7, centroId);
 
                     int rowsInserted = statement.executeUpdate();
@@ -387,7 +386,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             try {
                 dbDisconnection();
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                System.err.println(ex);
             }
         }
 
@@ -506,7 +505,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             String query = "SELECT areaInteresse FROM CentroMonitoraggio WHERE nome = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, nomeCentro);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
             if (rs.next()) {
                 String[] areeInteresse = rs.getString("areaInteresse").split(", ");

@@ -5,16 +5,7 @@ package climatemonitoring;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
-import static climatemonitoring.ClientCM.sep;
-import static climatemonitoring.Home.DB_PASS;
-import static climatemonitoring.Home.DB_URL;
-import static climatemonitoring.Home.DB_USER;
-import static climatemonitoring.Registrazione.registry;
-import static climatemonitoring.Registrazione.stub;
 import java.awt.Dimension;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -24,12 +15,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import java.text.Normalizer;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import sun.awt.AWTAccessor;
 
 /**
  * @author 753546 Badrous Giorgio William
@@ -61,7 +46,7 @@ public class AreaInt extends javax.swing.JDialog {
         /**
          * 'This' per puntare al riferimento di una oggetto presente nella classe corrente
          */
-        this.hh=hh;
+        AreaInt.hh=hh;
         /**
          * 'This' per puntare al riferimento di una metodo presente nella classe corrente (setto titolo)
          */
@@ -112,7 +97,7 @@ public class AreaInt extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel2.setText("Citt�");
+        jLabel2.setText("Città");
 
         jLabel3.setText("Sigla Stato");
 
@@ -123,12 +108,6 @@ public class AreaInt extends javax.swing.JDialog {
         inserisci.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inserisciActionPerformed(evt);
-            }
-        });
-
-        countryField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                countryFieldFocusGained(evt);
             }
         });
 
@@ -215,7 +194,7 @@ public class AreaInt extends javax.swing.JDialog {
         /**
          * Variabili impostate su valore iniziale
          */
-        boolean check=true; ArrayList<String> errore=new ArrayList<String>();int c=0;
+        boolean check=true; ArrayList<String> errore=new ArrayList<>();int c=0;
         /**
          * Controlla se cittaField uguale a ' ' (vuoto), se vuoto check su valore 'falso'
          */
@@ -245,9 +224,9 @@ public class AreaInt extends javax.swing.JDialog {
              * Verifica che i parametri di latitudine e longitudine siano numeri
              * Risposta con messaggio d'errore nel caso non lo siano
              */
-            Double.parseDouble(latField.getText()); 
-            Double.parseDouble(latField.getText());
-        }catch(Exception e){check=false;JOptionPane.showMessageDialog(null, "Inserisci coordinate corrette! ","Errore!", JOptionPane.ERROR_MESSAGE);}
+            Double.valueOf(latField.getText()); 
+            Double.valueOf(latField.getText());
+        }catch(NumberFormatException e){check=false;JOptionPane.showMessageDialog(null, "Inserisci coordinate corrette! ","Errore!", JOptionPane.ERROR_MESSAGE);}
         if(!check){
             String f = "";
             if(!errore.isEmpty()){
@@ -269,12 +248,6 @@ public class AreaInt extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_inserisciActionPerformed
-    /**
-     * Metodo non utilizzato
-     */
-    private void countryFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_countryFieldFocusGained
-        // ...
-    }//GEN-LAST:event_countryFieldFocusGained
 
     /**
      * @param args the command line arguments
@@ -283,17 +256,15 @@ public class AreaInt extends javax.swing.JDialog {
         /**
          * Creazione e visualizzazione della pagina di inserimento della località
          */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                CentroMonitoraggio dialog = new CentroMonitoraggio(hh, true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            CentroMonitoraggio dialog = new CentroMonitoraggio(hh, true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
     /**
@@ -311,7 +282,6 @@ public class AreaInt extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null, "Dati inseriti con successo!");
             this.dispose();
         } catch (RemoteException e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Errore durante l'inserimento dei dati", "Errore", JOptionPane.ERROR_MESSAGE);
         } catch (NotBoundException ex) {
             Logger.getLogger(AreaInt.class.getName()).log(Level.SEVERE, null, ex);
