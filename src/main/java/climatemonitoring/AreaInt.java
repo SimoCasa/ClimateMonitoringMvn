@@ -27,7 +27,7 @@ public class AreaInt extends javax.swing.JDialog {
       * Creo oggetto di nome 'hh' di tipo 'Home' 
       * Creo una finistra speculare alla Home, in versione 'Operatore' con privilegi e funzioni aggiuntive.
       */
-    static Home hh;
+    static ClientCM hh;
     /**
      * Dichiarazione variabili per collegamento al server RMI
      */
@@ -38,7 +38,7 @@ public class AreaInt extends javax.swing.JDialog {
      * @param hh oggetto, di tipo 'Home'
      * @param ck boolean, da classe finestra home 'base'
      */
-    public AreaInt(Home hh, boolean ck) {
+    public AreaInt(ClientCM hh, boolean ck) {
         /**
          * 'Super' per puntare alla classe genitore, da cui eredito metodi e parametri
          */

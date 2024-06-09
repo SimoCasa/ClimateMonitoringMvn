@@ -30,7 +30,7 @@ public final class CentroMonitoraggio extends javax.swing.JDialog {
     /**
      * Creo oggetto statico di nome 'hh' di tipo 'Home' 
      */
-    static Home hh;
+    static ClientCM hh;
     /**
      * Dichiarazione variabili per collegamento al server RMI
      */
@@ -41,7 +41,7 @@ public final class CentroMonitoraggio extends javax.swing.JDialog {
      * @param hh oggetto, di tipo 'Home'
      * @param ck boolean, da classe finestra home 'base'
      */
-    public CentroMonitoraggio(Home hh, boolean ck) {
+    public CentroMonitoraggio(ClientCM hh, boolean ck) {
         /**
          * 'Super' per puntare alla classe genitore, da cui eredito metodi e parametri
          */
@@ -310,7 +310,7 @@ public final class CentroMonitoraggio extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(null, "Centro di monitoraggio inserito con successo!");
                 this.dispose();
             } catch (RemoteException ex) {
-                JOptionPane.showMessageDialog(null, "Errore durante l'operazione", "Errore!", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

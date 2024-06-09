@@ -42,7 +42,7 @@ public final class Parametri extends JDialog {
     /**
      * Variabile oggetto di tipo 'Home'
      */
-    Home reg;
+    ClientCM reg;
     /**
      * Costruttore <strong>base</strong> (senza parametri)
      */
@@ -52,7 +52,7 @@ public final class Parametri extends JDialog {
      * @param reg oggetto, di tipo 'Home'
      * @param ck boleean, del costuttore per eventuali errori
      */
-    public Parametri(Home reg, boolean ck) {
+    public Parametri(ClientCM reg, boolean ck) {
         /**
          * 'Super' per puntare alla classe genitore, da cui eredito metodi e parametri
          */

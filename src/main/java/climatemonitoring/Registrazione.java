@@ -44,7 +44,7 @@ public final class Registrazione extends JDialog {
      * @param reg oggetto, di tipo 'Home'
      * @param ck boolean, da classe finestra home 'base'
      */
-    public Registrazione(Home reg, boolean ck){
+    public Registrazione(ClientCM reg, boolean ck){
         /**
          * 'Super' per puntare alla classe genitore, da cui eredito metodi e parametri
          */

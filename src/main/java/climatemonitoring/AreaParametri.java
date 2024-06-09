@@ -42,7 +42,7 @@ public final class AreaParametri extends javax.swing.JDialog {
     /**
      * Variabile oggetto di tipo 'Home'
      */
-    static Home hh;
+    static ClientCM hh;
     /**
      * Variabile che contiene il 'GeoNameID'
      */
@@ -65,7 +65,7 @@ public final class AreaParametri extends javax.swing.JDialog {
      * @param cs boleean, del costuttore
      * @param geo long, indica il GeoNameID
     */
-    public AreaParametri(Home hh, boolean cs, long geo) {
+    public AreaParametri(ClientCM hh, boolean cs, long geo) {
         /**
          * 'Super' per puntare alla classe genitore, da cui eredito metodi e parametri
          */

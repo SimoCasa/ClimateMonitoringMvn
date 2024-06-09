@@ -34,7 +34,7 @@ public class Accesso extends javax.swing.JDialog {
       * Creo oggetto di nome 'hh' di tipo 'Home' 
       * Creo una finistra speculare alla Home, in versione 'Operatore' con privilegi e funzioni aggiuntive.
       */
-    Home hh;
+    ClientCM hh;
     /**
      * Dichiarazione variabili per collegamento al server RMI
      */
@@ -50,7 +50,7 @@ public class Accesso extends javax.swing.JDialog {
       * @param hh oggetto, di tipo 'Home'
       * @param ck boolean, da classe finestra home 'base'
       */
-     public Accesso(Home hh, boolean ck){
+     public Accesso(ClientCM hh, boolean ck){
         /**
          * 'Super' per puntare alla classe genitore, da cui eredito metodi e parametri
          */
