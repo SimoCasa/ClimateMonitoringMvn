@@ -79,7 +79,7 @@ public final class CentroMonitoraggio extends javax.swing.JDialog {
          */
         setVisible(true);
         /**
-         * Metodo per bloccare la possibilit‡† di ridimensionare la finestra
+         * Metodo per bloccare la possibilit√† di ridimensionare la finestra
          */
         setResizable(false);
     }
@@ -278,7 +278,7 @@ public final class CentroMonitoraggio extends javax.swing.JDialog {
      * Metodo per l'inserimento, forniti i parametri dall'utente
      * inserisce utilizzando il metodo 'inserisciCentroMonitoraggio' presente su 'ServerCM'
      * con implementazione dell'eccezioni (se presenti)
-     * Senza parametri perchË recuperati dalle TextField
+     * Senza parametri perch√® recuperati dalle TextField
      * @throws IOException eccezione per mancanza file, directory errata
      * @throws java.rmi.RemoteException
      */

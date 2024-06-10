@@ -79,7 +79,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     }
     /**
      * Metodo per la ricerca dell'area geografica dato il nome
-     * @param nome, tipo 'String' è il nome dell'area geografica inserita dall'utente
+     * @param nome, tipo 'String' Ã¨ il nome dell'area geografica inserita dall'utente
      * @throws java.rmi.RemoteException
      */
     @Override
@@ -113,8 +113,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     }
      /**
      * Metodo per la ricerca dell'area geografica date le coordinate e eventuale offset
-     * @param lat, tipo 'Double' è la latitudine inserita
-     * @param lon, tipo 'Double' è la longitudine inserita
+     * @param lat, tipo 'Double' Ã¨ la latitudine inserita
+     * @param lon, tipo 'Double' Ã¨ la longitudine inserita
      * @param offset, tipo 'Int' in KM per eventuale ricerca nei dintorni delle coordinate
      * @throws java.rmi.RemoteException
      */
@@ -168,12 +168,12 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     }
      /**
      * Metodo per la registrazione dell'utente dati i dati, email, username, password e il centro di competenza
-     * @param nome, tipo 'String' è il nome dell'utente
-     * @param cognome, tipo 'String' è il cognome dell'utente
-     * @param codFisc, tipo 'String' è il codice fiscale dell'utente
-     * @param email, tipo 'String' è la email dell'utente
-     * @param username, tipo 'String' è lo username dell'utente
-     * @param password, tipo 'String' è la password dell'utente
+     * @param nome, tipo 'String' Ã¨ il nome dell'utente
+     * @param cognome, tipo 'String' Ã¨ il cognome dell'utente
+     * @param codFisc, tipo 'String' Ã¨ il codice fiscale dell'utente
+     * @param email, tipo 'String' Ã¨ la email dell'utente
+     * @param username, tipo 'String' Ã¨ lo username dell'utente
+     * @param password, tipo 'String' Ã¨ la password dell'utente
      * @param centroNome, tipo 'String' sono il/i nomi dei centri di comptenza
      * @throws java.rmi.RemoteException
      */  
@@ -258,9 +258,9 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     
      /**
      * Metodo per l'inserimento dei centri di monitoraggio dato nome, indirizzo e elenco aree di competenza
-     * @param nome, tipo 'String' è il nome del centro
-     * @param indirizzo, tipo 'String' è l'indirizzo fisico del centro
-     * @param elencoAree, tipo 'String' è l'elenco delle aree di competenza
+     * @param nome, tipo 'String' Ã¨ il nome del centro
+     * @param indirizzo, tipo 'String' Ã¨ l'indirizzo fisico del centro
+     * @param elencoAree, tipo 'String' Ã¨ l'elenco delle aree di competenza
      * @throws java.rmi.RemoteException
      */  
     @Override
@@ -321,15 +321,15 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     }
      /**
      * Metodo  per l'inserimento dei parametri climatici dato nomeCentro, nomeArea e le varie informazioni
-     * @param nomeCentro, tipo 'String' è il nome del centro
-     * @param nomeArea, tipo 'String' è il nome dell'area 
-     * @param vento, tipo 'Int' è il valore del vento presente nell'aerea
-     * @param umidita, tipo 'Int' è il valore dell'umidità presente nell'aerea
-     * @param pressione, tipo 'Int' è il valore della pressione presente nell'aerea
-     * @param temperatura, tipo 'Int' è il valore della temperatura presente nell'aerea
-     * @param alt, tipo 'Int' è il valore dell'altitudine
-     * @param mass, tipo 'Int' è il valore della massa
-     * @param note, tipo 'String' è una nota generica sulle condizioni meteo
+     * @param nomeCentro, tipo 'String' Ã¨ il nome del centro
+     * @param nomeArea, tipo 'String' Ã¨il nome dell'area 
+     * @param vento, tipo 'Int' Ã¨ il valore del vento presente nell'aerea
+     * @param umidita, tipo 'Int' Ã¨ il valore dell'umiditï¿½ presente nell'aerea
+     * @param pressione, tipo 'Int' Ã¨ il valore della pressione presente nell'aerea
+     * @param temperatura, tipo 'Int' Ã¨ il valore della temperatura presente nell'aerea
+     * @param alt, tipo 'Int' Ã¨ il valore dell'altitudine
+     * @param mass, tipo 'Int' Ã¨ il valore della massa
+     * @param note, tipo 'String' Ã¨una nota generica sulle condizioni meteo
      * @throws java.rmi.RemoteException
      */  
     @Override
@@ -386,11 +386,11 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     }
      /**
      * Metodo  per l'inserimento delle aree climatiche dato citta, code e le varie informazioni
-     * @param citta, tipo 'String' è il nome della città
-     * @param code, tipo 'String' è il codice dell'area
-     * @param country, tipo 'String' è il codice del paese
-     * @param lat, tipo 'String' è il valore della latitudine
-     * @param lon, tipo 'String' è il valore della longitudine
+     * @param citta, tipo 'String' Ã¨ il nome della cittï¿½
+     * @param code, tipo 'String' Ã¨ il codice dell'area
+     * @param country, tipo 'String' Ã¨ il codice del paese
+     * @param lat, tipo 'String' Ã¨ il valore della latitudine
+     * @param lon, tipo 'String' Ã¨ il valore della longitudine
      * @throws java.rmi.RemoteException
      */  
     @Override
@@ -419,8 +419,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         }
     }
     /**
-         * Metodo  per visualizzare i parametriclimatici dato il 'GeoNameID' della località
-         * @param geoNameID, tipo 'String' è l'ID della località
+         * Metodo  per visualizzare i parametriclimatici dato il 'GeoNameID' della localitÃ 
+         * @param geoNameID, tipo 'String' Ã¨ l'ID della localitÃ 
          * @throws java.rmi.RemoteException
          */  
     @Override
@@ -470,8 +470,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     }
     /**
          * Metodo  per recuperare l'Utente e quindi eseguire il login dato username e password
-         * @param username, tipo 'String' è lo username dell'utente
-         * @param password, tipo 'String' è la password dell'utente
+         * @param username, tipo 'String' Ã¨ lo username dell'utente
+         * @param password, tipo 'String' Ã¨ la password dell'utente
          * @throws java.rmi.RemoteException
          */  
     @Override
@@ -531,7 +531,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     }
      /**
          * Metodo  per recuperare i centri di monitoraggio dato il codice fiscale dell'utente
-         * @param codFisc, tipo 'String' è il codice fiscale dell'utente
+         * @param codFisc, tipo 'String' Ã¨ il codice fiscale dell'utente
          * @throws java.rmi.RemoteException
          * @throws java.rmi.SQLException
          */  
@@ -578,7 +578,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     }
     /**
          * Metodo  per recuperare l'area di interesse dato il nome del centro
-         * @param nomeCentro, tipo 'String' è il nome del centro
+         * @param nomeCentro, tipo 'String' Ã¨ il nome del centro
          * @throws java.rmi.RemoteException
          * @throws java.rmi.SQLException
          */  

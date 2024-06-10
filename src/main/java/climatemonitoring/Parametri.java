@@ -323,7 +323,7 @@ public final class Parametri extends JDialog {
        inserisciParametriClimatici();
     }//GEN-LAST:event_inserisciActionPerformed
     /**
-     * Metodo esegue l'inserimento dei parametri della localit‡ scelta (richiama metodi 'calcoli degli score')
+     * Metodo esegue l'inserimento dei parametri della localit√† scelta (richiama metodi 'calcoli degli score')
      * verifica se mancano i parametri richiesti
      * inserisce utilizzando il metodo 'inserisciParametriClimatici' presente su 'ServerCM'
      * @throws java.rmi.RemoteException

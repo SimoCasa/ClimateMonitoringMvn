@@ -79,7 +79,7 @@ public final class Registrazione extends JDialog {
          */
         setVisible(true);
         /**
-         * Metodo per bloccare la possibilit‡† di ridimensionare la finestra
+         * Metodo per bloccare la possibilit√† di ridimensionare la finestra
          */
         setResizable(false);
     }
@@ -281,7 +281,7 @@ public final class Registrazione extends JDialog {
      * Metodo per la Registrazione, forniti i parametri dall'utente
      * inserisce utilizzando il metodo 'registrazione' presente su 'ServerCM'
      * con implementazione dell'eccezioni (se presenti)
-     * Senza parametri perchË recuperati dalle TextField
+     * Senza parametri perch√® recuperati dalle TextField
      * @throws IOException eccezione per mancanza file, directory errata
      * @throws java.rmi.RemoteException
     */

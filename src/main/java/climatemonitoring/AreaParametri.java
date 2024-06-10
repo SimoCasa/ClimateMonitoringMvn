@@ -114,7 +114,7 @@ public final class AreaParametri extends javax.swing.JDialog {
              */ 
             setVisible(true);
             /**
-             * Metodo per bloccare la possibilit‡† di ridimensionare la finestra
+             * Metodo per bloccare la possibilit√† di ridimensionare la finestra
              */
             setResizable(false);
         }
@@ -265,7 +265,7 @@ public final class AreaParametri extends javax.swing.JDialog {
      /**
      * Metodo per la ricerca dei parametri climatici dato il GeoID
      * verifica la presenza dei parametri usando il metodo 'visualizzaParametriClimaticiDB' presente su 'ServerCM' 
-     * Senza parametri perchË recuperati dalle TextField
+     * Senza parametri perch√® recuperati dalle TextField
      * @throws java.rmi.RemoteException
      */
     public void visualizzaParametriClimatici() throws RemoteException{

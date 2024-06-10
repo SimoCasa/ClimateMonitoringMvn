@@ -59,7 +59,7 @@ public class ClientCM extends JFrame {
         setVisible(true);  
         this.setEnabled(true);
         /**
-         * Metodo per bloccare la possibilit‡† di ridimensionare la finestra (disabilitato)
+         * Metodo per bloccare la possibilit√† di ridimensionare la finestra (disabilitato)
          */
         setResizable(false);
         /**
@@ -455,7 +455,7 @@ public class ClientCM extends JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     /**
-     * Metodo che al click del bottone esegue la ricerca della localit‡† dato il nome (richiama metodo 'cercaAreaGeografica')
+     * Metodo che al click del bottone esegue la ricerca della localit√† dato il nome (richiama metodo 'cercaAreaGeografica')
      * verifica se manca il nome richiesto
      * @param evt click del bottone
      * Eccezione non gestita
@@ -491,7 +491,7 @@ public class ClientCM extends JFrame {
         }
     }//GEN-LAST:event_nomeButtonActionPerformed
     /**
-     * Metodo che al click del bottone esegue la ricerca della localit‡† date le coordinate (lat,long) (richiama metodo 'cercaAreaGeografica')
+     * Metodo che al click del bottone esegue la ricerca della localit√† date le coordinate (lat,long) (richiama metodo 'cercaAreaGeografica')
      * verifica se manca una o entrambe le coordiante (validita)
      * @param evt click del bottone
      * @throws NumberFormatException gestione eccezione per coordinate inserite non valide
@@ -672,7 +672,7 @@ public class ClientCM extends JFrame {
         new AreaParametri(this,true,geo);
     }//GEN-LAST:event_resTableMouseClicked
     /**
-     * Metodo che al click del tasto d'invio da tastiera esegue la ricerca della localit‡† dato il nome (richiama metodo 'cercaAreaGeografica')
+     * Metodo che al click del tasto d'invio da tastiera esegue la ricerca della localitÔøΩ dato il nome (richiama metodo 'cercaAreaGeografica')
      * @param evt click della tasteira
      * eccezione non gestita
      */
@@ -708,7 +708,7 @@ public class ClientCM extends JFrame {
         }
     }//GEN-LAST:event_nomeFieldKeyPressed
     /**
-     * Metodo che al click del tasto d'invio da tastiera esegue la ricerca della localit‡† date le coordinate (lat,long) (richiama metodo 'cercaAreaGeografica')
+     * Metodo che al click del tasto d'invio da tastiera esegue la ricerca della localit√† date le coordinate (lat,long) (richiama metodo 'cercaAreaGeografica')
      * verifica se manca una o entrambe le coordiante (validita)
      * @param evt click del bottone
      * @throws NumberFormatException gestione eccezione per coordinate inserite non valide
@@ -837,7 +837,7 @@ public class ClientCM extends JFrame {
         }
     }//GEN-LAST:event_offsetSlideKeyPressed
     /**
-     * Metodo che al click del tasto d'invio da tastiera esegue la ricerca della localit‡† date le coordinate (lat,long) (richiama metodo 'cercaAreaGeografica')
+     * Metodo che al click del tasto d'invio da tastiera esegue la ricerca della localitÔøΩ date le coordinate (lat,long) (richiama metodo 'cercaAreaGeografica')
      * verifica se manca una o entrambe le coordiante (validita)
      * @param evt click del bottone
      * @throws NumberFormatException gestione eccezione per coordinate inserite non valide
@@ -956,8 +956,8 @@ public class ClientCM extends JFrame {
     
     /**
      * Metodo per la ricerca dell'Area Geografica dato il nome
-     * @param nome stringa, il nome della localit‡ da ricercare
-     * cerca la localit‡ usando il 'nome' con il metodo 'cercaAreaGeograficaDB' presente su 'ServerCM'
+     * @param nome stringa, il nome della localit√† da ricercare
+     * cerca la localit√† usando il 'nome' con il metodo 'cercaAreaGeograficaDB' presente su 'ServerCM'
      */
     public void cercaAreaGeografica(String nome){
         try {
@@ -985,7 +985,7 @@ public class ClientCM extends JFrame {
      * @param lat double, valore della latitudine da ricercare
      * @param lon double, valore della longitudine da ricercare
      * @param offset double, valore dell'eventuale offset in cui ricercare
-     * cerca la localit‡ usando la 'lat' e 'lon' ed eventuale offeset con il metodo 'cercaAreaGeograficaDB' presente su 'ServerCM'
+     * cerca la localit√† usando la 'lat' e 'lon' ed eventuale offeset con il metodo 'cercaAreaGeograficaDB' presente su 'ServerCM'
      * @throws java.rmi.RemoteException
      * @throws java.rmi.HeadlessException
      */
