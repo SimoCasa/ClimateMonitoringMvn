@@ -79,7 +79,7 @@ public final class Registrazione extends JDialog {
          */
         setVisible(true);
         /**
-         * Metodo per bloccare la possibilit√† di ridimensionare la finestra
+         * Metodo per bloccare la possibilit‡† di ridimensionare la finestra
          */
         setResizable(false);
     }
@@ -227,7 +227,6 @@ public final class Registrazione extends JDialog {
      * Metodo che al click del bottone esegue la registrazione dell'operatore (richiama metodo 'Registrazione')
      * verifica se mancano parte delle credenziali richieste
      * @param evt click del bottone
-     * @throws IOException eccezzione per mancanza file, directory errata
      */
     private void RegistratiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegistratiActionPerformed
         try {
@@ -280,10 +279,11 @@ public final class Registrazione extends JDialog {
     }
     /**
      * Metodo per la Registrazione, forniti i parametri dall'utente
-     * inserisce all'interno del file 'OperatoriRegistrati.dati' 
+     * inserisce utilizzando il metodo 'registrazione' presente su 'ServerCM'
      * con implementazione dell'eccezioni (se presenti)
-     * Senza parametri perch√© recuperati dalle TextField
+     * Senza parametri perchË recuperati dalle TextField
      * @throws IOException eccezione per mancanza file, directory errata
+     * @throws java.rmi.RemoteException
     */
     public void reg() throws IOException{
         
@@ -317,9 +317,10 @@ public final class Registrazione extends JDialog {
         }
     }
     /**
-     * Metodo per creare la lista dei centri di monitoraggio
-     * nella JComboBox dal DB
-    */
+     * Metodo per settare la DropDown 'CentriDrop' sui valori presenti in DB
+     * verifica la presenza dei centri usando il metodo 'getCentriMonitoraggio' presente su 'ServerCM'
+     * @throws java.rmi.RemoteException
+     */
     private void centriDropSelector() throws RemoteException {
         List<String> centri = stub.getCentriMonitoraggio();
         centriDrop.removeAllItems();
@@ -328,7 +329,13 @@ public final class Registrazione extends JDialog {
             System.out.println("Client: "+centro);
         }
     }
-    
+    /**
+     * Metodo per settare il 'Client' che accede ai metodi del 'ServerCM'
+     * Indirizzo: localHost Porta: 1099
+     * con implementazione dell'eccezioni (se presenti)
+     * @throws java.rmi.RemoteException
+     * @throws java.rmi.NotBoundException
+     */
     void setClient() throws RemoteException, NotBoundException {
         try {
             registry = LocateRegistry.getRegistry("localhost", 1099);

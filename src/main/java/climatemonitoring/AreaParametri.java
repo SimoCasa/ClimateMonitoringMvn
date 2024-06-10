@@ -114,7 +114,7 @@ public final class AreaParametri extends javax.swing.JDialog {
              */ 
             setVisible(true);
             /**
-             * Metodo per bloccare la possibilit√† di ridimensionare la finestra
+             * Metodo per bloccare la possibilit‡† di ridimensionare la finestra
              */
             setResizable(false);
         }
@@ -264,8 +264,8 @@ public final class AreaParametri extends javax.swing.JDialog {
     
      /**
      * Metodo per la ricerca dei parametri climatici dato il GeoID
-     * Senza parametri perch√® recuperati dalle TextField
-     * Gestita eccezione: IOException eccezione per mancanza file, directory errata
+     * verifica la presenza dei parametri usando il metodo 'visualizzaParametriClimaticiDB' presente su 'ServerCM' 
+     * Senza parametri perchË recuperati dalle TextField
      * @throws java.rmi.RemoteException
      */
     public void visualizzaParametriClimatici() throws RemoteException{
@@ -328,7 +328,13 @@ public final class AreaParametri extends javax.swing.JDialog {
 
         JOptionPane.showMessageDialog(this, scrollPane, "Note", JOptionPane.INFORMATION_MESSAGE);
     }
-    
+    /**
+     * Metodo per settare il 'Client' che accede ai metodi del 'ServerCM'
+     * Indirizzo: localHost Porta: 1099
+     * con implementazione dell'eccezioni (se presenti)
+     * @throws java.rmi.RemoteException
+     * @throws java.rmi.NotBoundException
+     */
     void setClient() throws RemoteException, NotBoundException {
         try {
             registry = LocateRegistry.getRegistry("localhost", 1099);

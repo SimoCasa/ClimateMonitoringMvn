@@ -2,8 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
+/**
+ * Richiamo origine progetto.
+ */
 package climatemonitoring;
-
+/**
+ * Richiamo Librerie.
+ */
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -11,9 +16,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- * @author simoc
+ * @author 753546 Badrous Giorgio William
+ * @author 753540 Casati Simone
+ * @author 754772 Biavaschi Raffaele
+ * @author 755531 Bonacina Davide
  */
+// Definizione interfaccia per RMI.
 public interface ClimateInterface extends Remote{
     void dbConnection() throws SQLException,RemoteException;        //Connessione al Database
     void dbDisconnection() throws RemoteException, SQLException;    //Disconnessione al Database

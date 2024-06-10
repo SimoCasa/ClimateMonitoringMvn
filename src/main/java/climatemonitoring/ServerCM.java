@@ -2,8 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/**
+ * Richiamo origine progetto.
+ */
 package climatemonitoring;
-
+/**
+ * Richiamo Librerie.
+ */
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -26,8 +31,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author simoc
+ * @author 753546 Badrous Giorgio William
+ * @author 753540 Casati Simone
+ * @author 754772 Biavaschi Raffaele
+ * @author 755531 Bonacina Davide
  */
 public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     private final String DB_URL;
@@ -36,18 +43,30 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     private Connection conn=null;
     private PreparedStatement pstmt=null;
     private ResultSet rs = null;
-    
+    /**
+     * Costruttore <strong>base</strong> (senza parametri)
+     * @throws java.rmi.RemoteException
+     * @throws java.rmi.SQLException
+     */
     public ServerCM() throws RemoteException, SQLException{
         DB_URL = "jdbc:postgresql://localhost:5432/ClimateMonitoring";
         DB_USER = "postgres";
         DB_PASS = "password";
     }
-    
+     /**
+     * Metodo Connessione al DB
+     * @throws java.rmi.RemoteException
+     * @throws java.rmi.SQLException
+     */
     @Override
     public synchronized void dbConnection() throws RemoteException,SQLException{
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
     }
-    
+    /**
+     * Metodo disconnessione dal DB
+     * @throws java.rmi.RemoteException
+     * @throws java.rmi.SQLException
+     */
     @Override
     public synchronized void dbDisconnection() throws RemoteException, SQLException{
         try {
@@ -58,7 +77,11 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             throw new RemoteException("Database error: " + e.getMessage(), e);
         }
     }
-    
+    /**
+     * Metodo per la ricerca dell'area geografica dato il nome
+     * @param nome, tipo 'String' è il nome dell'area geografica inserita dall'utente
+     * @throws java.rmi.RemoteException
+     */
     @Override
     public synchronized List<Map<String, String>> cercaAreaGeograficaDB(String nome) throws RemoteException {
         List<Map<String, String>> results = new LinkedList<>();
@@ -88,7 +111,13 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
 
         return results;
     }
-
+     /**
+     * Metodo per la ricerca dell'area geografica date le coordinate e eventuale offset
+     * @param lat, tipo 'Double' è la latitudine inserita
+     * @param lon, tipo 'Double' è la longitudine inserita
+     * @param offset, tipo 'Int' in KM per eventuale ricerca nei dintorni delle coordinate
+     * @throws java.rmi.RemoteException
+     */
     @Override
     public synchronized  List<Map<String, String>> cercaAreaGeograficaDB(double lat, double lon, int offset) throws RemoteException {
         List<Map<String, String>> results = new LinkedList<>();
@@ -137,7 +166,17 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
 
         return results;
     }
-
+     /**
+     * Metodo per la registrazione dell'utente dati i dati, email, username, password e il centro di competenza
+     * @param nome, tipo 'String' è il nome dell'utente
+     * @param cognome, tipo 'String' è il cognome dell'utente
+     * @param codFisc, tipo 'String' è il codice fiscale dell'utente
+     * @param email, tipo 'String' è la email dell'utente
+     * @param username, tipo 'String' è lo username dell'utente
+     * @param password, tipo 'String' è la password dell'utente
+     * @param centroNome, tipo 'String' sono il/i nomi dei centri di comptenza
+     * @throws java.rmi.RemoteException
+     */  
     @Override
     public synchronized void registrazione(String nome, String cognome, String codFisc, String email, String username, String password, String centroNome) throws RemoteException{
        boolean check = true;
@@ -217,8 +256,13 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         }
     }
     
-    //public
-    
+     /**
+     * Metodo per l'inserimento dei centri di monitoraggio dato nome, indirizzo e elenco aree di competenza
+     * @param nome, tipo 'String' è il nome del centro
+     * @param indirizzo, tipo 'String' è l'indirizzo fisico del centro
+     * @param elencoAree, tipo 'String' è l'elenco delle aree di competenza
+     * @throws java.rmi.RemoteException
+     */  
     @Override
     public void inserisciCentroMonitoraggio(String nome, String indirizzo, String elencoAree) throws RemoteException {
         boolean check = true;
@@ -275,7 +319,19 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             }
         }
     }
-
+     /**
+     * Metodo  per l'inserimento dei parametri climatici dato nomeCentro, nomeArea e le varie informazioni
+     * @param nomeCentro, tipo 'String' è il nome del centro
+     * @param nomeArea, tipo 'String' è il nome dell'area 
+     * @param vento, tipo 'Int' è il valore del vento presente nell'aerea
+     * @param umidita, tipo 'Int' è il valore dell'umidità presente nell'aerea
+     * @param pressione, tipo 'Int' è il valore della pressione presente nell'aerea
+     * @param temperatura, tipo 'Int' è il valore della temperatura presente nell'aerea
+     * @param alt, tipo 'Int' è il valore dell'altitudine
+     * @param mass, tipo 'Int' è il valore della massa
+     * @param note, tipo 'String' è una nota generica sulle condizioni meteo
+     * @throws java.rmi.RemoteException
+     */  
     @Override
     public synchronized void inserisciParametriClimatici(String nomeCentro, String nomeArea, int vento, int umidita, int pressione, int temperatura, int precipitazioni, int alt, int mass, String note) throws RemoteException {
         int IDCentro = 0;
@@ -328,7 +384,15 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             }
         }
     }
-
+     /**
+     * Metodo  per l'inserimento delle aree climatiche dato citta, code e le varie informazioni
+     * @param citta, tipo 'String' è il nome della città
+     * @param code, tipo 'String' è il codice dell'area
+     * @param country, tipo 'String' è il codice del paese
+     * @param lat, tipo 'String' è il valore della latitudine
+     * @param lon, tipo 'String' è il valore della longitudine
+     * @throws java.rmi.RemoteException
+     */  
     @Override
     public synchronized void inserisciAreaDB(String citta, String code, String country, String lat, String lon) throws RemoteException {
         String query = "INSERT INTO coordinatemonitoraggio (name, asciiname, countrycode, countryname, coordinates) VALUES (?, ?, ?, ?, ?)";
@@ -354,7 +418,11 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             }
         }
     }
-
+    /**
+         * Metodo  per visualizzare i parametriclimatici dato il 'GeoNameID' della località
+         * @param geoNameID, tipo 'String' è l'ID della località
+         * @throws java.rmi.RemoteException
+         */  
     @Override
     public synchronized List<Map<String, String>> visualizzaParametriClimaticiDB(String geoNameID) throws RemoteException {
         List<Map<String, String>> parametri = new ArrayList<>();
@@ -393,14 +461,19 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         return parametri;
     }
 
-    
+    // MAIN
     public synchronized static void main(String[] args) throws RemoteException, SQLException {
         ServerCM server = new ServerCM(); 
         Registry registry = LocateRegistry.createRegistry(1099);
         registry.rebind("ClimateMonitoring", server);
         System.out.println("Server avviato e registrato nel registry RMI.");
     }
-
+    /**
+         * Metodo  per recuperare l'Utente e quindi eseguire il login dato username e password
+         * @param username, tipo 'String' è lo username dell'utente
+         * @param password, tipo 'String' è la password dell'utente
+         * @throws java.rmi.RemoteException
+         */  
     @Override
     public List<String> getUtente(String username, String password) throws RemoteException {
         String sql = "SELECT nome, cognome, codfisc FROM operatori WHERE userid = ? AND password = ?";
@@ -429,7 +502,10 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         return userInfo;
     }
     
-    //Dropdown necessaria per la Registrazione dei centri di monitoraggio
+     /**
+         * Metodo  per recuperare i centri di monitoraggio e popolare quindi la DropDown
+         * @throws java.rmi.RemoteException
+         */ 
     @Override
     public synchronized List<String> getCentriMonitoraggio() throws RemoteException {
         List<String> res = new ArrayList<>();
@@ -453,7 +529,12 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         }
         return res;
     }
-
+     /**
+         * Metodo  per recuperare i centri di monitoraggio dato il codice fiscale dell'utente
+         * @param codFisc, tipo 'String' è il codice fiscale dell'utente
+         * @throws java.rmi.RemoteException
+         * @throws java.rmi.SQLException
+         */  
     @Override
     public List<String> getCentriMonitoraggio(String codFisc) throws RemoteException {
         List<String> centri = new ArrayList<>();
@@ -495,7 +576,12 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
 
         return centri;
     }
-
+    /**
+         * Metodo  per recuperare l'area di interesse dato il nome del centro
+         * @param nomeCentro, tipo 'String' è il nome del centro
+         * @throws java.rmi.RemoteException
+         * @throws java.rmi.SQLException
+         */  
     @Override
     public List<String> getAreeInteresse(String nomeCentro) throws RemoteException {
         List<String> aree = new ArrayList<>();

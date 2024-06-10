@@ -311,8 +311,7 @@ public class Accesso extends javax.swing.JDialog {
      * Metodo preliminare per l'accesso (richiama metodo 'Accedi')
      * verifica se mancano parte delle credenziali richieste, o entrambe 
      * nel caso manchino restituisce un pannello con l'errore
-     * Senza parametri perchÃ© recuperati dalle TextField
-     * Gestita eccezione: IOException eccezione per mancanza file, directory errata
+     * Senza parametri perchè recuperati dalle TextField
      * @throws java.rmi.RemoteException
      * @throws java.rmi.NotBoundException
      */
@@ -358,10 +357,10 @@ public class Accesso extends javax.swing.JDialog {
     
     /**
      * Metodo per l'Accesso, forniti lo username e password 
-     * verifica se all'interno del file 'OperatoriRegistrati.dati' Ã¨ presente la combinazione username+password
+     * verifica utilizzando il metodo 'getUtente' presente su 'ServerCM' se esiste la combinazione username e password
      * se presente esegue il login rendendo visibili gli elementi una volta loggato
      * con implementazione dell'eccezioni (se presenti)
-     * Senza parametri perchÃ© recuperati dalle TextField
+     * Senza parametri perchè recuperati dalle TextField
      * @throws IOException eccezione per mancanza file, directory errata
      * @throws java.rmi.RemoteException
      * @throws java.rmi.NotBoundException

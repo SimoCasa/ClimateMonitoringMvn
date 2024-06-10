@@ -68,7 +68,7 @@ public class AreaInt extends javax.swing.JDialog {
          */
         setVisible(true);
         /**
-         * Metodo per bloccare la possibilit√† di ridimensionare la finestra
+         * Metodo per bloccare la possibilit‡† di ridimensionare la finestra
          */
         setResizable(false);
     }
@@ -184,11 +184,10 @@ public class AreaInt extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     /**
-     * Metodo che al click del bottone esegue l'inserimento della localit√† (richiama metodo 'inserisciAreaInt')
+     * Metodo che al click del bottone esegue l'inserimento della localit‡† (richiama metodo 'inserisciAreaInt')
      * verifica se mancano parte dei parametri richiesti
      * nel caso manchino restituisce un pannello con l'errore
      * @param evt click del bottone
-     * Gestita eccezione: IOException eccezione per mancanza file, directory errata
      */
     private void inserisciActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inserisciActionPerformed
         /**
@@ -269,10 +268,12 @@ public class AreaInt extends javax.swing.JDialog {
     }
     /**
      * Metodo per l'inserimento, forniti i parametri dall'utente
-     * inserisce all'interno del file 'CoordinateMonitoraggio.dati' 
+     * inserisce i valori utilizzando il metodo 'inserisciAreaDB' presente su 'ServerCM' 
      * con implementazione dell'eccezioni (se presenti)
-     * Senza parametri perch√© recuperati dalle TextField
+     * Senza parametri perchË recuperati dalle TextField
      * @throws IOException eccezione per mancanza file, directory errata
+     * @throws java.rmi.RemoteException
+     * @throws java.rmi.NotBoundException
      */
     public void inserisciAreaInt() throws IOException{
         try {
@@ -287,7 +288,13 @@ public class AreaInt extends javax.swing.JDialog {
             Logger.getLogger(AreaInt.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+    /**
+     * Metodo per settare il 'Client' che accede ai metodi del 'ServerCM'
+     * Indirizzo: localHost Porta: 1099
+     * con implementazione dell'eccezioni (se presenti)
+     * @throws java.rmi.RemoteException
+     * @throws java.rmi.NotBoundException
+     */
     void setClient() throws RemoteException, NotBoundException {
         try {
             registry = LocateRegistry.getRegistry("localhost", 1099);

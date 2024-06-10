@@ -323,8 +323,10 @@ public final class Parametri extends JDialog {
        inserisciParametriClimatici();
     }//GEN-LAST:event_inserisciActionPerformed
     /**
-     * Metodo esegue l'inserimento dei parametri della localit√† scelta (richiama metodi 'calcoli degli score')
+     * Metodo esegue l'inserimento dei parametri della localit‡ scelta (richiama metodi 'calcoli degli score')
      * verifica se mancano i parametri richiesti
+     * inserisce utilizzando il metodo 'inserisciParametriClimatici' presente su 'ServerCM'
+     * @throws java.rmi.RemoteException
      */
     public void inserisciParametriClimatici(){
         boolean check = true;
@@ -561,7 +563,11 @@ public final class Parametri extends JDialog {
             new Registrazione().setVisible(true);
         });
     }
-    
+    /**
+     * Metodo per settare la DropDown 'CentriDrop' sui valori presenti in DB
+     * verifica la presenza dei centri usando il metodo 'getCentriMonitoraggio' presente su 'ServerCM'
+     * @throws java.rmi.RemoteException
+     */
     private void centroANDareaDropInitialize() {
         try {
             List<String> centri = stub.getCentriMonitoraggio(reg.codFisc);
@@ -603,7 +609,13 @@ public final class Parametri extends JDialog {
             JOptionPane.showMessageDialog(null, "Errore durante il recupero dei centri di monitoraggio", "Errore!", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+    /**
+     * Metodo per settare il 'Client' che accede ai metodi del 'ServerCM'
+     * Indirizzo: localHost Porta: 1099
+     * con implementazione dell'eccezioni (se presenti)
+     * @throws java.rmi.RemoteException
+     * @throws java.rmi.NotBoundException
+     */
     void setClient() throws RemoteException, NotBoundException {
         try {
             registry = LocateRegistry.getRegistry("localhost", 1099);
