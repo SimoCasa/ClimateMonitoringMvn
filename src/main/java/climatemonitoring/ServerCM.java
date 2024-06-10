@@ -9,6 +9,9 @@ package climatemonitoring;
 /**
  * Richiamo Librerie.
  */
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -29,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
 /**
  * @author 753546 Badrous Giorgio William
@@ -43,10 +48,11 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     private Connection conn=null;
     private PreparedStatement pstmt=null;
     private ResultSet rs = null;
+    private JFrame frame;
     /**
      * Costruttore <strong>base</strong> (senza parametri)
      * @throws java.rmi.RemoteException
-     * @throws java.rmi.SQLException
+     * @throws java.sql.SQLException
      */
     public ServerCM() throws RemoteException, SQLException{
         DB_URL = "jdbc:postgresql://localhost:5432/ClimateMonitoring";
@@ -56,7 +62,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
      /**
      * Metodo Connessione al DB
      * @throws java.rmi.RemoteException
-     * @throws java.rmi.SQLException
+     * @throws java.sql.SQLException
      */
     @Override
     public synchronized void dbConnection() throws RemoteException,SQLException{
@@ -65,7 +71,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     /**
      * Metodo disconnessione dal DB
      * @throws java.rmi.RemoteException
-     * @throws java.rmi.SQLException
+     * @throws java.sql.SQLException
      */
     @Override
     public synchronized void dbDisconnection() throws RemoteException, SQLException{
@@ -116,6 +122,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
      * @param lat, tipo 'Double' è la latitudine inserita
      * @param lon, tipo 'Double' è la longitudine inserita
      * @param offset, tipo 'Int' in KM per eventuale ricerca nei dintorni delle coordinate
+     * @return 
      * @throws java.rmi.RemoteException
      */
     @Override
@@ -386,7 +393,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     }
      /**
      * Metodo  per l'inserimento delle aree climatiche dato citta, code e le varie informazioni
-     * @param citta, tipo 'String' è il nome della citt�
+     * @param citta, tipo 'String' è il nome della città
      * @param code, tipo 'String' è il codice dell'area
      * @param country, tipo 'String' è il codice del paese
      * @param lat, tipo 'String' è il valore della latitudine
@@ -467,6 +474,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         Registry registry = LocateRegistry.createRegistry(1099);
         registry.rebind("ClimateMonitoring", server);
         System.out.println("Server avviato e registrato nel registry RMI.");
+        ServerCM obj = new ServerCM();
+        obj.initializeGUI();
     }
     /**
          * Metodo  per recuperare l'Utente e quindi eseguire il login dato username e password
@@ -627,5 +636,29 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 }
             }
         return sb.toString();
+    }
+    
+    /**
+     * Initializes the GUI.
+     */
+    public void initializeGUI() {
+        frame = new JFrame("Server Control Panel");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 100);
+        frame.setLayout(new FlowLayout());
+
+        JButton disconnectButton = new JButton("Disconnessione");
+        disconnectButton.addActionListener((ActionEvent e) -> {
+            try {
+                dbDisconnection();
+                frame.dispose();
+                System.exit(0); 
+            } catch (RemoteException | SQLException ex) {
+                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+        frame.add(disconnectButton);
+        frame.setVisible(true);
     }
 }
