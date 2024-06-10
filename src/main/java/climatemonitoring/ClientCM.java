@@ -986,8 +986,6 @@ public class ClientCM extends JFrame {
      * @param lon double, valore della longitudine da ricercare
      * @param offset double, valore dell'eventuale offset in cui ricercare
      * cerca la località usando la 'lat' e 'lon' ed eventuale offeset con il metodo 'cercaAreaGeograficaDB' presente su 'ServerCM'
-     * @throws java.rmi.RemoteException
-     * @throws java.rmi.HeadlessException
      */
     public static void cercaAreaGeografica(double lat, double lon, int offset){
         try {

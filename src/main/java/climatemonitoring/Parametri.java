@@ -326,7 +326,6 @@ public final class Parametri extends JDialog {
      * Metodo esegue l'inserimento dei parametri della località scelta (richiama metodi 'calcoli degli score')
      * verifica se mancano i parametri richiesti
      * inserisce utilizzando il metodo 'inserisciParametriClimatici' presente su 'ServerCM'
-     * @throws java.rmi.RemoteException
      */
     public void inserisciParametriClimatici(){
         boolean check = true;

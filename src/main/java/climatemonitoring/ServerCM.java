@@ -11,7 +11,6 @@ package climatemonitoring;
  */
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -86,6 +85,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     /**
      * Metodo per la ricerca dell'area geografica dato il nome
      * @param nome, tipo 'String' è il nome dell'area geografica inserita dall'utente
+     * @return 
      * @throws java.rmi.RemoteException
      */
     @Override
@@ -334,6 +334,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
      * @param umidita, tipo 'Int' è il valore dell'umidit� presente nell'aerea
      * @param pressione, tipo 'Int' è il valore della pressione presente nell'aerea
      * @param temperatura, tipo 'Int' è il valore della temperatura presente nell'aerea
+     * @param precipitazioni, tipo 'Int' è il valore della precipitazioni presenti nell'aerea
      * @param alt, tipo 'Int' è il valore dell'altitudine
      * @param mass, tipo 'Int' è il valore della massa
      * @param note, tipo 'String' èuna nota generica sulle condizioni meteo
@@ -428,6 +429,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     /**
          * Metodo  per visualizzare i parametriclimatici dato il 'GeoNameID' della località
          * @param geoNameID, tipo 'String' è l'ID della località
+         * @return 
          * @throws java.rmi.RemoteException
          */  
     @Override
@@ -481,6 +483,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
          * Metodo  per recuperare l'Utente e quindi eseguire il login dato username e password
          * @param username, tipo 'String' è lo username dell'utente
          * @param password, tipo 'String' è la password dell'utente
+         * @return 
          * @throws java.rmi.RemoteException
          */  
     @Override
@@ -513,6 +516,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     
      /**
          * Metodo  per recuperare i centri di monitoraggio e popolare quindi la DropDown
+         * @return 
          * @throws java.rmi.RemoteException
          */ 
     @Override
@@ -541,8 +545,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
      /**
          * Metodo  per recuperare i centri di monitoraggio dato il codice fiscale dell'utente
          * @param codFisc, tipo 'String' è il codice fiscale dell'utente
+         * @return 
          * @throws java.rmi.RemoteException
-         * @throws java.rmi.SQLException
          */  
     @Override
     public List<String> getCentriMonitoraggio(String codFisc) throws RemoteException {
@@ -588,8 +592,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     /**
          * Metodo  per recuperare l'area di interesse dato il nome del centro
          * @param nomeCentro, tipo 'String' è il nome del centro
+         * @return 
          * @throws java.rmi.RemoteException
-         * @throws java.rmi.SQLException
          */  
     @Override
     public List<String> getAreeInteresse(String nomeCentro) throws RemoteException {

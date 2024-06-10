@@ -25,6 +25,7 @@
 
     <build>
         <plugins>
+            <!-- Plugin per compilare il codice -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -35,6 +36,8 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
+
+            <!-- Plugin per eseguire il codice -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -54,30 +57,13 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.4.3</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <docencoding>${project.build.sourceEncoding}</docencoding>
-                    <charset>${project.build.sourceEncoding}</charset>
-                </configuration>
-            </plugin>
+
+            <!-- Plugin per creare i JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.0</version>
                 <executions>
-                    <!-- Configuration for ClientCM JAR -->
                     <execution>
                         <id>build-client-jar</id>
                         <phase>package</phase>
@@ -93,7 +79,6 @@
                             <classifier>client</classifier>
                         </configuration>
                     </execution>
-                    <!-- Configuration for ServerCM JAR -->
                     <execution>
                         <id>build-server-jar</id>
                         <phase>package</phase>
@@ -111,7 +96,57 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Plugin per creare uber-jar con dipendenze incluse -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <id>shade-client</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>ClimateMonitoring-client</finalName>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.postgresql:postgresql</include>
+                                </includes>
+                            </artifactSet>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>climatemonitoring.ClientCM</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>shade-server</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>ClimateMonitoring-server</finalName>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.postgresql:postgresql</include>
+                                </includes>
+                            </artifactSet>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>climatemonitoring.ServerCM</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
     <name>ClimateMonitoring</name>
 </project>

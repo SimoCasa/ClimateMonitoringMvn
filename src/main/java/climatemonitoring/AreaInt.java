@@ -273,7 +273,6 @@ public class AreaInt extends javax.swing.JDialog {
      * Senza parametri perchè recuperati dalle TextField
      * @throws IOException eccezione per mancanza file, directory errata
      * @throws java.rmi.RemoteException
-     * @throws java.rmi.NotBoundException
      */
     public void inserisciAreaInt() throws IOException{
         try {

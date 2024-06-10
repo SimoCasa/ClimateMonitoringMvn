@@ -3,15 +3,18 @@ ESECUZIONE CORRETTA PROGRAMMA
 =============================
 
 [Windows]:
- - Per eseguire correttamente il programma da ambiente 'Windows' avviare il file .Jar 'ClimateMonitoring.Jar'
- - Assicurarsi che il file si trovi nella Directory principale del progetto 'ClimateMonitoring(...)'
+ - Ricostruire il DB con l'uso del file di backup 'ClimateMonitoringDB.sql' dentro la cartella 'data' e avviarlo *
+ - Per eseguire correttamente il programma da ambiente 'Windows' avviare prima il file .Jar del server: 'ClimateMonitoring-server.Jar'
+ - Successivamente avviare il file .Jar del client: 'ClimateMonitoring-client.Jar'
+ - Assicurarsi che il file si trovi nella Directory 'bin' del progetto 'ClimateMonitoring' 
  - Assicurarsi di avere l'ultima versione di Java
 
 [MacOS]:
- - Prima di eseguire il programma assicurarsi di aver abilitato al 'JavaLauncher' il permesso di accedere a tutte le directory *
- - Per eseguire correttamente il programma da ambiente 'Windows' avviare il file .Jar 'ClimateMonitoring.Jar'
- - Assicurarsi che il file si trovi nella Directory principale del progetto 'ClimateMonitoring(...)'
+ - Ricostruire il DB con l'uso del file di backup 'ClimateMonitoringDB.sql' dentro la cartella 'data' e avviarlo *
+ - Per eseguire correttamente il programma da ambiente 'MacOS' avviare prima il file .Jar del server: 'ClimateMonitoring-server.Jar'
+ - Successivamente avviare il file .Jar del client: 'ClimateMonitoring-client.Jar'
+ - Assicurarsi che il file si trovi nella Directory 'bin' del progetto 'ClimateMonitoring' 
  - Assicurarsi di avere l'ultima versione di Java
 
 
-* Questo perchè MacOS rinnega l'accesso alle Directory a tutte le app non firmate.
+* Usare DB - Postgre, Indirizzo: 'localhost', Porta: '5432', username = 'postgres' e password = 'password' (senza apici)
