@@ -949,7 +949,9 @@ public class ClientCM extends JFrame {
                 registry = LocateRegistry.getRegistry("localhost", 1099);
                 stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
             } catch (RemoteException | NotBoundException ex) {
+                JOptionPane.showMessageDialog(null, "Errore durante la connessione al server: \n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 Logger.getLogger(ClientCM.class.getName()).log(Level.SEVERE, null, ex);
+                System.exit(1);
             }
         });
     }

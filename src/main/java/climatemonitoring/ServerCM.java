@@ -9,8 +9,15 @@ package climatemonitoring;
 /**
  * Richiamo Librerie.
  */
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -20,6 +27,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,8 +39,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 /**
  * @author 753546 Badrous Giorgio William
@@ -41,22 +55,27 @@ import javax.swing.JFrame;
  * @author 755531 Bonacina Davide
  */
 public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
-    private final String DB_URL;
-    private final String DB_USER;
-    private final String DB_PASS;
+    private String DB_URL = null;
+    private String DB_USER = null;
+    private String DB_PASS = null;
     private Connection conn=null;
     private PreparedStatement pstmt=null;
     private ResultSet rs = null;
     private JFrame frame;
+    private JTextField dbUrlField;
+    private JTextField dbUserField;
+    private JTextField dbPassField;
+    private JButton connectButton;
+    private JButton disconnectButton;
     /**
      * Costruttore <strong>base</strong> (senza parametri)
      * @throws java.rmi.RemoteException
      * @throws java.sql.SQLException
      */
     public ServerCM() throws RemoteException, SQLException{
-        DB_URL = "jdbc:postgresql://localhost:5432/ClimateMonitoring";
-        DB_USER = "postgres";
-        DB_PASS = "password";
+        //DB_URL = "jdbc:postgresql://localhost:5432/ClimateMonitoring";
+        //DB_USER = "postgres";
+        //DB_PASS = "password";
     }
      /**
      * Metodo Connessione al DB
@@ -64,8 +83,18 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
      * @throws java.sql.SQLException
      */
     @Override
-    public synchronized void dbConnection() throws RemoteException,SQLException{
-        conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+    public synchronized void dbConnection() throws RemoteException {
+        try {
+            if (conn == null || conn.isClosed()) {
+                conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+                connectButton.setEnabled(false);
+                disconnectButton.setEnabled(true);
+                JOptionPane.showMessageDialog(null, "Connessione avvenuta con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
+                }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Inserisci parametri corretti! ", "Errore!", JOptionPane.ERROR_MESSAGE);
+            throw new RemoteException("Errore durante la connessione al database", ex);
+        }
     }
     /**
      * Metodo disconnessione dal DB
@@ -78,6 +107,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             if (rs != null) rs.close();
             if (pstmt != null) pstmt.close();
             if (conn != null) conn.close();
+            connectButton.setEnabled(true);
+            disconnectButton.setEnabled(false);
         } catch (SQLException e) {
             throw new RemoteException("Database error: " + e.getMessage(), e);
         }
@@ -93,7 +124,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         List<Map<String, String>> results = new LinkedList<>();
         String sql = "SELECT GeoNameID, Name, CountryName, CountryCode FROM CoordinateMonitoraggio WHERE LOWER(Name) LIKE LOWER(?)";
         try {
-            dbConnection();
+            //dbConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, "%" + nome + "%");
             rs = pstmt.executeQuery();
@@ -108,11 +139,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         }  catch (SQLException e) {
             throw new RemoteException("Database error: " + e.getMessage(), e);
         } finally {
-            try {
-                dbDisconnection();
-            } catch (SQLException ex) {
-                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //dbDisconnection();
+
         }
 
         return results;
@@ -130,7 +158,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         List<Map<String, String>> results = new LinkedList<>();
         
         try {
-            dbConnection();
+            //dbConnection();
             // Calcola l'offset modificato
             double offset_mod = offset * 0.01;
 
@@ -164,11 +192,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         } catch (SQLException e) {
             throw new RemoteException("Database error: " + e.getMessage(), e);
         } finally {
-            try {
-                dbDisconnection();
-            } catch (SQLException ex) {
-                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //dbDisconnection();
         }
 
         return results;
@@ -208,7 +232,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         //DATI CORRETTI
         } else {
             try {
-                dbConnection();
+                //dbConnection();
                 // Recupero dell'ID del centro monitoraggio
                 String getCentroIdSql = "SELECT idcentro FROM centromonitoraggio WHERE nome = ?";
                 pstmt = conn.prepareStatement(getCentroIdSql);
@@ -304,7 +328,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             throw new RemoteException("Non hai inserito:" + errorMsg.toString());
         } else {
             try {
-                dbConnection();
+                //dbConnection();
 
                 // Inserimento del centro di monitoraggio nel database
                 String query = "INSERT INTO centromonitoraggio (nome, indirizzo, areainteresse) VALUES (?, ?, ?)";
@@ -318,11 +342,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             } catch (SQLException ex) {
                 throw new RemoteException("Errore durante l'inserimento del centro di monitoraggio nel database: " + ex.getMessage(), ex);
             } finally {
-                try {
-                    dbDisconnection();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                //dbDisconnection();
+
             }
         }
     }
@@ -346,7 +367,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         long GeoID = 0;
 
         try {
-            dbConnection();
+            //dbConnection();
 
             // Retrieve IDCentro
             String sqlCentro = "SELECT idcentro FROM CentroMonitoraggio WHERE nome = ?";
@@ -385,11 +406,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         } catch (SQLException e) {
             throw new RemoteException("Errore durante l'inserimento dei dati nel database: " + e.getMessage(), e);
         } finally {
-            try {
-                dbDisconnection();
-            } catch (SQLException ex) {
-                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //dbDisconnection();
         }
     }
      /**
@@ -405,7 +422,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     public synchronized void inserisciAreaDB(String citta, String code, String country, String lat, String lon) throws RemoteException {
         String query = "INSERT INTO coordinatemonitoraggio (name, asciiname, countrycode, countryname, coordinates) VALUES (?, ?, ?, ?, ?)";
         try {
-            dbConnection();
+            //dbConnection();
 
             pstmt = conn.prepareStatement(query);
             pstmt.setString(1, citta);
@@ -419,11 +436,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
             throw new RemoteException("Errore durante l'inserimento dei dati nel database.", ex);
         } finally {
-            try {
-                dbDisconnection();
-            } catch (SQLException ex) {
-                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //dbDisconnection();
+
         }
     }
     /**
@@ -437,7 +451,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         List<Map<String, String>> parametri = new ArrayList<>();
 
         try {
-            dbConnection();
+            //dbConnection();
 
             String query = "SELECT vento, umidita, pressione, temperatura, precipitazione, altitudineghiacciai, massaghiacciai, note FROM ParametriClimatici WHERE GeoNameID = ?";
             pstmt = conn.prepareStatement(query);
@@ -460,24 +474,34 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         } catch (SQLException e) {
             throw new RemoteException("Database error: " + e.getMessage(), e);
         } finally {
-            try {
-                dbDisconnection();
-            } catch (SQLException ex) {
-                System.err.println(ex);
-            }
+            //dbDisconnection();
+
         }
 
         return parametri;
     }
 
     // MAIN
-    public synchronized static void main(String[] args) throws RemoteException, SQLException {
-        ServerCM server = new ServerCM(); 
-        Registry registry = LocateRegistry.createRegistry(1099);
-        registry.rebind("ClimateMonitoring", server);
+    public synchronized static void main(String[] args){
+        ServerCM server = null; 
+        try {
+            server = new ServerCM();
+        } catch (RemoteException | SQLException ex) {
+            Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Errore durante la connessione: \n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
+        Registry registry;
+        try {
+            registry = LocateRegistry.createRegistry(1099);
+            registry.rebind("ClimateMonitoring", server);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Errore durante la connessione: \n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
         System.out.println("Server avviato e registrato nel registry RMI.");
-        ServerCM obj = new ServerCM();
-        obj.initializeGUI();
+        server.initializeGUI();
     }
     /**
          * Metodo  per recuperare l'Utente e quindi eseguire il login dato username e password
@@ -491,7 +515,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         String sql = "SELECT nome, cognome, codfisc FROM operatori WHERE userid = ? AND password = ?";
         List<String> userInfo = new ArrayList<>();
         try {
-            dbConnection();
+            //dbConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, username);
             pstmt.setString(2, password);
@@ -505,11 +529,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         } catch (SQLException e) {
             throw new RemoteException("Database error: " + e.getMessage(), e);
         } finally {
-            try {
-                dbDisconnection();
-            } catch (SQLException ex) {
-                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //dbDisconnection();
+
         }
         return userInfo;
     }
@@ -524,7 +545,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         List<String> res = new ArrayList<>();
         String sql = "SELECT nome FROM centromonitoraggio";
         try {
-            dbConnection();
+            //dbConnection();
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -534,11 +555,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         } catch (SQLException e) {
             throw new RemoteException("Database error: " + e.getMessage(), e);
         } finally {
-            try {
-                dbDisconnection();
-            } catch (SQLException ex) {
-                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //dbDisconnection();
+
         }
         return res;
     }
@@ -552,8 +570,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     public List<String> getCentriMonitoraggio(String codFisc) throws RemoteException {
         List<String> centri = new ArrayList<>();
         try {
-            dbConnection();
-
+            //dbConnection();
             String queryOperatore = "SELECT c.areainteresse FROM operatori o JOIN rapporti r ON o.codFisc = r.codFisc AND o.email=r.email JOIN centromonitoraggio c ON r.idCentro = c.idcentro WHERE o.codFisc = ?";
             PreparedStatement stmtOperatore = conn.prepareStatement(queryOperatore);
             stmtOperatore.setString(1, codFisc);
@@ -571,6 +588,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
 
                     for (String area : IdArea) {
                         if (Arrays.asList(areeCentro).contains(area)) {
+                            System.out.println(nomeCentro);
                             centri.add(nomeCentro);
                             break;
                         }
@@ -580,11 +598,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         } catch (SQLException e) {
             throw new RemoteException("Errore durante il recupero dei centri di monitoraggio", e);
         } finally {
-            try {
-                dbDisconnection();
-            } catch (SQLException ex) {
-                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //dbDisconnection();
+
         }
 
         return centri;
@@ -599,7 +614,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     public List<String> getAreeInteresse(String nomeCentro) throws RemoteException {
         List<String> aree = new ArrayList<>();
         try {
-            dbConnection();
+            //dbConnection();
 
             String query = "SELECT areaInteresse FROM CentroMonitoraggio WHERE nome = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
@@ -613,11 +628,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         } catch (SQLException e) {
             throw new RemoteException("Errore durante il recupero delle aree di interesse", e);
         } finally {
-            try {
-                dbDisconnection();
-            } catch (SQLException ex) {
-                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //dbDisconnection();
+
         }
 
         return aree;
@@ -644,25 +656,123 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     
     /**
      * Initializes the GUI.
-     */
-    public void initializeGUI() {
-        frame = new JFrame("Server Control Panel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 100);
-        frame.setLayout(new FlowLayout());
+     */    
+    private void initializeGUI() {
+        JFrame tryFrame = new JFrame("Server ClimateMonitoring");
+        tryFrame.setSize(500, 200);
+        tryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        tryFrame.setLocationRelativeTo(null);
 
-        JButton disconnectButton = new JButton("Disconnessione");
-        disconnectButton.addActionListener((ActionEvent e) -> {
+        // Creazione dei componenti dell'interfaccia
+        JLabel dbUrlLabel = new JLabel("Database URL:");
+        dbUrlField = new JTextField("jdbc:postgresql://localhost:5432/ClimateMonitoring", 50);
+        dbUrlField.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                dbUrlField.selectAll();
+            }
+        });
+
+        JLabel dbUserLabel = new JLabel("Username:");
+        dbUserField = new JTextField("postgres", 30);
+        dbUserField.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                dbUserField.selectAll();
+            }
+        });
+
+        JLabel dbPassLabel = new JLabel("Password:");
+        dbPassField = new JPasswordField("password", 30);
+        dbPassField.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                dbPassField.selectAll();
+            }
+        });
+
+        connectButton = new JButton("Connettiti");
+        connectButton.setBackground(Color.GREEN);
+        disconnectButton = new JButton("Disconnettiti");
+        disconnectButton.setBackground(Color.RED);
+        disconnectButton.setEnabled(false);
+
+        connectButton.addActionListener((ActionEvent e) -> {
+            DB_URL = dbUrlField.getText();
+            DB_USER = dbUserField.getText();
+            DB_PASS = dbPassField.getText();
             try {
-                dbDisconnection();
-                frame.dispose();
-                System.exit(0); 
-            } catch (RemoteException | SQLException ex) {
+                //PROVA DI CONNESSIONE
+                dbConnection();
+            } catch (RemoteException ex) {
                 Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 
-        frame.add(disconnectButton);
-        frame.setVisible(true);
+        disconnectButton.addActionListener((ActionEvent e) -> {
+            try {
+                dbDisconnection();
+                JOptionPane.showMessageDialog(null, "Disconnessione avvenuta con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
+            } catch (RemoteException | SQLException ex) {
+                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        /*
+        // Layout dell'interfaccia
+        tryFrame.setLayout(new GridLayout(4, 2));
+
+        tryFrame.add(dbUrlLabel);
+        tryFrame.add(dbUrlField);
+        tryFrame.add(dbUserLabel);
+        tryFrame.add(dbUserField);
+        tryFrame.add(dbPassLabel);
+        tryFrame.add(dbPassField);
+        tryFrame.add(connectButton);
+        tryFrame.add(disconnectButton);
+        */
+        // Layout dell'interfaccia usando GridBagLayout
+        tryFrame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.insets = new Insets(5, 5, 5, 5); // Margini tra i componenti
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Allarga i componenti orizzontalmente
+
+        // Prima colonna (etichette)
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        tryFrame.add(dbUrlLabel, gbc);
+
+        gbc.gridy = 1;
+        tryFrame.add(dbUserLabel, gbc);
+
+        gbc.gridy = 2;
+        tryFrame.add(dbPassLabel, gbc);
+
+        // Seconda colonna (campi di testo)
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2; // Estende i campi di testo su due colonne
+        gbc.weightx = 1.0; // Assegna spazio extra orizzontale
+        tryFrame.add(dbUrlField, gbc);
+
+        gbc.gridy = 1;
+        tryFrame.add(dbUserField, gbc);
+
+        gbc.gridy = 2;
+        tryFrame.add(dbPassField, gbc);
+
+        // Terza colonna (pulsanti)
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1; // Ripristina la larghezza del componente a una colonna
+        gbc.weightx = 0.5; // Assegna spazio extra orizzontale ai pulsanti
+        gbc.anchor = GridBagConstraints.CENTER; // Centra i pulsanti orizzontalmente
+        tryFrame.add(connectButton, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        
+        tryFrame.add(disconnectButton, gbc);
+        tryFrame.setVisible(true);
     }
 }

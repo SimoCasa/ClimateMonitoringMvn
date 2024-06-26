@@ -349,22 +349,28 @@ public final class Parametri extends JDialog {
         } else {
             String nomeCentro = centriDrop.getSelectedItem().toString();
             String nomeArea = areaDrop.getSelectedItem().toString();
-            String vento = ventoField.getText();
-            String umidita = umiditaField.getText();
-            String pressione = pressioneField.getText();
-            String temperatura = temperaturaField.getText();
-            String precipitazioni = precipitazioniField.getText();
-            String alt = altField.getText();
-            String mass = massField.getText();
+            //TRASFORMO IN INTERI
+            int vento = 0,umidita = 0,pressione = 0,temperatura = 0,precipitazioni = 0,alt = 0,mass = 0;
+            try{
+                vento = Integer.parseInt(ventoField.getText());
+                umidita = Integer.parseInt(umiditaField.getText());
+                pressione = Integer.parseInt(pressioneField.getText());
+                temperatura = Integer.parseInt(temperaturaField.getText());
+                precipitazioni = Integer.parseInt(precipitazioniField.getText());
+                alt = Integer.parseInt(altField.getText());
+                mass = Integer.parseInt(massField.getText());
+            }catch(NumberFormatException e){check=false;JOptionPane.showMessageDialog(null, "Inserisci coordinate corrette! ","Errore!", JOptionPane.ERROR_MESSAGE);}
             String note = noteArea.getText();
 
             try {
-                stub.inserisciParametriClimatici(nomeCentro, nomeArea, Integer.parseInt(vento), Integer.parseInt(umidita), Integer.parseInt(pressione), Integer.parseInt(temperatura), Integer.parseInt(precipitazioni), Integer.parseInt(alt), Integer.parseInt(mass), note);
+                if(check){
+                    stub.inserisciParametriClimatici(nomeCentro, nomeArea, calcolaScoreVento(vento), calcolaScoreUmidita(umidita), calcolaScorePressione(pressione), calcolaScoreTemperatura(temperatura), calcolaScorePrecipitazioni(precipitazioni), calcolaScoreAltitudineGhiacciai(alt), calcolaScoreMassaGhiacciai(mass), note);
+                    JOptionPane.showMessageDialog(null, "Inserimento effettuato con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+                }
             } catch (RemoteException ex) {
                 Logger.getLogger(Parametri.class.getName()).log(Level.SEVERE, null, ex);
             }
-            JOptionPane.showMessageDialog(null, "Inserimento effettuato con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
-            dispose();
         }
     }
 
@@ -574,6 +580,7 @@ public final class Parametri extends JDialog {
             centriDrop.addItem(""); // Aggiunge un elemento vuoto come prima opzione
             for (String centro : centri) {
                 centriDrop.addItem(centro);
+                //System.out.println(centro);
             }
 
             centriDrop.addActionListener((ActionEvent e) -> {
@@ -591,6 +598,7 @@ public final class Parametri extends JDialog {
                             areaDrop.setEnabled(true);
                         } catch (RemoteException ex) {
                             JOptionPane.showMessageDialog(null, "Errore durante il recupero delle aree di interesse", "Errore!", JOptionPane.ERROR_MESSAGE);
+                            this.dispose();
                         }
                     }
                 } else {
@@ -606,6 +614,7 @@ public final class Parametri extends JDialog {
 
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null, "Errore durante il recupero dei centri di monitoraggio", "Errore!", JOptionPane.ERROR_MESSAGE);
+            dispose();
         }
     }
     /**

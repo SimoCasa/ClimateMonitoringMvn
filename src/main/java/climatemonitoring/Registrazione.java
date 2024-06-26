@@ -365,5 +365,4 @@ public final class Registrazione extends JDialog {
     private javax.swing.JPasswordField password;
     private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
-
 }

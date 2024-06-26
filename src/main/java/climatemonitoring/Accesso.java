@@ -393,13 +393,6 @@ public class Accesso extends javax.swing.JDialog {
         } catch (RemoteException e) {
             // Gestisci l'eccezione RMI
             JOptionPane.showMessageDialog(null, "Errore di connessione al server!", "Errore!", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            try {
-                // Chiudi la connessione al server RMI
-                stub.dbDisconnection();
-            } catch (SQLException ex) {
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 
