@@ -28,6 +28,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -80,7 +81,6 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
      /**
      * Metodo Connessione al DB
      * @throws java.rmi.RemoteException
-     * @throws java.sql.SQLException
      */
     @Override
     public synchronized void dbConnection() throws RemoteException {
@@ -362,7 +362,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
      * @throws java.rmi.RemoteException
      */  
     @Override
-    public synchronized void inserisciParametriClimatici(String nomeCentro, String nomeArea, int vento, int umidita, int pressione, int temperatura, int precipitazioni, int alt, int mass, String note) throws RemoteException {
+    public synchronized void inserisciParametriClimatici(String nomeCentro, String nomeArea, int vento, int umidita, int pressione, int temperatura, int precipitazioni, int alt, int mass, String noteVento, Timestamp data, String noteUmidita, String notePressione, String noteTemperatura, String notePrecipitazioni, String noteAltitudineGhiacciai, String noteMassaGhiacciai) throws RemoteException {
         int IDCentro = 0;
         long GeoID = 0;
 
@@ -388,7 +388,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             }
 
             // Insert climatic parameters
-            String sqlInsert = "INSERT INTO ParametriClimatici (GeonameID, IDCentro, Vento, Umidita, Pressione, Temperatura, Precipitazione, Altitudineghiacciai, Massaghiacciai, Note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sqlInsert = "INSERT INTO ParametriClimatici (GeonameID, IDCentro, Vento, Umidita, Pressione, Temperatura, Precipitazione, Altitudineghiacciai, Massaghiacciai, noteVento, data, noteUmidita, notePressione, noteTemperatura, notePrecipitazioni, noteAltitudineGhiacciai, noteMassaGhiacciai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             pstmt = conn.prepareStatement(sqlInsert);
             pstmt.setLong(1, GeoID);
             pstmt.setInt(2, IDCentro);
@@ -399,11 +399,21 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             pstmt.setInt(7, precipitazioni);
             pstmt.setInt(8, alt);
             pstmt.setInt(9, mass);
-            pstmt.setString(10, note.isEmpty() ? "Nessun commento disponibile!" : note);
-
+            pstmt.setString(10, noteVento.isEmpty() ? null : noteVento);
+            pstmt.setTimestamp(11, data);
+            pstmt.setString(12, noteUmidita.isEmpty() ? null : noteUmidita);
+            pstmt.setString(13, notePressione.isEmpty() ? null : notePressione);
+            pstmt.setString(14, noteTemperatura.isEmpty() ? null : noteTemperatura);
+            pstmt.setString(15, notePrecipitazioni.isEmpty() ? null : notePrecipitazioni);
+            pstmt.setString(16, noteAltitudineGhiacciai.isEmpty() ? null : noteAltitudineGhiacciai);
+            pstmt.setString(17, noteMassaGhiacciai.isEmpty() ? null : noteMassaGhiacciai);
+            
+            System.out.println("Inserimento effettuato con successo!\n"+noteVento);
+            
             pstmt.executeUpdate();
-            System.out.println("Inserimento effettuato con successo!");
+            
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Errore durante l'inserimento dei dati nel database:\n"+ e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             throw new RemoteException("Errore durante l'inserimento dei dati nel database: " + e.getMessage(), e);
         } finally {
             //dbDisconnection();

@@ -12,6 +12,7 @@ package climatemonitoring;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -113,10 +114,17 @@ public interface ClimateInterface extends Remote {
      * @param precipitazioni Il valore delle precipitazioni.
      * @param alt L'altitudine.
      * @param mass La massa.
-     * @param note Eventuali note aggiuntive.
+     * @param noteVento
+     * @param data
+     * @param noteUmidita
+     * @param notePressione
+     * @param noteTemperatura
+     * @param notePrecipitazioni
+     * @param noteAltitudineGhiacciai
+     * @param noteMassaGhiacciai
      * @throws RemoteException Se si verifica un errore di comunicazione RMI.
      */
-    void inserisciParametriClimatici(String nomeCentro, String nomeArea, int vento, int umidita, int pressione, int temperatura, int precipitazioni, int alt, int mass, String note) throws RemoteException;
+    void inserisciParametriClimatici(String nomeCentro, String nomeArea, int vento, int umidita, int pressione, int temperatura, int precipitazioni, int alt, int mass, String noteVento, Timestamp data, String noteUmidita, String notePressione, String noteTemperatura, String notePrecipitazioni, String noteAltitudineGhiacciai, String noteMassaGhiacciai) throws RemoteException;
 
     /**
      * Inserisce una nuova area di interesse nel database.
