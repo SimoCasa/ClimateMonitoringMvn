@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -78,7 +80,7 @@ public final class AreaParametri extends javax.swing.JDialog {
         /**
          * 'This' per puntare al riferimento di una metodo presente nella classe corrente (setto titolo)
          */
-        this.setTitle("Accedi");
+        this.setTitle("Parametri Area");
         /**
          * Metodo base di Netbeans (Swing designer, parte grafica) per inizializzare il componente
          */
@@ -136,11 +138,11 @@ public final class AreaParametri extends javax.swing.JDialog {
         cityLabel = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        paramTable1 = new javax.swing.JTable();
+        modaTable = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
-        paramTable2 = new javax.swing.JTable();
+        medianaTable = new javax.swing.JTable();
         jScrollPane4 = new javax.swing.JScrollPane();
-        paramTable3 = new javax.swing.JTable();
+        mediaTable = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
 
@@ -171,22 +173,12 @@ public final class AreaParametri extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
-        TableColumnModel columnModel = paramTable.getColumnModel();
-
-        // Rendere le colonne non ridimensionabili
-        for (int i = 0; i < columnModel.getColumnCount(); i++) {
-            columnModel.getColumn(i).setResizable(false);
-        }
-
-        // Centrare orizzontalmente il testo nelle celle
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-
-        for (int i = 0; i < paramTable.getColumnCount(); i++) {
-            paramTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-        // Bloccare lo spostamento delle colonne
-        paramTable.getTableHeader().setReorderingAllowed(false);
+        JTableHeader header;
+        header = paramTable.getTableHeader();
+        // Crea un renderer personalizzato per centrare i titoli delle colonne
+        DefaultTableCellRenderer renderer;
+        renderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
         paramTable.setEnabled(false);
         paramTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -208,7 +200,7 @@ public final class AreaParametri extends javax.swing.JDialog {
 
         jLabel2.setText("Media:");
 
-        paramTable1.setModel(new javax.swing.table.DefaultTableModel(
+        modaTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -231,15 +223,19 @@ public final class AreaParametri extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
-        paramTable1.setEnabled(false);
-        paramTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+        modaTable.setEnabled(false);
+        modaTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                paramTable1MouseClicked(evt);
+                modaTableMouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(paramTable1);
+        jScrollPane2.setViewportView(modaTable);
+        header = modaTable.getTableHeader();
+        // Crea un renderer personalizzato per centrare i titoli delle colonne
+        renderer= (DefaultTableCellRenderer) header.getDefaultRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        paramTable2.setModel(new javax.swing.table.DefaultTableModel(
+        medianaTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -262,15 +258,19 @@ public final class AreaParametri extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
-        paramTable2.setEnabled(false);
-        paramTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+        medianaTable.setEnabled(false);
+        medianaTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                paramTable2MouseClicked(evt);
+                medianaTableMouseClicked(evt);
             }
         });
-        jScrollPane3.setViewportView(paramTable2);
+        header = medianaTable.getTableHeader();
+        // Crea un renderer personalizzato per centrare i titoli delle colonne
+        renderer= (DefaultTableCellRenderer) header.getDefaultRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+        jScrollPane3.setViewportView(medianaTable);
 
-        paramTable3.setModel(new javax.swing.table.DefaultTableModel(
+        mediaTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -293,13 +293,60 @@ public final class AreaParametri extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
-        paramTable3.setEnabled(false);
-        paramTable3.addMouseListener(new java.awt.event.MouseAdapter() {
+        mediaTable.setEnabled(false);
+        mediaTable.setFocusable(false);
+        mediaTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                paramTable3MouseClicked(evt);
+                mediaTableMouseClicked(evt);
             }
         });
-        jScrollPane4.setViewportView(paramTable3);
+        jScrollPane4.setViewportView(mediaTable);
+        TableColumnModel columnModel = paramTable.getColumnModel();
+        TableColumnModel columnModelMedia = mediaTable.getColumnModel();
+        TableColumnModel columnModelModa = modaTable.getColumnModel();
+        TableColumnModel columnModelMediana = medianaTable.getColumnModel();
+
+        // Rendere le colonne non ridimensionabili
+        for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            columnModel.getColumn(i).setResizable(false);
+        }
+        for (int i = 0; i < columnModelMedia.getColumnCount(); i++) {
+            columnModelMedia.getColumn(i).setResizable(false);
+        }
+        for (int i = 0; i < columnModelModa.getColumnCount(); i++) {
+            columnModelModa.getColumn(i).setResizable(false);
+        }
+        for (int i = 0; i < columnModelMediana.getColumnCount(); i++) {
+            columnModelMediana.getColumn(i).setResizable(false);
+        }
+
+        // Centrare orizzontalmente il testo nelle celle
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (int i = 0; i < paramTable.getColumnCount(); i++) {
+            paramTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        for (int i = 0; i < mediaTable.getColumnCount(); i++) {
+            mediaTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        for (int i = 0; i < modaTable.getColumnCount(); i++) {
+            modaTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        for (int i = 0; i < medianaTable.getColumnCount(); i++) {
+            medianaTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        // Bloccare lo spostamento delle colonne
+        paramTable.getTableHeader().setReorderingAllowed(false);
+        mediaTable.getTableHeader().setReorderingAllowed(false);
+        modaTable.getTableHeader().setReorderingAllowed(false);
+        medianaTable.getTableHeader().setReorderingAllowed(false);
+
+        header = mediaTable.getTableHeader();
+        // Crea un renderer personalizzato per centrare i titoli delle colonne
+        renderer= (DefaultTableCellRenderer) header.getDefaultRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
         jLabel3.setText("Moda:");
 
@@ -309,9 +356,10 @@ public final class AreaParametri extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane3)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(39, 39, 39)
@@ -320,16 +368,7 @@ public final class AreaParametri extends javax.swing.JDialog {
                                 .addComponent(cityLabel))
                             .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 912, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
                                 .addComponent(jLabel2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 912, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 912, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(jLabel3))
@@ -337,10 +376,15 @@ public final class AreaParametri extends javax.swing.JDialog {
                                 .addContainerGap()
                                 .addComponent(jLabel4)))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 912, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane4)
+                            .addComponent(jScrollPane2)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1025, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -377,17 +421,17 @@ public final class AreaParametri extends javax.swing.JDialog {
                 }
     }//GEN-LAST:event_paramTableMouseClicked
 
-    private void paramTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_paramTable1MouseClicked
+    private void modaTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_modaTableMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_paramTable1MouseClicked
+    }//GEN-LAST:event_modaTableMouseClicked
 
-    private void paramTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_paramTable2MouseClicked
+    private void medianaTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_medianaTableMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_paramTable2MouseClicked
+    }//GEN-LAST:event_medianaTableMouseClicked
 
-    private void paramTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_paramTable3MouseClicked
+    private void mediaTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mediaTableMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_paramTable3MouseClicked
+    }//GEN-LAST:event_mediaTableMouseClicked
 
     /**
      * @param args the command line arguments
@@ -436,6 +480,7 @@ public final class AreaParametri extends javax.swing.JDialog {
             // Se ci sono dati, popola la tabella
             for (Map<String, String> riga : parametriClimatici) {
                 addRowTable(new String[]{
+                    riga.get("data"),
                     riga.get("vento"),
                     riga.get("umidita"),
                     riga.get("pressione"),
@@ -443,9 +488,18 @@ public final class AreaParametri extends javax.swing.JDialog {
                     riga.get("precipitazione"),
                     riga.get("altitudineghiacciai"),
                     riga.get("massaghiacciai")
-                });
-                noteList.add(riga.get("note"));
+                },paramTable);
+                noteList.add(riga.get("notevento"));
+                noteList.add(riga.get("noteumidita"));
+                noteList.add(riga.get("notepressione"));
+                noteList.add(riga.get("notetemperatura"));
+                noteList.add(riga.get("noteprecipitazioni"));
+                noteList.add(riga.get("notealtitudineghiacciai"));
+                noteList.add(riga.get("notemassaghiacciai"));
             }
+            visualizzaMedia();
+            visualizzaModa();
+            visualizzaMediana();
         } else {
             // Altrimenti, mostra un messaggio di avvertimento
             JOptionPane.showMessageDialog(null, "Non sono disponibili parametri climatici per la seguente città!", "Avvertenza!!", JOptionPane.WARNING_MESSAGE);
@@ -453,13 +507,62 @@ public final class AreaParametri extends javax.swing.JDialog {
             dispose();
         }
     }
+    
+    private void visualizzaMedia() throws RemoteException{
+        // Chiamata remota al server per ottenere i parametri climatici
+        List<Map<String, String>> parametriClimatici = stub.visualizzaMediaParametriDB(Long.toString(geo));
+        for (Map<String, String> riga : parametriClimatici) {
+            addRowTable(new String[]{
+                riga.get("vento"),
+                riga.get("umidita"),
+                riga.get("pressione"),
+                riga.get("temperatura"),
+                riga.get("precipitazione"),
+                riga.get("altitudineghiacciai"),
+                riga.get("massaghiacciai")
+            },mediaTable);
+        }
+    }
+    
+    private void visualizzaModa() throws RemoteException{
+        // Chiamata remota al server per ottenere i parametri climatici
+        List<Map<String, String>> parametriClimatici = stub.visualizzaModaParametriDB(Long.toString(geo));
+        for (Map<String, String> riga : parametriClimatici) {
+            addRowTable(new String[]{
+                riga.get("vento"),
+                riga.get("umidita"),
+                riga.get("pressione"),
+                riga.get("temperatura"),
+                riga.get("precipitazione"),
+                riga.get("altitudineghiacciai"),
+                riga.get("massaghiacciai")
+            },modaTable);
+        }
+    }
+    
+    private void visualizzaMediana() throws RemoteException{
+        // Chiamata remota al server per ottenere i parametri climatici
+        List<Map<String, String>> parametriClimatici = stub.visualizzaMedianaParametriDB(Long.toString(geo));
+        for (Map<String, String> riga : parametriClimatici) {
+            addRowTable(new String[]{
+                riga.get("vento"),
+                riga.get("umidita"),
+                riga.get("pressione"),
+                riga.get("temperatura"),
+                riga.get("precipitazione"),
+                riga.get("altitudineghiacciai"),
+                riga.get("massaghiacciai")
+            },medianaTable);
+        }
+    }
     /**
      * Metodo aggiunta righe alla tabella dei risultati della ricerca
      * @param dataRow string, array di Stringhe passate dall'estrazione da file
-     * Nessuna eccezione gestita
+     * Nessuna eccezione ges
+     * @param customTable
      */
-    public static void addRowTable(String[] dataRow){
-        model = (DefaultTableModel)paramTable.getModel();
+    public static void addRowTable(String[] dataRow, JTable customTable){
+        model = (DefaultTableModel)customTable.getModel();
         model.addRow(dataRow);
     }
     /**
@@ -467,7 +570,7 @@ public final class AreaParametri extends javax.swing.JDialog {
      * Senza parametri perché recuperati dalle TextField
      * Nessuna eccezione gestita
      */
-    public static void clearTable(){
+    public static void clearTable(JTable customTable){
         model = (DefaultTableModel)paramTable.getModel();
         model.setRowCount(0);
     }
@@ -515,10 +618,10 @@ public final class AreaParametri extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private static javax.swing.JTable mediaTable;
+    private static javax.swing.JTable medianaTable;
+    private static javax.swing.JTable modaTable;
     private static javax.swing.JTable paramTable;
-    private static javax.swing.JTable paramTable1;
-    private static javax.swing.JTable paramTable2;
-    private static javax.swing.JTable paramTable3;
     private javax.swing.JLabel titolo;
     // End of variables declaration//GEN-END:variables
     private static DefaultTableModel model;

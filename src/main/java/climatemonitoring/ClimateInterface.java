@@ -164,4 +164,10 @@ public interface ClimateInterface extends Remote {
      * @throws RemoteException Se si verifica un errore di comunicazione RMI.
      */
     List<String> getAreeInteresse(String nomeCentro) throws RemoteException;
+    
+    List<Map<String, String>> visualizzaMediaParametriDB(String geoNameID) throws RemoteException;
+    
+    List<Map<String, String>> visualizzaModaParametriDB(String geoNameID) throws RemoteException;
+    
+    List<Map<String, String>> visualizzaMedianaParametriDB(String geoNameID) throws RemoteException;
 }

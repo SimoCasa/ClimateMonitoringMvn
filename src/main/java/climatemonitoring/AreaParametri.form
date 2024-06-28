@@ -30,9 +30,10 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="jScrollPane3" alignment="1" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
@@ -42,19 +43,7 @@
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane1" min="-2" pref="912" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane2" min="-2" pref="912" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane3" min="-2" pref="912" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
@@ -67,12 +56,19 @@
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="jScrollPane4" min="-2" pref="912" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jScrollPane4" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="jScrollPane1" min="-2" pref="1025" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -113,7 +109,7 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="paramTable">
           <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor" postCode="TableColumnModel columnModel = paramTable.getColumnModel();&#xa;&#xa;// Rendere le colonne non ridimensionabili&#xa;for (int i = 0; i &lt; columnModel.getColumnCount(); i++) {&#xa;    columnModel.getColumn(i).setResizable(false);&#xa;}&#xa;&#xa;// Centrare orizzontalmente il testo nelle celle&#xa;DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();&#xa;centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);&#xa;&#xa;for (int i = 0; i &lt; paramTable.getColumnCount(); i++) {&#xa;    paramTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);&#xa;}&#xa;// Bloccare lo spostamento delle colonne&#xa;paramTable.getTableHeader().setReorderingAllowed(false);">
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor" postCode="JTableHeader header;&#xa;header = paramTable.getTableHeader();&#xa;// Crea un renderer personalizzato per centrare i titoli delle colonne&#xa;DefaultTableCellRenderer renderer;&#xa;renderer = (DefaultTableCellRenderer) header.getDefaultRenderer();&#xa;renderer.setHorizontalAlignment(SwingConstants.CENTER);">
               <Table columnCount="8" rowCount="0">
                 <Column editable="false" title="Data" type="java.lang.Double"/>
                 <Column editable="false" title="Vento" type="java.lang.Integer"/>
@@ -220,7 +216,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="paramTable1">
+        <Component class="javax.swing.JTable" name="modaTable">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="7" rowCount="0">
@@ -233,7 +229,7 @@
                 <Column editable="false" title="Massa Ghiacciai" type="java.lang.Integer"/>
               </Table>
             </Property>
-            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" preCode="header = modaTable.getTableHeader();&#xa;// Crea un renderer personalizzato per centrare i titoli delle colonne&#xa;renderer= (DefaultTableCellRenderer) header.getDefaultRenderer();&#xa;renderer.setHorizontalAlignment(SwingConstants.CENTER);">
               <TableColumnModel selectionModel="0">
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                   <Title/>
@@ -278,7 +274,7 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="paramTable1MouseClicked"/>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="modaTableMouseClicked"/>
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
@@ -293,7 +289,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="paramTable2">
+        <Component class="javax.swing.JTable" name="medianaTable">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="7" rowCount="0">
@@ -351,9 +347,10 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="paramTable2MouseClicked"/>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="medianaTableMouseClicked"/>
           </Events>
           <AuxValues>
+            <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="header = medianaTable.getTableHeader();&#xa;// Crea un renderer personalizzato per centrare i titoli delle colonne&#xa;renderer= (DefaultTableCellRenderer) header.getDefaultRenderer();&#xa;renderer.setHorizontalAlignment(SwingConstants.CENTER);"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
           </AuxValues>
         </Component>
@@ -366,7 +363,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="paramTable3">
+        <Component class="javax.swing.JTable" name="mediaTable">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="7" rowCount="0">
@@ -379,7 +376,7 @@
                 <Column editable="false" title="Massa Ghiacciai" type="java.lang.Integer"/>
               </Table>
             </Property>
-            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" preCode="TableColumnModel columnModel = paramTable.getColumnModel();&#xa;TableColumnModel columnModelMedia = mediaTable.getColumnModel();&#xa;TableColumnModel columnModelModa = modaTable.getColumnModel();&#xa;TableColumnModel columnModelMediana = medianaTable.getColumnModel();&#xa;&#xa;// Rendere le colonne non ridimensionabili&#xa;for (int i = 0; i &lt; columnModel.getColumnCount(); i++) {&#xa;    columnModel.getColumn(i).setResizable(false);&#xa;}&#xa;for (int i = 0; i &lt; columnModelMedia.getColumnCount(); i++) {&#xa;    columnModelMedia.getColumn(i).setResizable(false);&#xa;}&#xa;for (int i = 0; i &lt; columnModelModa.getColumnCount(); i++) {&#xa;    columnModelModa.getColumn(i).setResizable(false);&#xa;}&#xa;for (int i = 0; i &lt; columnModelMediana.getColumnCount(); i++) {&#xa;    columnModelMediana.getColumn(i).setResizable(false);&#xa;}&#xa;&#xa;// Centrare orizzontalmente il testo nelle celle&#xa;DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();&#xa;centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);&#xa;&#xa;for (int i = 0; i &lt; paramTable.getColumnCount(); i++) {&#xa;    paramTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);&#xa;}&#xa;for (int i = 0; i &lt; mediaTable.getColumnCount(); i++) {&#xa;    mediaTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);&#xa;}&#xa;for (int i = 0; i &lt; modaTable.getColumnCount(); i++) {&#xa;    modaTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);&#xa;}&#xa;for (int i = 0; i &lt; medianaTable.getColumnCount(); i++) {&#xa;    medianaTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);&#xa;}&#xa;&#xa;// Bloccare lo spostamento delle colonne&#xa;paramTable.getTableHeader().setReorderingAllowed(false);&#xa;mediaTable.getTableHeader().setReorderingAllowed(false);&#xa;modaTable.getTableHeader().setReorderingAllowed(false);&#xa;medianaTable.getTableHeader().setReorderingAllowed(false);&#xa;&#xa;header = mediaTable.getTableHeader();&#xa;// Crea un renderer personalizzato per centrare i titoli delle colonne&#xa;renderer= (DefaultTableCellRenderer) header.getDefaultRenderer();&#xa;renderer.setHorizontalAlignment(SwingConstants.CENTER);">
               <TableColumnModel selectionModel="0">
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                   <Title/>
@@ -419,12 +416,13 @@
               </TableColumnModel>
             </Property>
             <Property name="enabled" type="boolean" value="false"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
               <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="paramTable3MouseClicked"/>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="mediaTableMouseClicked"/>
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>

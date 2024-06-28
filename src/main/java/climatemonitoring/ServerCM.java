@@ -450,47 +450,6 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
 
         }
     }
-    /**
-         * Metodo  per visualizzare i parametriclimatici dato il 'GeoNameID' della località
-         * @param geoNameID, tipo 'String' è l'ID della località
-         * @return 
-         * @throws java.rmi.RemoteException
-         */  
-    @Override
-    public synchronized List<Map<String, String>> visualizzaParametriClimaticiDB(String geoNameID) throws RemoteException {
-        List<Map<String, String>> parametri = new ArrayList<>();
-
-        try {
-            //dbConnection();
-
-            String query = "SELECT vento, umidita, pressione, temperatura, precipitazione, altitudineghiacciai, massaghiacciai, note FROM ParametriClimatici WHERE GeoNameID = ?";
-            pstmt = conn.prepareStatement(query);
-            pstmt.setInt(1, Integer.parseInt(geoNameID));
-
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Map<String, String> parametriMap = new HashMap<>();
-                parametriMap.put("vento", rs.getString("vento"));
-                parametriMap.put("umidita", rs.getString("umidita"));
-                parametriMap.put("pressione", rs.getString("pressione"));
-                parametriMap.put("temperatura", rs.getString("temperatura"));
-                parametriMap.put("precipitazione", rs.getString("precipitazione"));
-                parametriMap.put("altitudineghiacciai", rs.getString("altitudineghiacciai"));
-                parametriMap.put("massaghiacciai", rs.getString("massaghiacciai"));
-                parametriMap.put("note", rs.getString("note"));
-                parametri.add(parametriMap);
-            }
-        } catch (SQLException e) {
-            throw new RemoteException("Database error: " + e.getMessage(), e);
-        } finally {
-            //dbDisconnection();
-
-        }
-
-        return parametri;
-    }
-
     // MAIN
     public synchronized static void main(String[] args){
         ServerCM server = null; 
@@ -727,19 +686,6 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        /*
-        // Layout dell'interfaccia
-        tryFrame.setLayout(new GridLayout(4, 2));
-
-        tryFrame.add(dbUrlLabel);
-        tryFrame.add(dbUrlField);
-        tryFrame.add(dbUserLabel);
-        tryFrame.add(dbUserField);
-        tryFrame.add(dbPassLabel);
-        tryFrame.add(dbPassField);
-        tryFrame.add(connectButton);
-        tryFrame.add(disconnectButton);
-        */
         // Layout dell'interfaccia usando GridBagLayout
         tryFrame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -784,5 +730,163 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         
         tryFrame.add(disconnectButton, gbc);
         tryFrame.setVisible(true);
+    }
+    /**
+         * Metodo  per visualizzare i parametriclimatici dato il 'GeoNameID' della località
+         * @param geoNameID, tipo 'String' è l'ID della località
+         * @return 
+         * @throws java.rmi.RemoteException
+         */  
+    @Override
+    public synchronized List<Map<String, String>> visualizzaParametriClimaticiDB(String geoNameID) throws RemoteException {
+        List<Map<String, String>> parametri = new ArrayList<>();
+
+        try {
+            //dbConnection();
+
+            String query = "SELECT data, vento, umidita, pressione, temperatura, precipitazione, altitudineghiacciai, massaghiacciai, notevento, noteumidita, notepressione, notetemperatura, noteprecipitazioni, notealtitudineghiacciai, notemassaghiacciai FROM ParametriClimatici WHERE GeoNameID = ? ORDER BY data DESC";
+            pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, Integer.parseInt(geoNameID));
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Map<String, String> parametriMap = new HashMap<>();
+                parametriMap.put("data", rs.getString("data"));
+                parametriMap.put("vento", rs.getString("vento"));
+                parametriMap.put("umidita", rs.getString("umidita"));
+                parametriMap.put("pressione", rs.getString("pressione"));
+                parametriMap.put("temperatura", rs.getString("temperatura"));
+                parametriMap.put("precipitazione", rs.getString("precipitazione"));
+                parametriMap.put("altitudineghiacciai", rs.getString("altitudineghiacciai"));
+                parametriMap.put("massaghiacciai", rs.getString("massaghiacciai"));
+                parametriMap.put("notevento", rs.getString("notevento"));
+                parametriMap.put("noteumidita", rs.getString("noteumidita"));
+                parametriMap.put("notepressione", rs.getString("notepressione"));
+                parametriMap.put("notetemperatura", rs.getString("notetemperatura"));
+                parametriMap.put("noteprecipitazioni", rs.getString("noteprecipitazioni"));
+                parametriMap.put("notealtitudineghiacciai", rs.getString("notealtitudineghiacciai"));
+                parametriMap.put("notemassaghiacciai", rs.getString("notemassaghiacciai"));
+                parametri.add(parametriMap);
+            }
+        } catch (SQLException e) {
+            throw new RemoteException("Database error: " + e.getMessage(), e);
+        } finally {
+            //dbDisconnection();
+
+        }
+
+        return parametri;
+    }
+    @Override
+    public synchronized List<Map<String, String>> visualizzaMediaParametriDB(String geoNameID) throws RemoteException {
+        List<Map<String, String>> parametri = new ArrayList<>();
+
+        try {
+            //dbConnection();
+
+            String query = "SELECT AVG(vento) AS avg_vento, AVG(umidita) AS avg_umidita, AVG(pressione) AS avg_pressione, AVG(temperatura) AS avg_temperatura, AVG(precipitazione) AS avg_precipitazione, AVG(altitudineghiacciai) AS avg_altitudineghiacciai, AVG(massaghiacciai) AS avg_massaghiacciai FROM ParametriClimatici WHERE GeoNameID = ?";
+            pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, Integer.parseInt(geoNameID));
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Map<String, String> parametriMap = new HashMap<>();
+                parametriMap.put("vento", rs.getString("avg_vento"));
+                parametriMap.put("umidita", rs.getString("avg_umidita"));
+                parametriMap.put("pressione", rs.getString("avg_pressione"));
+                parametriMap.put("temperatura", rs.getString("avg_temperatura"));
+                parametriMap.put("precipitazione", rs.getString("avg_precipitazione"));
+                parametriMap.put("altitudineghiacciai", rs.getString("avg_altitudineghiacciai"));
+                parametriMap.put("massaghiacciai", rs.getString("avg_massaghiacciai"));
+                parametri.add(parametriMap);
+            }
+        } catch (SQLException e) {
+            throw new RemoteException("Database error: " + e.getMessage(), e);
+        } finally {
+            //dbDisconnection();
+
+        }
+
+        return parametri;
+    }
+    @Override
+    public synchronized List<Map<String, String>> visualizzaModaParametriDB(String geoNameID) throws RemoteException {
+        List<Map<String, String>> parametri = new ArrayList<>();
+
+        try {
+
+             String query = "SELECT " +
+                            "(SELECT vento FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY vento ORDER BY COUNT(*) DESC, vento ASC LIMIT 1) AS moda_vento, " +
+                            "(SELECT umidita FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY umidita ORDER BY COUNT(*) DESC, umidita ASC LIMIT 1) AS moda_umidita, " +
+                            "(SELECT pressione FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY pressione ORDER BY COUNT(*) DESC, pressione ASC LIMIT 1) AS moda_pressione, " +
+                            "(SELECT temperatura FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY temperatura ORDER BY COUNT(*) DESC, temperatura ASC LIMIT 1) AS moda_temperatura, " +
+                            "(SELECT precipitazione FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY precipitazione ORDER BY COUNT(*) DESC, precipitazione ASC LIMIT 1) AS moda_precipitazione, " +
+                            "(SELECT altitudineghiacciai FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY altitudineghiacciai ORDER BY COUNT(*) DESC, altitudineghiacciai ASC LIMIT 1) AS moda_altitudineghiacciai, " +
+                            "(SELECT massaghiacciai FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY massaghiacciai ORDER BY COUNT(*) DESC, massaghiacciai ASC LIMIT 1) AS moda_massaghiacciai";
+
+            pstmt = conn.prepareStatement(query);
+            // Imposta il GeoNameID per ciascuna subquery
+            for (int i = 1; i <= 7; i++) {
+                pstmt.setInt(i, Integer.parseInt(geoNameID));
+            }
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Map<String, String> parametriMap = new HashMap<>();
+                parametriMap.put("vento", rs.getString("moda_vento"));
+                parametriMap.put("umidita", rs.getString("moda_umidita"));
+                parametriMap.put("pressione", rs.getString("moda_pressione"));
+                parametriMap.put("temperatura", rs.getString("moda_temperatura"));
+                parametriMap.put("precipitazione", rs.getString("moda_precipitazione"));
+                parametriMap.put("altitudineghiacciai", rs.getString("moda_altitudineghiacciai"));
+                parametriMap.put("massaghiacciai", rs.getString("moda_massaghiacciai"));
+                parametri.add(parametriMap);
+            }
+        } catch (SQLException e) {
+            throw new RemoteException("Database error: " + e.getMessage(), e);
+        }
+
+        return parametri;
+    }
+    @Override
+    public synchronized List<Map<String, String>> visualizzaMedianaParametriDB(String geoNameID) throws RemoteException {
+        List<Map<String, String>> parametri = new ArrayList<>();
+
+        try {
+            String query = "SELECT "
+                                + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY vento) AS mediana_vento, "
+                                + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY umidita) AS mediana_umidita, "
+                                + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY pressione) AS mediana_pressione, "
+                                + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY temperatura) AS mediana_temperatura, "
+                                + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY precipitazione) AS mediana_precipitazione, "
+                                + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY altitudineghiacciai) AS mediana_altitudineghiacciai, "
+                                + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY massaghiacciai) AS mediana_massaghiacciai "
+                                + "FROM ParametriClimatici "
+                                + "WHERE GeoNameID = ?;";
+
+            pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, Integer.parseInt(geoNameID));
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Map<String, String> parametriMap = new HashMap<>();
+                parametriMap.put("vento", rs.getString("mediana_vento"));
+                parametriMap.put("umidita", rs.getString("mediana_umidita"));
+                parametriMap.put("pressione", rs.getString("mediana_pressione"));
+                parametriMap.put("temperatura", rs.getString("mediana_temperatura"));
+                parametriMap.put("precipitazione", rs.getString("mediana_precipitazione"));
+                parametriMap.put("altitudineghiacciai", rs.getString("mediana_altitudineghiacciai"));
+                parametriMap.put("massaghiacciai", rs.getString("mediana_massaghiacciai"));
+                parametri.add(parametriMap);
+            }
+        } catch (SQLException e) {
+            throw new RemoteException("Database error: " + e.getMessage(), e);
+        }
+
+        return parametri;
     }
 }
