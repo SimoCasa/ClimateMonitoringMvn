@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -56,7 +57,7 @@ public final class AreaParametri extends javax.swing.JDialog {
     /**
      * Variabile per memorizzare le note di ogni riga
      */
-    private List<String> noteList = new ArrayList<>();
+    private List<Map<String, String>> noteList = new ArrayList<>();
     /**
      * Costruttore <strong>base</strong> (senza parametri)
      */
@@ -398,27 +399,69 @@ public final class AreaParametri extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel4)
                 .addGap(8, 8, 8)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void paramTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_paramTableMouseClicked
+        // Verifica che l'evento sia per la tua tabella specifica
+        if (evt.getSource() != paramTable) {
+            return;
+        }
+        
         int row = paramTable.rowAtPoint(evt.getPoint());
-                if (row >= 0 && row < noteList.size()) {
-                    String note = noteList.get(row);
-                    mostraFinestraNote(note);
-                }
+        int col = paramTable.columnAtPoint(evt.getPoint());
+
+        if (row != -1 && col != -1) {
+            // Ottieni il nome della colonna
+            String columnName = paramTable.getColumnName(col);
+            // Mappa di colonne e note corrispondenti
+            Map<String, String> noteMap = noteList.get(row);
+            // Ottieni la nota corrispondente alla colonna selezionata
+            String note = noteMap.get(columnName);
+            // Selezione della nota corretta
+            switch (columnName) {
+                case "Vento":
+                    note = noteMap.get("notevento");
+                    break;
+                case "Umidità":
+                    note = noteMap.get("noteumidita");
+                    break;
+                case "Pressione":
+                    note = noteMap.get("notepressione");
+                    break;
+                case "Temperatura":
+                    note = noteMap.get("notetemperatura");
+                    break;
+                case "Precipitazione":
+                    note = noteMap.get("noteprecipitazione");
+                    break;
+                case "Altitudine Ghiacciai":
+                    note = noteMap.get("notealtitudineghiacciai");
+                    break;
+                case "Massa Ghiacciai":
+                    note = noteMap.get("notemassaghiacciai");
+                    break;
+                default:
+                    note = null;
+                    break;
+            }
+            if(note!=null){
+                // Visualizza la nota in una finestra di dialogo
+                JOptionPane.showMessageDialog(this, note, "Nota", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_paramTableMouseClicked
 
     private void modaTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_modaTableMouseClicked
@@ -432,7 +475,6 @@ public final class AreaParametri extends javax.swing.JDialog {
     private void mediaTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mediaTableMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_mediaTableMouseClicked
-
     /**
      * @param args the command line arguments
      */
@@ -473,7 +515,7 @@ public final class AreaParametri extends javax.swing.JDialog {
      */
     public void visualizzaParametriClimatici() throws RemoteException{
         // Chiamata remota al server per ottenere i parametri climatici
-        List<Map<String, String>> parametriClimatici = stub.visualizzaParametriClimaticiDB(Long.toString(geo));
+        /*List<Map<String, String>> parametriClimatici = stub.visualizzaParametriClimaticiDB(Long.toString(geo));
         boolean hasData = !parametriClimatici.isEmpty();
         if (hasData) {
             ck=true;
@@ -505,6 +547,53 @@ public final class AreaParametri extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null, "Non sono disponibili parametri climatici per la seguente città!", "Avvertenza!!", JOptionPane.WARNING_MESSAGE);
             ck = false;
             dispose();
+        }*/
+        List<Map<String, String>> listaParametri = stub.visualizzaParametriClimaticiDB(Long.toString(geo));
+        model = (DefaultTableModel) paramTable.getModel();
+        model.setRowCount(0);
+        noteList.clear();
+
+        if (listaParametri.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Non sono presenti parametri climatici per l'area selezionata.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            ck = false;
+        } else {
+            for (Map<String, String> parametri : listaParametri) {
+                addRowTable(new String[]{
+                    addAsteriskIfNoteExists(parametri, "data"),
+                    addAsteriskIfNoteExists(parametri, "vento"),
+                    addAsteriskIfNoteExists(parametri, "umidita"),
+                    addAsteriskIfNoteExists(parametri, "pressione"),
+                    addAsteriskIfNoteExists(parametri, "temperatura"),
+                    addAsteriskIfNoteExists(parametri, "precipitazione"),
+                    addAsteriskIfNoteExists(parametri, "altitudineghiacciai"),
+                    addAsteriskIfNoteExists(parametri, "massaghiacciai")
+                },paramTable);
+
+                Map<String, String> noteMap = new HashMap<>();
+                    noteMap.put("notedata", parametri.get("notedata"));
+                    noteMap.put("notevento", parametri.get("notevento"));
+                    noteMap.put("noteumidita", parametri.getOrDefault("noteumidita", "Nessuna nota"));
+                    noteMap.put("notepressione", parametri.getOrDefault("notepressione", "Nessuna nota"));
+                    noteMap.put("notetemperatura", parametri.getOrDefault("notetemperatura", "Nessuna nota"));
+                    noteMap.put("noteprecipitazioni", parametri.getOrDefault("noteprecipitazioni", "Nessuna nota"));
+                    noteMap.put("notealtitudineghiacciai", parametri.getOrDefault("notealtitudineghiacciai", "Nessuna nota"));
+                    noteMap.put("notemassaghiacciai", parametri.getOrDefault("notemassaghiacciai", "Nessuna nota"));
+                    
+                     // Debugging statements
+            System.out.println("Adding notes for data: " + parametri.get("notedata"));
+            System.out.println("Note for vento: " + noteMap.get("notevento"));
+            System.out.println("Note for umidita: " + noteMap.get("noteumidita"));
+            System.out.println("Note for pressione: " + noteMap.get("notepressione"));
+            System.out.println("Note for temperatura: " + noteMap.get("notetemperatura"));
+            System.out.println("Note for precipitazione: " + noteMap.get("noteprecipitazione"));
+            System.out.println("Note for altitudineghiacciai: " + noteMap.get("notealtitudineghiacciai"));
+            System.out.println("Note for massaghiacciai: " + noteMap.get("notemassaghiacciai"));
+                noteList.add(noteMap);
+            }
+            ck=true;
+            visualizzaMedia();
+            visualizzaModa();
+            visualizzaMediana();
         }
     }
     
@@ -605,6 +694,16 @@ public final class AreaParametri extends javax.swing.JDialog {
         } catch (RemoteException | NotBoundException e) {
             System.err.println("Errore impostando il client RMI: " + e.getMessage());
             throw e; // Rilancia l'eccezione per segnalare il problema
+        }
+    }
+    
+    private String addAsteriskIfNoteExists(Map<String, String> parametri, String paramName) {
+        String value = parametri.get(paramName);
+        String note = parametri.get("note" + paramName.toLowerCase());
+        if (note != null && !note.isEmpty()) {
+            return "*"+value + "*";
+        } else {
+            return value;
         }
     }
     
