@@ -305,8 +305,25 @@ public final class CentroMonitoraggio extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null, errorMessage.toString(), "Errore!", JOptionPane.ERROR_MESSAGE);
         } else {
             try {
+                String elencoAree=area.getText();
+                  // Rimozione degli spazi all'inizio e alla fine
+                elencoAree = elencoAree.trim();
+
+                // Rimozione della virgola finale, se presente
+                if (elencoAree.endsWith(",")) {
+                    elencoAree = elencoAree.substring(0, elencoAree.length() - 1);
+                }
+                // Modifica della stringa elencoAree
+                String[] aree = elencoAree.split(",");
+                StringBuilder elencoAreeModificato = new StringBuilder();
+                for (int i = 0; i < aree.length; i++) {
+                    elencoAreeModificato.append(aree[i].trim());
+                    if (i < aree.length - 1) {
+                        elencoAreeModificato.append(", ");
+                    }
+                }
                 // Chiama il metodo remoto del server per registrare il centro di monitoraggio
-                stub.inserisciCentroMonitoraggio(nomeCentro.getText(), indirizzo.getText(), area.getText());
+                stub.inserisciCentroMonitoraggio(nomeCentro.getText(), indirizzo.getText(), elencoAreeModificato.toString());
                 JOptionPane.showMessageDialog(null, "Centro di monitoraggio inserito con successo!");
                 this.dispose();
             } catch (RemoteException ex) {

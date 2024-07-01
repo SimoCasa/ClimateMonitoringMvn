@@ -306,13 +306,11 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             errore.add("Nome Centro Monitoraggio");
             c++;
         }
-
         if (indirizzo.isEmpty()) {
             check = false;
             errore.add("Indirizzo fisico");
             c++;
         }
-
         if (elencoAree.isEmpty()) {
             check = false;
             errore.add("Elenco aree di interesse");
@@ -328,8 +326,6 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             throw new RemoteException("Non hai inserito:" + errorMsg.toString());
         } else {
             try {
-                //dbConnection();
-
                 // Inserimento del centro di monitoraggio nel database
                 String query = "INSERT INTO centromonitoraggio (nome, indirizzo, areainteresse) VALUES (?, ?, ?)";
                 pstmt = conn.prepareStatement(query);
