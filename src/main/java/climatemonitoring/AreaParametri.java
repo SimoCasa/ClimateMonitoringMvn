@@ -9,6 +9,7 @@ package climatemonitoring;
 /**
  * Richiamo Librerie.
  */
+import customzation.TableColumnAdjuster;
 import java.awt.Dimension;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -594,6 +595,9 @@ public final class AreaParametri extends javax.swing.JDialog {
             visualizzaMedia();
             visualizzaModa();
             visualizzaMediana();
+            // Adjust the width of the first column (column index 0)
+            TableColumnAdjuster tca = new TableColumnAdjuster(paramTable);
+            tca.adjustColumn(0);
         }
     }
     

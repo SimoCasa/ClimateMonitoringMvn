@@ -522,16 +522,38 @@ public final class Parametri extends JDialog {
         } else {
             String nomeCentro = centriDrop.getSelectedItem().toString();
             String nomeArea = areaDrop.getSelectedItem().toString();
+            boolean ctrl=true;
             //TRASFORMO IN INTERI
             int vento = 0,umidita = 0,pressione = 0,temperatura = 0,precipitazioni = 0,alt = 0,mass = 0;
             try{
-                vento = Integer.parseInt(ventoField.getText());
-                umidita = Integer.parseInt(umiditaField.getText());
-                pressione = Integer.parseInt(pressioneField.getText());
-                temperatura = Integer.parseInt(temperaturaField.getText());
-                precipitazioni = Integer.parseInt(precipitazioniField.getText());
-                alt = Integer.parseInt(altField.getText());
-                mass = Integer.parseInt(massField.getText());
+                if (!ventoField.getText().isEmpty() || ventoField.getText().matches("\\d+")) {
+                    vento = calcolaScoreVento(Integer.parseInt(ventoField.getText()));
+                    if(vento==-1){ctrl=false;}
+                }
+                if (!umiditaField.getText().isEmpty() && umiditaField.getText().matches("\\d+")) {
+                    umidita = calcolaScoreUmidita(Integer.parseInt(umiditaField.getText()));
+                    if(umidita==-1){ctrl=false;}
+                }
+                if (!pressioneField.getText().isEmpty() && pressioneField.getText().matches("\\d+")) {
+                    pressione = calcolaScorePressione(Integer.parseInt(pressioneField.getText()));
+                    if(pressione==-1){ctrl=false;}
+                }
+                if (!temperaturaField.getText().isEmpty() && temperaturaField.getText().matches("\\d+")) {
+                    temperatura = calcolaScoreTemperatura(Integer.parseInt(temperaturaField.getText()));
+                    if(temperatura==-1){ctrl=false;}
+                }
+                if (!precipitazioniField.getText().isEmpty() && precipitazioniField.getText().matches("\\d+")) {
+                    precipitazioni = calcolaScorePrecipitazioni(Integer.parseInt(precipitazioniField.getText()));
+                    if(precipitazioni==-1){ctrl=false;}
+                }
+                if (!altField.getText().isEmpty() && altField.getText().matches("\\d+")) {
+                    alt = calcolaScorePressione(Integer.parseInt(altField.getText()));
+                    if(alt==-1){ctrl=false;}
+                }
+                if (!massField.getText().isEmpty() && massField.getText().matches("\\d+")) {
+                    mass = calcolaScoreTemperatura(Integer.parseInt(massField.getText()));
+                    if(mass==-1){ctrl=false;}
+                }
             }catch(NumberFormatException e){check=false;JOptionPane.showMessageDialog(null, "Inserisci coordinate corrette! ","Errore!", JOptionPane.ERROR_MESSAGE);}
             
             Timestamp data = null;
@@ -541,8 +563,8 @@ public final class Parametri extends JDialog {
             }else{check=false;}
             
             try {
-                if(check){
-                    stub.inserisciParametriClimatici(nomeCentro, nomeArea, calcolaScoreVento(vento), calcolaScoreUmidita(umidita), calcolaScorePressione(pressione), calcolaScoreTemperatura(temperatura), calcolaScorePrecipitazioni(precipitazioni), calcolaScoreAltitudineGhiacciai(alt), calcolaScoreMassaGhiacciai(mass), noteVento.getText(), data, noteUmidita.getText(),notePressione.getText(), noteTemperatura.getText(), notePrecipitazioni.getText(), noteAltitudine.getText(),noteMassa.getText());
+                if(check && ctrl){
+                    stub.inserisciParametriClimatici(nomeCentro, nomeArea, vento, umidita, pressione, temperatura, precipitazioni, alt, mass, noteVento.getText(), data, noteUmidita.getText(),notePressione.getText(), noteTemperatura.getText(), notePrecipitazioni.getText(), noteAltitudine.getText(),noteMassa.getText());
                     JOptionPane.showMessageDialog(null, "Inserimento effettuato con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
                     dispose();
                 }
@@ -572,6 +594,7 @@ public final class Parametri extends JDialog {
             score_vento=5;
         } else {
             JOptionPane.showMessageDialog(null, "Valore inserito per il vento non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
+            return -1;
         }
         return score_vento;
     }
@@ -595,6 +618,7 @@ public final class Parametri extends JDialog {
             score_umidita=5;
         } else {
             JOptionPane.showMessageDialog(null, "Valore inserito per l'umidità non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
+            return -1;
         }
         return score_umidita;
     }
@@ -618,6 +642,7 @@ public final class Parametri extends JDialog {
             score_pressione=5;
         } else {
             JOptionPane.showMessageDialog(null, "Valore inserito per la pressione non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
+            return -1;
         }
         return score_pressione;
     }
@@ -641,6 +666,7 @@ public final class Parametri extends JDialog {
             score_temperatura=5;
         } else {
            JOptionPane.showMessageDialog(null, "Valore inserito per la temperatura non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
+           return -1;
         }
         return score_temperatura;
     }
@@ -664,6 +690,7 @@ public final class Parametri extends JDialog {
             score_precipitazioni=5;
         } else {
             JOptionPane.showMessageDialog(null, "Valore inserito per le precipitazioni non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
+            return -1;
         }
         return score_precipitazioni;
     }
@@ -687,6 +714,7 @@ public final class Parametri extends JDialog {
             score_altitudine_ghiacciai=5;
         } else {
             JOptionPane.showMessageDialog(null, "Valore inserito per l'altidudine dei ghiacciai non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
+            return -1;
         }
         return score_altitudine_ghiacciai;
     }
@@ -710,6 +738,7 @@ public final class Parametri extends JDialog {
             score_massa_ghiacciai=5;
         } else {
            JOptionPane.showMessageDialog(null, "Valore inserito per la massa dei ghiacciai non valido!","Errore!", JOptionPane.ERROR_MESSAGE);
+           return -1;
         }
         return score_massa_ghiacciai;
     }    

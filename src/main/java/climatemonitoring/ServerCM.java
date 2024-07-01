@@ -783,12 +783,18 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         List<Map<String, String>> parametri = new ArrayList<>();
 
         try {
-            //dbConnection();
-
-            String query = "SELECT AVG(vento) AS avg_vento, AVG(umidita) AS avg_umidita, AVG(pressione) AS avg_pressione, AVG(temperatura) AS avg_temperatura, AVG(precipitazione) AS avg_precipitazione, AVG(altitudineghiacciai) AS avg_altitudineghiacciai, AVG(massaghiacciai) AS avg_massaghiacciai FROM ParametriClimatici WHERE GeoNameID = ?";
+            //È necessario esplicitamente convertire il risultato della funzione AVG al tipo numeric prima di applicare ROUND
+            //perchè la funzione ROUND non accetta direttamente un double precision con un numero intero per il numero di cifre decimali
+            String query = "SELECT ROUND(CAST(AVG(vento) AS numeric), 2) AS avg_vento, " +
+               "ROUND(CAST(AVG(umidita) AS numeric), 2) AS avg_umidita, " +
+               "ROUND(CAST(AVG(pressione) AS numeric), 2) AS avg_pressione, " +
+               "ROUND(CAST(AVG(temperatura) AS numeric), 2) AS avg_temperatura, " +
+               "ROUND(CAST(AVG(precipitazione) AS numeric), 2) AS avg_precipitazione, " +
+               "ROUND(CAST(AVG(altitudineghiacciai) AS numeric), 2) AS avg_altitudineghiacciai, " +
+               "ROUND(CAST(AVG(massaghiacciai) AS numeric), 2) AS avg_massaghiacciai " +
+               "FROM ParametriClimatici WHERE GeoNameID = ?";
             pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, Integer.parseInt(geoNameID));
-
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -804,9 +810,6 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             }
         } catch (SQLException e) {
             throw new RemoteException("Database error: " + e.getMessage(), e);
-        } finally {
-            //dbDisconnection();
-
         }
 
         return parametri;
