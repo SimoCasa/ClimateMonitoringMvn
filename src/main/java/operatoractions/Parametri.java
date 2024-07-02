@@ -12,6 +12,7 @@ package operatoractions;
 import access.Registrazione;
 import climatemonitoring.ClientCM;
 import climatemonitoring.ClimateInterface;
+import customzation.DateLabelFormatter;
 import java.awt.Color;
 import org.jdatepicker.impl.UtilDateModel;
 import java.awt.Dimension;
@@ -236,7 +237,9 @@ public final class Parametri extends JDialog {
 
         jLabel27.setText("Data:");
 
+        dateField.setEditable(false);
         dateField.setForeground(new java.awt.Color(153, 153, 153));
+        dateField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         dateField.setText("Data");
         dateField.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -246,7 +249,9 @@ public final class Parametri extends JDialog {
 
         getTimestamp();
 
+        timeField.setEditable(false);
         timeField.setForeground(new java.awt.Color(153, 153, 153));
+        timeField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         timeField.setText("Ora");
         timeField.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -446,7 +451,7 @@ public final class Parametri extends JDialog {
         properties.put("text.year", "Year");
 
         JDatePanelImpl datePanel = new JDatePanelImpl(model, properties);
-        JDatePicker datePicker = new JDatePickerImpl(datePanel, null);
+        JDatePicker datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         int result = JOptionPane.showConfirmDialog(null, datePicker, "Seleziona la Data", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             Date selectedDate = (Date) datePicker.getModel().getValue();
