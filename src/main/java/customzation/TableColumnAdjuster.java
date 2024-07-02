@@ -13,7 +13,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 public class TableColumnAdjuster {
-    private JTable table;
+    private final JTable table;
 
     public TableColumnAdjuster(JTable table) {
         this.table = table;
@@ -27,7 +27,7 @@ public class TableColumnAdjuster {
             throw new IllegalArgumentException("Invalid column index");
         }
 
-        int maxWidth = 0;
+        int maxWidth;
 
         // Calcola la larghezza necessaria per l'intestazione della colonna
         TableColumn column = columnModel.getColumn(col);

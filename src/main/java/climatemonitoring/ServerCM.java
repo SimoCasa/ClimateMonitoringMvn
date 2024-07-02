@@ -9,15 +9,11 @@ package climatemonitoring;
 /**
  * Richiamo Librerie.
  */
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -27,7 +23,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.time.LocalDate;
@@ -40,12 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -354,7 +347,6 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
      * @param precipitazioni, tipo 'Int' è il valore della precipitazioni presenti nell'aerea
      * @param alt, tipo 'Int' è il valore dell'altitudine
      * @param mass, tipo 'Int' è il valore della massa
-     * @param note, tipo 'String' èuna nota generica sulle condizioni meteo
      * @throws java.rmi.RemoteException
      */  
     @Override
@@ -480,7 +472,6 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         String sql = "SELECT nome, cognome, codfisc FROM operatori WHERE userid = ? AND password = ?";
         List<String> userInfo = new ArrayList<>();
         try {
-            //dbConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, username);
             pstmt.setString(2, password);
@@ -492,10 +483,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 userInfo.add(rs.getString("codfisc"));
             }
         } catch (SQLException e) {
-            throw new RemoteException("Database error: " + e.getMessage(), e);
-        } finally {
-            //dbDisconnection();
-
+            JOptionPane.showMessageDialog(null, "Errore nel Database: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         return userInfo;
     }
@@ -510,7 +498,6 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         List<String> res = new ArrayList<>();
         String sql = "SELECT nome FROM centromonitoraggio";
         try {
-            //dbConnection();
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -518,10 +505,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 System.out.println("Server: "+rs.getString("nome"));
             }
         } catch (SQLException e) {
-            throw new RemoteException("Database error: " + e.getMessage(), e);
-        } finally {
-            //dbDisconnection();
-
+            JOptionPane.showMessageDialog(null, "Errore nel Database: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         return res;
     }
@@ -535,7 +519,6 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     public List<String> getCentriMonitoraggio(String codFisc) throws RemoteException {
         List<String> centri = new ArrayList<>();
         try {
-            //dbConnection();
             String queryOperatore = "SELECT c.areainteresse FROM operatori o JOIN rapporti r ON o.codFisc = r.codFisc AND o.email=r.email JOIN centromonitoraggio c ON r.idCentro = c.idcentro WHERE o.codFisc = ?";
             PreparedStatement stmtOperatore = conn.prepareStatement(queryOperatore);
             stmtOperatore.setString(1, codFisc);
@@ -561,10 +544,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 }
             }
         } catch (SQLException e) {
-            throw new RemoteException("Errore durante il recupero dei centri di monitoraggio", e);
-        } finally {
-            //dbDisconnection();
-
+            JOptionPane.showMessageDialog(null, "Errore nel Database: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         return centri;
@@ -579,8 +559,6 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
     public List<String> getAreeInteresse(String nomeCentro) throws RemoteException {
         List<String> aree = new ArrayList<>();
         try {
-            //dbConnection();
-
             String query = "SELECT areaInteresse FROM CentroMonitoraggio WHERE nome = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, nomeCentro);
@@ -591,12 +569,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 Collections.addAll(aree, areeInteresse);
             }
         } catch (SQLException e) {
-            throw new RemoteException("Errore durante il recupero delle aree di interesse", e);
-        } finally {
-            //dbDisconnection();
-
+            JOptionPane.showMessageDialog(null, "Errore nel Database: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
         return aree;
     }
       
@@ -667,20 +641,19 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             DB_USER = dbUserField.getText();
             DB_PASS = dbPassField.getText();
             try {
-                //PROVA DI CONNESSIONE
                 dbConnection();
             } catch (RemoteException ex) {
-                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                JOptionPane.showMessageDialog(tryFrame, "Errore nel Server: \n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         });
 
         disconnectButton.addActionListener((ActionEvent e) -> {
             try {
                 dbDisconnection();
-                JOptionPane.showMessageDialog(null, "Disconnessione avvenuta con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(tryFrame, "Disconnessione avvenuta con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
             } catch (RemoteException | SQLException ex) {
-                Logger.getLogger(ServerCM.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                JOptionPane.showMessageDialog(null, "Errore nel Database: \n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         });
         // Layout dell'interfaccia usando GridBagLayout
         tryFrame.setLayout(new GridBagLayout());
@@ -766,7 +739,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 parametri.add(parametriMap);
             }
         } catch (SQLException e) {
-            throw new RemoteException("Database error: " + e.getMessage(), e);
+            JOptionPane.showMessageDialog(null, "Errore nel Database: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
             //dbDisconnection();
 
@@ -805,7 +778,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 parametri.add(parametriMap);
             }
         } catch (SQLException e) {
-            throw new RemoteException("Database error: " + e.getMessage(), e);
+            JOptionPane.showMessageDialog(null, "Errore nel Database: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         return parametri;
@@ -845,7 +818,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 parametri.add(parametriMap);
             }
         } catch (SQLException e) {
-            throw new RemoteException("Database error: " + e.getMessage(), e);
+            JOptionPane.showMessageDialog(null, "Errore nel Database: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         return parametri;
@@ -883,7 +856,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 parametri.add(parametriMap);
             }
         } catch (SQLException e) {
-            throw new RemoteException("Database error: " + e.getMessage(), e);
+            JOptionPane.showMessageDialog(null, "Errore nel Database: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         return parametri;

@@ -274,7 +274,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="try {&#xa;            setClient();&#xa;        } catch (RemoteException ex) {&#xa;            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);&#xa;        } catch (NotBoundException ex) {&#xa;            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);&#xa;        }"/>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="try {&#xa;            setClient();&#xa;        }catch (NotBoundException ex) {&#xa;            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);&#xa;        }"/>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
     </Component>
@@ -366,9 +366,6 @@
     <Component class="javax.swing.JTextField" name="noteTemperatura">
     </Component>
     <Component class="javax.swing.JTextField" name="notePressione">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="notePressioneActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="notePrecipitazioni">
     </Component>
@@ -425,7 +422,6 @@
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="dateFieldMouseClicked"/>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="dateFieldActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="timestampLabel">

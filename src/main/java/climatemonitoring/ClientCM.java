@@ -9,6 +9,11 @@ package climatemonitoring;
 /**
  * Richiamo Librerie.
  */
+import operatoractions.Parametri;
+import access.Accesso;
+import access.Registrazione;
+import operatoractions.AreaInt;
+import operatoractions.CentroMonitoraggio;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
@@ -34,7 +39,8 @@ import javax.swing.table.DefaultTableModel;
 public class ClientCM extends JFrame {
     /**
      * Dichiarazione variabili utente registrato
-     */String nomeU,cogU,codFisc,citta;
+     */
+    public String nomeU,cogU,codFisc,citta;
     long geo;
     /**
      * Dichiarazione variabili per collegamento al server RMI
@@ -978,7 +984,9 @@ public class ClientCM extends JFrame {
                 }
             }
         } catch (HeadlessException | RemoteException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Remote Error!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Errore nella connessione al server: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch(NullPointerException e){
+            JOptionPane.showMessageDialog(null, "Stub del server non collegato!", "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -1009,6 +1017,8 @@ public class ClientCM extends JFrame {
             }
         }catch (HeadlessException | RemoteException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Remote Error!", JOptionPane.ERROR_MESSAGE);
+        } catch(NullPointerException e){
+            JOptionPane.showMessageDialog(null, "Stub del server non collegato!", "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -1033,7 +1043,7 @@ public class ClientCM extends JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton accedi;
-    protected javax.swing.JButton addArea;
+    public javax.swing.JButton addArea;
     public javax.swing.JButton addCentro;
     public javax.swing.JButton addParam;
     private javax.swing.JButton cancel;

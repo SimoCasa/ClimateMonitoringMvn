@@ -87,13 +87,13 @@ public final class AreaParametri extends javax.swing.JDialog {
          * Metodo base di Netbeans (Swing designer, parte grafica) per inizializzare il componente
          */
         initComponents();
+        setClient();
         try {
-            setClient();
             /**
              * Richiamo funzione per Visualizzare i Parametri Climatici
              */
             visualizzaParametriClimatici();
-        } catch (RemoteException | NotBoundException ex) {
+        } catch (RemoteException ex) {
             Logger.getLogger(AreaParametri.class.getName()).log(Level.SEVERE, null, ex);
         }
         /**
@@ -226,11 +226,6 @@ public final class AreaParametri extends javax.swing.JDialog {
             }
         });
         modaTable.setEnabled(false);
-        modaTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                modaTableMouseClicked(evt);
-            }
-        });
         jScrollPane2.setViewportView(modaTable);
         header = modaTable.getTableHeader();
         // Crea un renderer personalizzato per centrare i titoli delle colonne
@@ -261,11 +256,6 @@ public final class AreaParametri extends javax.swing.JDialog {
             }
         });
         medianaTable.setEnabled(false);
-        medianaTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                medianaTableMouseClicked(evt);
-            }
-        });
         header = medianaTable.getTableHeader();
         // Crea un renderer personalizzato per centrare i titoli delle colonne
         renderer= (DefaultTableCellRenderer) header.getDefaultRenderer();
@@ -297,11 +287,6 @@ public final class AreaParametri extends javax.swing.JDialog {
         });
         mediaTable.setEnabled(false);
         mediaTable.setFocusable(false);
-        mediaTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                mediaTableMouseClicked(evt);
-            }
-        });
         jScrollPane4.setViewportView(mediaTable);
         TableColumnModel columnModel = paramTable.getColumnModel();
         TableColumnModel columnModelMedia = mediaTable.getColumnModel();
@@ -464,18 +449,6 @@ public final class AreaParametri extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_paramTableMouseClicked
-
-    private void modaTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_modaTableMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_modaTableMouseClicked
-
-    private void medianaTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_medianaTableMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_medianaTableMouseClicked
-
-    private void mediaTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mediaTableMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mediaTableMouseClicked
     /**
      * @param args the command line arguments
      */
@@ -662,26 +635,11 @@ public final class AreaParametri extends javax.swing.JDialog {
      * Metodo per svuotare la tabella
      * Senza parametri perché recuperati dalle TextField
      * Nessuna eccezione gestita
+     * @param customTable
      */
     public static void clearTable(JTable customTable){
         model = (DefaultTableModel)paramTable.getModel();
         model.setRowCount(0);
-    }
-    /**
-     * Metodo per mostrare una finestra di dialogo con le note
-     * @param note Il testo delle note da visualizzare
-     */
-    private void mostraFinestraNote(String note) {
-        JTextArea textArea = new JTextArea(note);
-        textArea.setWrapStyleWord(true);
-        textArea.setLineWrap(true);
-        textArea.setCaretPosition(0);
-        textArea.setEditable(false);
-
-        JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setPreferredSize(new Dimension(400, 200));
-
-        JOptionPane.showMessageDialog(this, scrollPane, "Note", JOptionPane.INFORMATION_MESSAGE);
     }
     /**
      * Metodo per settare il 'Client' che accede ai metodi del 'ServerCM'
@@ -690,14 +648,13 @@ public final class AreaParametri extends javax.swing.JDialog {
      * @throws java.rmi.RemoteException
      * @throws java.rmi.NotBoundException
      */
-    void setClient() throws RemoteException, NotBoundException {
+    void setClient(){
         try {
             registry = LocateRegistry.getRegistry("localhost", 1099);
             stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
             System.out.println("Stub inizializzato con successo.");
         } catch (RemoteException | NotBoundException e) {
-            System.err.println("Errore impostando il client RMI: " + e.getMessage());
-            throw e; // Rilancia l'eccezione per segnalare il problema
+            JOptionPane.showMessageDialog(this, "Errore di connessione al server RMI: \n" + e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
     

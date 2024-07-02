@@ -5,10 +5,12 @@
 /**
  * Richiamo origine progetto.
  */
-package climatemonitoring;
+package access;
 /**
  * Richiamo Librerie di Java
  */
+import climatemonitoring.ClientCM;
+import climatemonitoring.ClimateInterface;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -21,8 +23,6 @@ import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import java.util.List;
-
-
 /**
  * @author 753546 Badrous Giorgio William
  * @author 753540 Casati Simone
@@ -60,12 +60,8 @@ public final class Registrazione extends JDialog {
         /**
          * Metodi per eseguire il setting del client e visualizzare gli elementi della dropdown
          */
-        try {
-            setClient();
-            centriDropSelector();
-        } catch (RemoteException | NotBoundException ex) {
-            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        setClient();
+        centriDropSelector();
         /**
          * Metodo per recuperare la dimensione del display, per creare una finestra coerente
          */
@@ -74,10 +70,6 @@ public final class Registrazione extends JDialog {
          * Metodo per posizione la finestra
          */
         this.setLocation(dim.width / 2 - this.getWidth() / 2, dim.height / 2 - this.getHeight() / 2);
-        /**
-         * Metodo per rendere visibile la finestra
-         */
-        setVisible(true);
         /**
          * Metodo per bloccare la possibilità di ridimensionare la finestra
          */
@@ -313,6 +305,9 @@ public final class Registrazione extends JDialog {
                 // Gestione dell'eccezione remota
                 Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, e);
                 JOptionPane.showMessageDialog(this, "Errore durante la registrazione: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch(NullPointerException e){
+                JOptionPane.showMessageDialog(this, "Stub del server non collegato!", "Errore", JOptionPane.ERROR_MESSAGE);
+                dispose();
             }
         }
     }
@@ -321,13 +316,23 @@ public final class Registrazione extends JDialog {
      * verifica la presenza dei centri usando il metodo 'getCentriMonitoraggio' presente su 'ServerCM'
      * @throws java.rmi.RemoteException
      */
-    private void centriDropSelector() throws RemoteException {
-        List<String> centri = stub.getCentriMonitoraggio();
-        centriDrop.removeAllItems();
-        for (String centro : centri) {
-            centriDrop.addItem(centro);
-            System.out.println("Client: "+centro);
+    private void centriDropSelector(){
+        
+        try {
+            List<String> centri = stub.getCentriMonitoraggio();
+            centriDrop.removeAllItems();
+            for (String centro : centri) {
+                centriDrop.addItem(centro);
+                System.out.println("Client: "+centro);
+            }
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, "Errore di connessione al server RMI: \n" + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+            dispose();
+        } catch(NullPointerException e){
+            JOptionPane.showMessageDialog(this, "Stub del server non collegato!", "Errore", JOptionPane.ERROR_MESSAGE);
+            dispose();
         }
+        
     }
     /**
      * Metodo per settare il 'Client' che accede ai metodi del 'ServerCM'
@@ -336,14 +341,14 @@ public final class Registrazione extends JDialog {
      * @throws java.rmi.RemoteException
      * @throws java.rmi.NotBoundException
      */
-    void setClient() throws RemoteException, NotBoundException {
+    void setClient(){
         try {
             registry = LocateRegistry.getRegistry("localhost", 1099);
             stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
             System.out.println("Stub inizializzato con successo.");
         } catch (RemoteException | NotBoundException e) {
-            System.err.println("Errore impostando il client RMI: " + e.getMessage());
-            throw e; // Rilancia l'eccezione per segnalare il problema
+            JOptionPane.showMessageDialog(this, "Errore impostando il client RMI: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            dispose();
         }
     }
 

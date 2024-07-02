@@ -1,10 +1,13 @@
 /**
  * Richiamo origine progetto.
  */
-package climatemonitoring;
+package operatoractions;
 /**
  * Importazione del separatore dalla classe main 'ClimateMonitor'
  */
+import climatemonitoring.ClientCM;
+import climatemonitoring.ClimateInterface;
+import access.Registrazione;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -283,8 +286,8 @@ public class AreaInt extends javax.swing.JDialog {
             this.dispose();
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null, "Errore durante l'inserimento dei dati", "Errore", JOptionPane.ERROR_MESSAGE);
-        } catch (NotBoundException ex) {
-            Logger.getLogger(AreaInt.class.getName()).log(Level.SEVERE, null, ex);
+        } catch(NullPointerException e){
+            JOptionPane.showMessageDialog(null, "Stub del server non collegato!", "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
     /**
@@ -294,14 +297,13 @@ public class AreaInt extends javax.swing.JDialog {
      * @throws java.rmi.RemoteException
      * @throws java.rmi.NotBoundException
      */
-    void setClient() throws RemoteException, NotBoundException {
+    void setClient(){
         try {
             registry = LocateRegistry.getRegistry("localhost", 1099);
             stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
             System.out.println("Stub inizializzato con successo.");
         } catch (RemoteException | NotBoundException e) {
-            System.err.println("Errore impostando il client RMI: " + e.getMessage());
-            throw e; // Rilancia l'eccezione per segnalare il problema
+            JOptionPane.showMessageDialog(null, "Errore di connessione al server RMI: \n" + e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
 

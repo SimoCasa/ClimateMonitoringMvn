@@ -5,10 +5,13 @@
 /**
  * Richiamo origine progetto.
  */
-package climatemonitoring;
+package operatoractions;
 /**
  * Richiamo Librerie.
  */
+import access.Registrazione;
+import climatemonitoring.ClientCM;
+import climatemonitoring.ClimateInterface;
 import java.awt.Color;
 import org.jdatepicker.impl.UtilDateModel;
 import java.awt.Dimension;
@@ -23,7 +26,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -85,7 +87,7 @@ public final class Parametri extends JDialog {
          */
         try {
             setClient();
-        } catch (RemoteException | NotBoundException ex) {
+        } catch (NotBoundException ex) {
             Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
         }
         /**
@@ -218,12 +220,6 @@ public final class Parametri extends JDialog {
 
         jLabel19.setText("-");
 
-        notePressione.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                notePressioneActionPerformed(evt);
-            }
-        });
-
         jLabel20.setText("-");
 
         jLabel21.setText("-");
@@ -245,11 +241,6 @@ public final class Parametri extends JDialog {
         dateField.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 dateFieldMouseClicked(evt);
-            }
-        });
-        dateField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dateFieldActionPerformed(evt);
             }
         });
 
@@ -428,9 +419,7 @@ public final class Parametri extends JDialog {
 
         try {
             setClient();
-        } catch (RemoteException ex) {
-            Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NotBoundException ex) {
+        }catch (NotBoundException ex) {
             Logger.getLogger(Registrazione.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -448,10 +437,6 @@ public final class Parametri extends JDialog {
          */
        inserisciParametriClimatici();
     }//GEN-LAST:event_inserisciActionPerformed
-
-    private void notePressioneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notePressioneActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_notePressioneActionPerformed
 
     private void dateFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dateFieldMouseClicked
         UtilDateModel model = new UtilDateModel();
@@ -491,10 +476,6 @@ public final class Parametri extends JDialog {
             timeField.setForeground(Color.BLACK);
         }
     }//GEN-LAST:event_timeFieldMouseClicked
-
-    private void dateFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dateFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dateFieldActionPerformed
     /**
      * Metodo esegue l'inserimento dei parametri della località scelta (richiama metodi 'calcoli degli score')
      * verifica se mancano i parametri richiesti
@@ -569,7 +550,9 @@ public final class Parametri extends JDialog {
                     dispose();
                 }
             } catch (RemoteException ex) {
-                Logger.getLogger(Parametri.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Errore di connessione al server RMI: \n" + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+            } catch(NullPointerException e){
+                JOptionPane.showMessageDialog(null, "Stub del server non collegato!", "Errore", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -605,7 +588,7 @@ public final class Parametri extends JDialog {
      * Eccezioni non gestite
      */
     public static int calcolaScoreUmidita(int umidita) {
-        int score_umidita=0;
+        int score_umidita;
         if (umidita >= 0 && umidita <= 20) {
             score_umidita=1;
         } else if (umidita <= 40) {
@@ -629,7 +612,7 @@ public final class Parametri extends JDialog {
      * Eccezioni non gestite
      */
     public static int calcolaScorePressione(int pressione) {
-        int score_pressione=0;
+        int score_pressione;
         if (pressione >= 970 && pressione <= 1000) {
             score_pressione=1;
         } else if (pressione <= 1015) {
@@ -653,7 +636,7 @@ public final class Parametri extends JDialog {
      * Eccezioni non gestite
      */
     public static int calcolaScoreTemperatura(int temperatura) {
-        int score_temperatura=0;
+        int score_temperatura;
         if (temperatura >= -30 && temperatura <= -15) {
             score_temperatura=1;
         } else if (temperatura <= 0) {
@@ -677,7 +660,7 @@ public final class Parametri extends JDialog {
      * Eccezioni non gestite
      */
     public static int calcolaScorePrecipitazioni(int precipitazioni) {
-        int score_precipitazioni=0;
+        int score_precipitazioni;
         if (precipitazioni >= 1 && precipitazioni <= 2) {
             score_precipitazioni=1;
         } else if (precipitazioni <= 4) {
@@ -701,7 +684,7 @@ public final class Parametri extends JDialog {
      * Eccezioni non gestite
      */
     public static int calcolaScoreAltitudineGhiacciai(int altitudineGhiacciai) {
-        int score_altitudine_ghiacciai=0;
+        int score_altitudine_ghiacciai;
         if (altitudineGhiacciai >= 0 && altitudineGhiacciai <= 200) {
             score_altitudine_ghiacciai=1;
         } else if (altitudineGhiacciai <= 400) {
@@ -725,7 +708,7 @@ public final class Parametri extends JDialog {
      * Eccezioni non gestite
      */
     public static int calcolaScoreMassaGhiacciai(int massaGhiacciai) {
-        int score_massa_ghiacciai=0;
+        int score_massa_ghiacciai;
         if (massaGhiacciai >= 0 && massaGhiacciai <= 200) {
             score_massa_ghiacciai=1;
         } else if (massaGhiacciai <= 400) {
@@ -831,14 +814,13 @@ public final class Parametri extends JDialog {
      * @throws java.rmi.RemoteException
      * @throws java.rmi.NotBoundException
      */
-    void setClient() throws RemoteException, NotBoundException {
+    void setClient() throws NotBoundException {
         try {
             registry = LocateRegistry.getRegistry("localhost", 1099);
             stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
             System.out.println("Stub inizializzato con successo.");
         } catch (RemoteException | NotBoundException e) {
-            System.err.println("Errore impostando il client RMI: " + e.getMessage());
-            throw e; // Rilancia l'eccezione per segnalare il problema
+            JOptionPane.showMessageDialog(null, "Errore di connessione al server RMI: \n" + e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
     

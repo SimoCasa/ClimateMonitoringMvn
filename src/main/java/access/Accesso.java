@@ -5,24 +5,20 @@
 /**
  * Richiamo origine progetto.
  */
-package climatemonitoring;
+package access;
 /**
  * Richiamo Librerie di Java
  */
+import climatemonitoring.ClientCM;
+import climatemonitoring.ClimateInterface;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
-import java.io.*;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-
-
 /**
  * @author 753546 Badrous Giorgio William
  * @author 753540 Casati Simone
@@ -214,59 +210,36 @@ public class Accesso extends javax.swing.JDialog {
         }
         else{
             /**
-             * Se non presenti errori in fase di inserimento, da parte dell'utente
-             * Esecuzione funzione per l'accesso, all'interno di un 'Try' per evitare l'innalzamento di eccezioni
+             * Richiamo funzione accesso
              */
-            try {
-                /**
-                 * Richiamo funzione accesso
-                 */
-                accedi();
-            } catch (IOException | NotBoundException ex) {
-                /**
-                 * Cattura errore in caso di mancato funzionamento del metodo 'accedi'
-                 */
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            accedi();
         }
     }//GEN-LAST:event_AccediActionPerformed
     /**
      * Ascoltatore con implementazione della tastiera
      */
     private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
-            log();
-            } catch (RemoteException | NotBoundException ex) {
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            }
-}
+    if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+        log();
+    }
     }//GEN-LAST:event_passwordFieldKeyPressed
 
     private void usernameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_usernameFieldKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
             log();
-            } catch (RemoteException | NotBoundException ex) {
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            }
-}
+        }
     }//GEN-LAST:event_usernameFieldKeyPressed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
-            log();
-            } catch (RemoteException | NotBoundException ex) {
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            }
-}
+    if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+        log();
+    }
     }//GEN-LAST:event_formKeyPressed
 
     private void AccediKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_AccediKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){try {
-            log();
-            } catch (RemoteException | NotBoundException ex) {
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            }
-}
+    if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+        log();
+    }
     }//GEN-LAST:event_AccediKeyPressed
 
     /**
@@ -312,11 +285,9 @@ public class Accesso extends javax.swing.JDialog {
      * verifica se mancano parte delle credenziali richieste, o entrambe 
      * nel caso manchino restituisce un pannello con l'errore
      * Senza parametri perchè recuperati dalle TextField
-     * @throws java.rmi.RemoteException
-     * @throws java.rmi.NotBoundException
      */
 
-    public void log() throws RemoteException, NotBoundException{
+    public void log() {
          /**
           * Gestione errori in caso di mancata compilazione dei parametri richiesti, da parte dell'utente
           */
@@ -338,20 +309,9 @@ public class Accesso extends javax.swing.JDialog {
         }
         else{
             /**
-             * Se non presenti errori in fase di inserimento, da parte dell'utente
-             * Esecuzione funzione per l'accesso, all'interno di un 'Try' per evitare l'innalzamento di eccezioni
+             * Richiamo funzione accesso
              */
-            try {
-                /**
-                 * Richiamo funzione accesso
-                 */
-                accedi();
-            } catch (IOException ex) {
-                /**
-                 * Cattura errore in caso di mancato funzionamento del metodo 'accedi'
-                 */
-                Logger.getLogger(Accesso.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            accedi();
         }
     }
     
@@ -361,14 +321,10 @@ public class Accesso extends javax.swing.JDialog {
      * se presente esegue il login rendendo visibili gli elementi una volta loggato
      * con implementazione dell'eccezioni (se presenti)
      * Senza parametri perchè recuperati dalle TextField
-     * @throws IOException eccezione per mancanza file, directory errata
-     * @throws java.rmi.RemoteException
-     * @throws java.rmi.NotBoundException
      */
-    public void accedi() throws IOException, RemoteException, NotBoundException{
+    public void accedi(){
         try {
-            registry = LocateRegistry.getRegistry("localhost", 1099);
-            stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
+            setClient();
             //L'utente esiste
             List<String> userInfo=stub.getUtente(usernameField.getText(), passwordField.getText());
             if(!userInfo.isEmpty()){
@@ -393,9 +349,24 @@ public class Accesso extends javax.swing.JDialog {
         } catch (RemoteException e) {
             // Gestisci l'eccezione RMI
             JOptionPane.showMessageDialog(null, "Errore di connessione al server!", "Errore!", JOptionPane.ERROR_MESSAGE);
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(null, "Stub del server non collegato!", "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
+    void setClient(){
+        try {
+            registry = LocateRegistry.getRegistry("localhost", 1099);
+            stub = (ClimateInterface) registry.lookup("ClimateMonitoring");
+            System.out.println("Stub inizializzato con successo.");
+        } catch (RemoteException e) {
+            // Gestione dell'eccezione RemoteException
+            JOptionPane.showMessageDialog(null, "Errore di connessione al server RMI: \n" + e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+        } catch (NotBoundException e) {
+            // Gestione dell'eccezione NotBoundException
+            JOptionPane.showMessageDialog(null, "Il nome specificato non è stato trovato nel registro RMI: \n" + e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Accedi;
