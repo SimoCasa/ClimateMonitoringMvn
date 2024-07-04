@@ -430,8 +430,8 @@ public final class AreaParametri extends javax.swing.JDialog {
                 case "Temperatura":
                     note = noteMap.get("notetemperatura");
                     break;
-                case "Precipitazione":
-                    note = noteMap.get("noteprecipitazione");
+                case "Precipitazioni":
+                    note = noteMap.get("noteprecipitazioni");
                     break;
                 case "Altitudine Ghiacciai":
                     note = noteMap.get("notealtitudineghiacciai");
@@ -488,40 +488,6 @@ public final class AreaParametri extends javax.swing.JDialog {
      * @throws java.rmi.RemoteException
      */
     public void visualizzaParametriClimatici() throws RemoteException{
-        // Chiamata remota al server per ottenere i parametri climatici
-        /*List<Map<String, String>> parametriClimatici = stub.visualizzaParametriClimaticiDB(Long.toString(geo));
-        boolean hasData = !parametriClimatici.isEmpty();
-        if (hasData) {
-            ck=true;
-            // Se ci sono dati, popola la tabella
-            for (Map<String, String> riga : parametriClimatici) {
-                addRowTable(new String[]{
-                    riga.get("data"),
-                    riga.get("vento"),
-                    riga.get("umidita"),
-                    riga.get("pressione"),
-                    riga.get("temperatura"),
-                    riga.get("precipitazione"),
-                    riga.get("altitudineghiacciai"),
-                    riga.get("massaghiacciai")
-                },paramTable);
-                noteList.add(riga.get("notevento"));
-                noteList.add(riga.get("noteumidita"));
-                noteList.add(riga.get("notepressione"));
-                noteList.add(riga.get("notetemperatura"));
-                noteList.add(riga.get("noteprecipitazioni"));
-                noteList.add(riga.get("notealtitudineghiacciai"));
-                noteList.add(riga.get("notemassaghiacciai"));
-            }
-            visualizzaMedia();
-            visualizzaModa();
-            visualizzaMediana();
-        } else {
-            // Altrimenti, mostra un messaggio di avvertimento
-            JOptionPane.showMessageDialog(null, "Non sono disponibili parametri climatici per la seguente città!", "Avvertenza!!", JOptionPane.WARNING_MESSAGE);
-            ck = false;
-            dispose();
-        }*/
         List<Map<String, String>> listaParametri = stub.visualizzaParametriClimaticiDB(Long.toString(geo));
         model = (DefaultTableModel) paramTable.getModel();
         model.setRowCount(0);
@@ -538,7 +504,7 @@ public final class AreaParametri extends javax.swing.JDialog {
                     addAsteriskIfNoteExists(parametri, "umidita"),
                     addAsteriskIfNoteExists(parametri, "pressione"),
                     addAsteriskIfNoteExists(parametri, "temperatura"),
-                    addAsteriskIfNoteExists(parametri, "precipitazione"),
+                    addAsteriskIfNoteExists(parametri, "precipitazioni"),
                     addAsteriskIfNoteExists(parametri, "altitudineghiacciai"),
                     addAsteriskIfNoteExists(parametri, "massaghiacciai")
                 },paramTable);
@@ -559,7 +525,7 @@ public final class AreaParametri extends javax.swing.JDialog {
             System.out.println("Note for umidita: " + noteMap.get("noteumidita"));
             System.out.println("Note for pressione: " + noteMap.get("notepressione"));
             System.out.println("Note for temperatura: " + noteMap.get("notetemperatura"));
-            System.out.println("Note for precipitazione: " + noteMap.get("noteprecipitazione"));
+            System.out.println("Note for precipitazioni: " + noteMap.get("noteprecipitazioni"));
             System.out.println("Note for altitudineghiacciai: " + noteMap.get("notealtitudineghiacciai"));
             System.out.println("Note for massaghiacciai: " + noteMap.get("notemassaghiacciai"));
                 noteList.add(noteMap);
@@ -583,7 +549,7 @@ public final class AreaParametri extends javax.swing.JDialog {
                 riga.get("umidita"),
                 riga.get("pressione"),
                 riga.get("temperatura"),
-                riga.get("precipitazione"),
+                riga.get("precipitazioni"),
                 riga.get("altitudineghiacciai"),
                 riga.get("massaghiacciai")
             },mediaTable);
@@ -599,7 +565,7 @@ public final class AreaParametri extends javax.swing.JDialog {
                 riga.get("umidita"),
                 riga.get("pressione"),
                 riga.get("temperatura"),
-                riga.get("precipitazione"),
+                riga.get("precipitazioni"),
                 riga.get("altitudineghiacciai"),
                 riga.get("massaghiacciai")
             },modaTable);
@@ -615,7 +581,7 @@ public final class AreaParametri extends javax.swing.JDialog {
                 riga.get("umidita"),
                 riga.get("pressione"),
                 riga.get("temperatura"),
-                riga.get("precipitazione"),
+                riga.get("precipitazioni"),
                 riga.get("altitudineghiacciai"),
                 riga.get("massaghiacciai")
             },medianaTable);

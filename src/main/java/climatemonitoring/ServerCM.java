@@ -85,7 +85,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 JOptionPane.showMessageDialog(null, "Connessione avvenuta con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
                 }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Inserisci parametri corretti! ", "Errore!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Errore nella connessione: \n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             throw new RemoteException("Errore durante la connessione al database", ex);
         }
     }
@@ -103,6 +103,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             connectButton.setEnabled(true);
             disconnectButton.setEnabled(false);
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Errore durante la disconnessione: \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             throw new RemoteException("Database error: " + e.getMessage(), e);
         }
     }
@@ -376,7 +377,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             }
 
             // Insert climatic parameters
-            String sqlInsert = "INSERT INTO ParametriClimatici (GeonameID, IDCentro, Vento, Umidita, Pressione, Temperatura, Precipitazione, Altitudineghiacciai, Massaghiacciai, noteVento, data, noteUmidita, notePressione, noteTemperatura, notePrecipitazioni, noteAltitudineGhiacciai, noteMassaGhiacciai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sqlInsert = "INSERT INTO ParametriClimatici (GeonameID, IDCentro, Vento, Umidita, Pressione, Temperatura, Precipitazioni, Altitudineghiacciai, Massaghiacciai, noteVento, data, noteUmidita, notePressione, noteTemperatura, notePrecipitazioni, noteAltitudineGhiacciai, noteMassaGhiacciai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             pstmt = conn.prepareStatement(sqlInsert);
             pstmt.setLong(1, GeoID);
             pstmt.setInt(2, IDCentro);
@@ -643,8 +644,8 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
             try {
                 dbConnection();
             } catch (RemoteException ex) {
-                JOptionPane.showMessageDialog(tryFrame, "Errore nel Server: \n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+                JOptionPane.showMessageDialog(tryFrame, "Errore nel Server RMI: \n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         disconnectButton.addActionListener((ActionEvent e) -> {
@@ -713,7 +714,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
         try {
             //dbConnection();
 
-            String query = "SELECT data, vento, umidita, pressione, temperatura, precipitazione, altitudineghiacciai, massaghiacciai, notevento, noteumidita, notepressione, notetemperatura, noteprecipitazioni, notealtitudineghiacciai, notemassaghiacciai FROM ParametriClimatici WHERE GeoNameID = ? ORDER BY data DESC";
+            String query = "SELECT data, vento, umidita, pressione, temperatura, precipitazioni, altitudineghiacciai, massaghiacciai, notevento, noteumidita, notepressione, notetemperatura, noteprecipitazioni, notealtitudineghiacciai, notemassaghiacciai FROM ParametriClimatici WHERE GeoNameID = ? ORDER BY data DESC";
             pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, Integer.parseInt(geoNameID));
 
@@ -726,7 +727,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 parametriMap.put("umidita", rs.getString("umidita"));
                 parametriMap.put("pressione", rs.getString("pressione"));
                 parametriMap.put("temperatura", rs.getString("temperatura"));
-                parametriMap.put("precipitazione", rs.getString("precipitazione"));
+                parametriMap.put("precipitazioni", rs.getString("precipitazioni"));
                 parametriMap.put("altitudineghiacciai", rs.getString("altitudineghiacciai"));
                 parametriMap.put("massaghiacciai", rs.getString("massaghiacciai"));
                 parametriMap.put("notevento", rs.getString("notevento"));
@@ -758,7 +759,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                "ROUND(CAST(AVG(umidita) AS numeric), 2) AS avg_umidita, " +
                "ROUND(CAST(AVG(pressione) AS numeric), 2) AS avg_pressione, " +
                "ROUND(CAST(AVG(temperatura) AS numeric), 2) AS avg_temperatura, " +
-               "ROUND(CAST(AVG(precipitazione) AS numeric), 2) AS avg_precipitazione, " +
+               "ROUND(CAST(AVG(precipitazioni) AS numeric), 2) AS avg_precipitazioni, " +
                "ROUND(CAST(AVG(altitudineghiacciai) AS numeric), 2) AS avg_altitudineghiacciai, " +
                "ROUND(CAST(AVG(massaghiacciai) AS numeric), 2) AS avg_massaghiacciai " +
                "FROM ParametriClimatici WHERE GeoNameID = ?";
@@ -772,7 +773,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 parametriMap.put("umidita", rs.getString("avg_umidita"));
                 parametriMap.put("pressione", rs.getString("avg_pressione"));
                 parametriMap.put("temperatura", rs.getString("avg_temperatura"));
-                parametriMap.put("precipitazione", rs.getString("avg_precipitazione"));
+                parametriMap.put("precipitazioni", rs.getString("avg_precipitazioni"));
                 parametriMap.put("altitudineghiacciai", rs.getString("avg_altitudineghiacciai"));
                 parametriMap.put("massaghiacciai", rs.getString("avg_massaghiacciai"));
                 parametri.add(parametriMap);
@@ -794,7 +795,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                             "(SELECT umidita FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY umidita ORDER BY COUNT(*) DESC, umidita ASC LIMIT 1) AS moda_umidita, " +
                             "(SELECT pressione FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY pressione ORDER BY COUNT(*) DESC, pressione ASC LIMIT 1) AS moda_pressione, " +
                             "(SELECT temperatura FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY temperatura ORDER BY COUNT(*) DESC, temperatura ASC LIMIT 1) AS moda_temperatura, " +
-                            "(SELECT precipitazione FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY precipitazione ORDER BY COUNT(*) DESC, precipitazione ASC LIMIT 1) AS moda_precipitazione, " +
+                            "(SELECT precipitazioni FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY precipitazioni ORDER BY COUNT(*) DESC, precipitazioni ASC LIMIT 1) AS moda_precipitazioni, " +
                             "(SELECT altitudineghiacciai FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY altitudineghiacciai ORDER BY COUNT(*) DESC, altitudineghiacciai ASC LIMIT 1) AS moda_altitudineghiacciai, " +
                             "(SELECT massaghiacciai FROM ParametriClimatici WHERE GeoNameID = ? GROUP BY massaghiacciai ORDER BY COUNT(*) DESC, massaghiacciai ASC LIMIT 1) AS moda_massaghiacciai";
 
@@ -812,7 +813,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 parametriMap.put("umidita", rs.getString("moda_umidita"));
                 parametriMap.put("pressione", rs.getString("moda_pressione"));
                 parametriMap.put("temperatura", rs.getString("moda_temperatura"));
-                parametriMap.put("precipitazione", rs.getString("moda_precipitazione"));
+                parametriMap.put("precipitazioni", rs.getString("moda_precipitazioni"));
                 parametriMap.put("altitudineghiacciai", rs.getString("moda_altitudineghiacciai"));
                 parametriMap.put("massaghiacciai", rs.getString("moda_massaghiacciai"));
                 parametri.add(parametriMap);
@@ -833,7 +834,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                                 + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY umidita) AS mediana_umidita, "
                                 + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY pressione) AS mediana_pressione, "
                                 + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY temperatura) AS mediana_temperatura, "
-                                + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY precipitazione) AS mediana_precipitazione, "
+                                + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY precipitazioni) AS mediana_precipitazioni, "
                                 + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY altitudineghiacciai) AS mediana_altitudineghiacciai, "
                                 + "    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY massaghiacciai) AS mediana_massaghiacciai "
                                 + "FROM ParametriClimatici "
@@ -850,7 +851,7 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
                 parametriMap.put("umidita", rs.getString("mediana_umidita"));
                 parametriMap.put("pressione", rs.getString("mediana_pressione"));
                 parametriMap.put("temperatura", rs.getString("mediana_temperatura"));
-                parametriMap.put("precipitazione", rs.getString("mediana_precipitazione"));
+                parametriMap.put("precipitazioni", rs.getString("mediana_precipitazioni"));
                 parametriMap.put("altitudineghiacciai", rs.getString("mediana_altitudineghiacciai"));
                 parametriMap.put("massaghiacciai", rs.getString("mediana_massaghiacciai"));
                 parametri.add(parametriMap);
