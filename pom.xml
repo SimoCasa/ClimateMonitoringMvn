@@ -155,6 +155,5 @@
             </plugin>
         </plugins>
     </build>
-
     <name>ClimateMonitoring</name>
 </project>
