@@ -11,7 +11,6 @@ Include funzionalità per la gestione dei dati climatici e l'interazione con un 
 - **dist**: Directory di distribuzione dei file eseguibili.
 - **doc**: Documentazione del progetto.
 - **target**: File generati dal processo di build di Maven.
-- **uml**: Diagrammi UML del progetto.
 
 ## Prerequisiti
 
