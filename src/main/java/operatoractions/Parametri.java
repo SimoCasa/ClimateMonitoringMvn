@@ -486,82 +486,110 @@ public final class Parametri extends JDialog {
      * verifica se mancano i parametri richiesti
      * inserisce utilizzando il metodo 'inserisciParametriClimatici' presente su 'ServerCM'
      */
-    public void inserisciParametriClimatici(){
-        boolean check = true;
-        ArrayList<String> errore = new ArrayList<>();
-        int c = 0;
+    public void inserisciParametriClimatici() {
+    boolean check = true;
+    ArrayList<String> errore = new ArrayList<>();
+    int c = 0;
 
-        if (centriDrop.getSelectedItem() == null || centriDrop.getSelectedItem().toString().isEmpty()) { check = false; errore.add("Centro Monitoraggio"); c++; }
-        if (areaDrop.getSelectedItem() == null || areaDrop.getSelectedItem().toString().isEmpty()) { check = false; errore.add("Area Interesse"); c++; }
-        if (ventoField.getText().isEmpty()) { check = false; errore.add("Vento"); c++; }
-        if (umiditaField.getText().isEmpty()) { check = false; errore.add("Umidità"); c++; }
-        if (pressioneField.getText().isEmpty()) { check = false; errore.add("Pressione"); c++; }
-        if (temperaturaField.getText().isEmpty()) { check = false; errore.add("Temperatura"); c++; }
-        if (precipitazioniField.getText().isEmpty()) { check = false; errore.add("Precipitazioni"); c++; }
-        if (altField.getText().isEmpty()) { check = false; errore.add("Altitudine Ghiacciai"); c++; }
-        if (massField.getText().isEmpty()) { check = false; errore.add("Massa Ghiacciai"); c++; }
+    if (centriDrop.getSelectedItem() == null || centriDrop.getSelectedItem().toString().isEmpty()) { check = false; errore.add("Centro Monitoraggio"); c++; }
+    if (areaDrop.getSelectedItem() == null || areaDrop.getSelectedItem().toString().isEmpty()) { check = false; errore.add("Area Interesse"); c++; }
+    if (ventoField.getText().isEmpty()) { check = false; errore.add("Vento"); c++; }
+    if (umiditaField.getText().isEmpty()) { check = false; errore.add("Umidità"); c++; }
+    if (pressioneField.getText().isEmpty()) { check = false; errore.add("Pressione"); c++; }
+    if (temperaturaField.getText().isEmpty()) { check = false; errore.add("Temperatura"); c++; }
+    if (precipitazioniField.getText().isEmpty()) { check = false; errore.add("Precipitazioni"); c++; }
+    if (altField.getText().isEmpty()) { check = false; errore.add("Altitudine Ghiacciai"); c++; }
+    if (massField.getText().isEmpty()) { check = false; errore.add("Massa Ghiacciai"); c++; }
 
-        if (!check) {
-            StringBuilder f = new StringBuilder("Non hai inserito:");
-            for (String s : errore) { f.append("\n-").append(s); }
-            JOptionPane.showMessageDialog(null, f.toString(), "Errore!", JOptionPane.ERROR_MESSAGE);
-        } else {
-            String nomeCentro = centriDrop.getSelectedItem().toString();
-            String nomeArea = areaDrop.getSelectedItem().toString();
-            boolean ctrl=true;
-            //TRASFORMO IN INTERI
-            int vento = 0,umidita = 0,pressione = 0,temperatura = 0,precipitazioni = 0,alt = 0,mass = 0;
-            try{
-                if (!ventoField.getText().isEmpty() || ventoField.getText().matches("\\d+")) {
-                    vento = calcolaScoreVento(Integer.parseInt(ventoField.getText()));
-                    if(vento==-1){ctrl=false;}
-                }
-                if (!umiditaField.getText().isEmpty() && umiditaField.getText().matches("\\d+")) {
-                    umidita = calcolaScoreUmidita(Integer.parseInt(umiditaField.getText()));
-                    if(umidita==-1){ctrl=false;}
-                }
-                if (!pressioneField.getText().isEmpty() && pressioneField.getText().matches("\\d+")) {
-                    pressione = calcolaScorePressione(Integer.parseInt(pressioneField.getText()));
-                    if(pressione==-1){ctrl=false;}
-                }
-                if (!temperaturaField.getText().isEmpty() && temperaturaField.getText().matches("\\d+")) {
-                    temperatura = calcolaScoreTemperatura(Integer.parseInt(temperaturaField.getText()));
-                    if(temperatura==-1){ctrl=false;}
-                }
-                if (!precipitazioniField.getText().isEmpty() && precipitazioniField.getText().matches("\\d+")) {
-                    precipitazioni = calcolaScorePrecipitazioni(Integer.parseInt(precipitazioniField.getText()));
-                    if(precipitazioni==-1){ctrl=false;}
-                }
-                if (!altField.getText().isEmpty() && altField.getText().matches("\\d+")) {
-                    alt = calcolaScorePressione(Integer.parseInt(altField.getText()));
-                    if(alt==-1){ctrl=false;}
-                }
-                if (!massField.getText().isEmpty() && massField.getText().matches("\\d+")) {
-                    mass = calcolaScoreTemperatura(Integer.parseInt(massField.getText()));
-                    if(mass==-1){ctrl=false;}
-                }
-            }catch(NumberFormatException e){ctrl=false;JOptionPane.showMessageDialog(null, "Inserisci parametri correttamente! ","Errore!", JOptionPane.ERROR_MESSAGE);}
-            
-            Timestamp data = null;
-            boolean ctrlData=false;
-            if(isValidDate(dateField.getText()) && isValidTime(timeField.getText())){
-                data = getUserSelectedDateTime();
-                ctrlData=true;
-            }else{ctrlData=false;}
-            
-            try {
-                if(ctrl && ctrlData){
-                    stub.inserisciParametriClimatici(nomeCentro, nomeArea, vento, umidita, pressione, temperatura, precipitazioni, alt, mass, noteVento.getText(), data, noteUmidita.getText(),notePressione.getText(), noteTemperatura.getText(), notePrecipitazioni.getText(), noteAltitudine.getText(),noteMassa.getText());
-                    JOptionPane.showMessageDialog(null, "Inserimento effettuato con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
-                    dispose();
-                }
-            } catch (RemoteException ex) {
-                JOptionPane.showMessageDialog(null, "Errore di connessione al server RMI: \n" + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
-            } catch(NullPointerException e){
-                JOptionPane.showMessageDialog(null, "Stub del server non collegato!", "Errore", JOptionPane.ERROR_MESSAGE);
+    if (!check) {
+        StringBuilder f = new StringBuilder("Non hai inserito:");
+        for (String s : errore) { f.append("\n-").append(s); }
+        JOptionPane.showMessageDialog(null, f.toString(), "Errore!", JOptionPane.ERROR_MESSAGE);
+    } else {
+        String nomeCentro = centriDrop.getSelectedItem().toString();
+        String nomeArea = areaDrop.getSelectedItem().toString();
+        boolean ctrl = true;
+
+        // Trasformo in interi
+        int vento = 0, umidita = 0, pressione = 0, temperatura = 0, precipitazioni = 0, alt = 0, mass = 0;
+        try {
+            if (!ventoField.getText().isEmpty() && ventoField.getText().matches("\\d+")) {
+                vento = calcolaScoreVento(Integer.parseInt(ventoField.getText()));
+                if (vento == -1) { ctrl = false; }
+            } else {
+                ctrl = false;
+                JOptionPane.showMessageDialog(null, "Inserisci un valore numerico per Vento", "Errore!", JOptionPane.ERROR_MESSAGE);
             }
+            if (!umiditaField.getText().isEmpty() && umiditaField.getText().matches("\\d+")) {
+                umidita = calcolaScoreUmidita(Integer.parseInt(umiditaField.getText()));
+                if (umidita == -1) { ctrl = false; }
+            } else {
+                ctrl = false;
+                JOptionPane.showMessageDialog(null, "Inserisci un valore numerico per Umidità", "Errore!", JOptionPane.ERROR_MESSAGE);
+            }
+            if (!pressioneField.getText().isEmpty() && pressioneField.getText().matches("\\d+")) {
+                pressione = calcolaScorePressione(Integer.parseInt(pressioneField.getText()));
+                if (pressione == -1) { ctrl = false; }
+            } else {
+                ctrl = false;
+                JOptionPane.showMessageDialog(null, "Inserisci un valore numerico per Pressione", "Errore!", JOptionPane.ERROR_MESSAGE);
+            }
+            if (!temperaturaField.getText().isEmpty() && temperaturaField.getText().matches("\\d+")) {
+                temperatura = calcolaScoreTemperatura(Integer.parseInt(temperaturaField.getText()));
+                if (temperatura == -1) { ctrl = false; }
+            } else {
+                ctrl = false;
+                JOptionPane.showMessageDialog(null, "Inserisci un valore numerico per Temperatura", "Errore!", JOptionPane.ERROR_MESSAGE);
+            }
+            if (!precipitazioniField.getText().isEmpty() && precipitazioniField.getText().matches("\\d+")) {
+                precipitazioni = calcolaScorePrecipitazioni(Integer.parseInt(precipitazioniField.getText()));
+                if (precipitazioni == -1) { ctrl = false; }
+            } else {
+                ctrl = false;
+                JOptionPane.showMessageDialog(null, "Inserisci un valore numerico per Precipitazioni", "Errore!", JOptionPane.ERROR_MESSAGE);
+            }
+            if (!altField.getText().isEmpty() && altField.getText().matches("\\d+")) {
+                alt = calcolaScorePressione(Integer.parseInt(altField.getText()));
+                if (alt == -1) { ctrl = false; }
+            } else {
+                ctrl = false;
+                JOptionPane.showMessageDialog(null, "Inserisci un valore numerico per Altitudine Ghiacciai", "Errore!", JOptionPane.ERROR_MESSAGE);
+            }
+            if (!massField.getText().isEmpty() && massField.getText().matches("\\d+")) {
+                mass = calcolaScoreTemperatura(Integer.parseInt(massField.getText()));
+                if (mass == -1) { ctrl = false; }
+            } else {
+                ctrl = false;
+                JOptionPane.showMessageDialog(null, "Inserisci un valore numerico per Massa Ghiacciai", "Errore!", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (NumberFormatException e) {
+            ctrl = false;
+            JOptionPane.showMessageDialog(null, "Inserisci parametri correttamente! ", "Errore!", JOptionPane.ERROR_MESSAGE);
+        }
+
+        Timestamp data = null;
+        boolean ctrlData = false;
+        if (isValidDate(dateField.getText()) && isValidTime(timeField.getText())) {
+            data = getUserSelectedDateTime();
+            ctrlData = true;
+        } else {
+            ctrlData = false;
+        }
+
+        try {
+            if (ctrl && ctrlData) {
+                stub.inserisciParametriClimatici(nomeCentro, nomeArea, vento, umidita, pressione, temperatura, precipitazioni, alt, mass, noteVento.getText(), data, noteUmidita.getText(), notePressione.getText(), noteTemperatura.getText(), notePrecipitazioni.getText(), noteAltitudine.getText(), noteMassa.getText());
+                JOptionPane.showMessageDialog(null, "Inserimento effettuato con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+            }
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(null, "Errore di connessione al server RMI: \n" + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(null, "Stub del server non collegato!", "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
+}
+
 
     /**
      * Metodo per il calcolo del punteggio del vento
@@ -570,7 +598,7 @@ public final class Parametri extends JDialog {
      * Eccezioni non gestite
      */
     public static int calcolaScoreVento(int vento) {
-        int score_vento=0;
+        int score_vento;
         if (vento >= 1 && vento <= 10) {
             score_vento=1;
         } else if (vento <= 20) {
