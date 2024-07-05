@@ -27,5 +27,5 @@ Include funzionalità per la gestione dei dati climatici e l'interazione con un 
 
 ## Esecuzione
 
-- Avvia i file JAR all'interno della cartella dist oopure scaricali dalla sezione Release
+- Avvia i file JAR all'interno della cartella dist oppure scaricali dalla sezione Release
 - Prima il server e poi il client
