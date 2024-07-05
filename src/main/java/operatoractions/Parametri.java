@@ -540,16 +540,17 @@ public final class Parametri extends JDialog {
                     mass = calcolaScoreTemperatura(Integer.parseInt(massField.getText()));
                     if(mass==-1){ctrl=false;}
                 }
-            }catch(NumberFormatException e){check=false;JOptionPane.showMessageDialog(null, "Inserisci coordinate corrette! ","Errore!", JOptionPane.ERROR_MESSAGE);}
+            }catch(NumberFormatException e){ctrl=false;JOptionPane.showMessageDialog(null, "Inserisci parametri correttamente! ","Errore!", JOptionPane.ERROR_MESSAGE);}
             
             Timestamp data = null;
+            boolean ctrlData=false;
             if(isValidDate(dateField.getText()) && isValidTime(timeField.getText())){
                 data = getUserSelectedDateTime();
-                check=true;
-            }else{check=false;}
+                ctrlData=true;
+            }else{ctrlData=false;}
             
             try {
-                if(check && ctrl){
+                if(ctrl && ctrlData){
                     stub.inserisciParametriClimatici(nomeCentro, nomeArea, vento, umidita, pressione, temperatura, precipitazioni, alt, mass, noteVento.getText(), data, noteUmidita.getText(),notePressione.getText(), noteTemperatura.getText(), notePrecipitazioni.getText(), noteAltitudine.getText(),noteMassa.getText());
                     JOptionPane.showMessageDialog(null, "Inserimento effettuato con successo!", "Successo!", JOptionPane.INFORMATION_MESSAGE);
                     dispose();
