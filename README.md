@@ -5,12 +5,12 @@ Include funzionalità per la gestione dei dati climatici e l'interazione con un 
 
 ## Struttura del Progetto
 
-- **src**: Codice sorgente del progetto.
 - **bin**: File binari generati.
 - **data**: Dati necessari per l'esecuzione del progetto.
-- **dist**: Directory di distribuzione dei file eseguibili.
 - **doc**: Documentazione del progetto.
+- **src**: Codice sorgente del progetto.
 - **target**: File generati dal processo di build di Maven.
+- **dist**: Directory di distribuzione dei file eseguibili.
 
 ## Prerequisiti
 
