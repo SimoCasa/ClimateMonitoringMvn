@@ -748,6 +748,12 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
 
         return parametri;
     }
+     /**
+         * Metodo  per visualizzare la media dato il 'GeoNameID' della località
+         * @param geoNameID, tipo 'String' è l'ID della località
+         * @return 
+         * @throws java.rmi.RemoteException
+         */  
     @Override
     public synchronized List<Map<String, String>> visualizzaMediaParametriDB(String geoNameID) throws RemoteException {
         List<Map<String, String>> parametri = new ArrayList<>();
@@ -784,6 +790,12 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
 
         return parametri;
     }
+    /**
+         * Metodo  per visualizzare la moda dato il 'GeoNameID' della località
+         * @param geoNameID, tipo 'String' è l'ID della località
+         * @return 
+         * @throws java.rmi.RemoteException
+         */  
     @Override
     public synchronized List<Map<String, String>> visualizzaModaParametriDB(String geoNameID) throws RemoteException {
         List<Map<String, String>> parametri = new ArrayList<>();
@@ -824,6 +836,12 @@ public class ServerCM extends UnicastRemoteObject implements ClimateInterface{
 
         return parametri;
     }
+    /**
+         * Metodo  per visualizzare la mediana dato il 'GeoNameID' della località
+         * @param geoNameID, tipo 'String' è l'ID della località
+         * @return 
+         * @throws java.rmi.RemoteException
+         */  
     @Override
     public synchronized List<Map<String, String>> visualizzaMedianaParametriDB(String geoNameID) throws RemoteException {
         List<Map<String, String>> parametri = new ArrayList<>();

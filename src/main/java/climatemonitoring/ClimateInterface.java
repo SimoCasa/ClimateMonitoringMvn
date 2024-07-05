@@ -164,10 +164,28 @@ public interface ClimateInterface extends Remote {
      * @throws RemoteException Se si verifica un errore di comunicazione RMI.
      */
     List<String> getAreeInteresse(String nomeCentro) throws RemoteException;
-    
+    /**
+     * Ottiene la media dei parametri di una specifica area geografica.
+     * 
+     * @param geoNameID l'id dell'area geografica.
+     * @return Una lista di nomi delle aree di interesse.
+     * @throws RemoteException Se si verifica un errore di comunicazione RMI.
+     */
     List<Map<String, String>> visualizzaMediaParametriDB(String geoNameID) throws RemoteException;
-    
+     /**
+     * Ottiene la moda dei parametri di una specifica area geografica.
+     * 
+     * @param geoNameID l'id dell'area geografica.
+     * @return Una lista di nomi delle aree di interesse.
+     * @throws RemoteException Se si verifica un errore di comunicazione RMI.
+     */
     List<Map<String, String>> visualizzaModaParametriDB(String geoNameID) throws RemoteException;
-    
+     /**
+     * Ottiene la mediana dei parametri di una specifica area geografica.
+     * 
+     * @param geoNameID l'id dell'area geografica.
+     * @return Una lista di nomi delle aree di interesse.
+     * @throws RemoteException Se si verifica un errore di comunicazione RMI.
+     */
     List<Map<String, String>> visualizzaMedianaParametriDB(String geoNameID) throws RemoteException;
 }

@@ -829,7 +829,10 @@ public final class Parametri extends JDialog {
             JOptionPane.showMessageDialog(null, "Errore di connessione al server RMI: \n" + e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+    /**
+     * Metodo per recuperare la data corrente
+     * nessuna ecc. gestita
+     */
     private void getTimestamp() {
         // Ottenere il timestamp corrente
         LocalDateTime now = LocalDateTime.now();
@@ -839,13 +842,21 @@ public final class Parametri extends JDialog {
         // Impostare il testo del JLabel
         timestampLabel.setText(formattedTimestamp);
     }
-    
+     /**
+     * Metodo per recuperare la data selezionata dall'utente
+     * @return a {@link Timestamp} , restituisce la data
+     */
     private Timestamp getUserSelectedDateTime(){
         String dateTimeString = dateField.getText() + " " + timeField.getText();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return Timestamp.valueOf(LocalDateTime.parse(dateTimeString, formatter));
     }
-    
+    /**
+     * Metodo per verificare se la data inserita e valida
+     * @return {@code true} , se vero
+     *         {@code false} , se falso
+     * Eccezioni non gestite
+     */
     private boolean isValidDate(String dateStr) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setLenient(false); // Parsing rigoroso
@@ -857,7 +868,12 @@ public final class Parametri extends JDialog {
             return false;
         }
     }
-    
+     /**
+     * Metodo per verificare se il tempo inserito e valido
+     * @return {@code true} , se vero
+     *         {@code false} , se falso
+     * Eccezioni non gestite
+     */
     private boolean isValidTime(String timeStr) {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         timeFormat.setLenient(false); // Parsing rigoroso

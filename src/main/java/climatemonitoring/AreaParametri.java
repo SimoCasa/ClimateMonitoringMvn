@@ -540,6 +540,12 @@ public final class AreaParametri extends javax.swing.JDialog {
         }
     }
     
+     /**
+     * Metodo per la visualizzazione e calcolo della media dei parametri climatici
+     * verifica la presenza dei parametri usando il metodo 'visualizzaParametriClimaticiDB' presente su 'ServerCM' 
+     * Senza parametri perchè recuperati dalle TextField
+     * @throws java.rmi.RemoteException
+     */
     private void visualizzaMedia() throws RemoteException{
         // Chiamata remota al server per ottenere i parametri climatici
         List<Map<String, String>> parametriClimatici = stub.visualizzaMediaParametriDB(Long.toString(geo));
@@ -555,7 +561,12 @@ public final class AreaParametri extends javax.swing.JDialog {
             },mediaTable);
         }
     }
-    
+    /**
+     * Metodo per la visualizzazione e calcolo della moda dei parametri climatici
+     * verifica la presenza dei parametri usando il metodo 'visualizzaParametriClimaticiDB' presente su 'ServerCM' 
+     * Senza parametri perchè recuperati dalle TextField
+     * @throws java.rmi.RemoteException
+     */
     private void visualizzaModa() throws RemoteException{
         // Chiamata remota al server per ottenere i parametri climatici
         List<Map<String, String>> parametriClimatici = stub.visualizzaModaParametriDB(Long.toString(geo));
@@ -571,7 +582,12 @@ public final class AreaParametri extends javax.swing.JDialog {
             },modaTable);
         }
     }
-    
+    /**
+     * Metodo per la visualizzazione e calcolo della mediana dei parametri climatici
+     * verifica la presenza dei parametri usando il metodo 'visualizzaParametriClimaticiDB' presente su 'ServerCM' 
+     * Senza parametri perchè recuperati dalle TextField
+     * @throws java.rmi.RemoteException
+     */
     private void visualizzaMediana() throws RemoteException{
         // Chiamata remota al server per ottenere i parametri climatici
         List<Map<String, String>> parametriClimatici = stub.visualizzaMedianaParametriDB(Long.toString(geo));
@@ -623,7 +639,12 @@ public final class AreaParametri extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Errore di connessione al server RMI: \n" + e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+    /**
+     * Metodo aggiunta '*' alla righe della tabella dei parametri, che hanno un commento
+     * @param parametri string, array di Stringhe passate dall'estrazione da file
+     * @param paramName string, nome del parametro da controllare
+     * Nessuna eccezione ges
+     */
     private String addAsteriskIfNoteExists(Map<String, String> parametri, String paramName) {
         String value = parametri.get(paramName);
         String note = parametri.get("note" + paramName.toLowerCase());
