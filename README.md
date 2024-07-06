@@ -5,12 +5,11 @@ Include funzionalità per la gestione dei dati climatici e l'interazione con un 
 
 ## Struttura del Progetto
 
-- **bin**: File binari generati.
-- **data**: Dati necessari per l'esecuzione del progetto.
+- **bin**: File binari generati(JAR).
+- **data**: Backup del database.
 - **doc**: Documentazione del progetto.
 - **src**: Codice sorgente del progetto.
 - **target**: File generati dal processo di build di Maven.
-- **dist**: Directory di distribuzione dei file eseguibili.
 
 ## Prerequisiti
 
@@ -27,5 +26,6 @@ Include funzionalità per la gestione dei dati climatici e l'interazione con un 
 
 ## Esecuzione
 
-- Avvia i file JAR all'interno della cartella dist oppure scaricali dalla sezione Release
+- Esegui il ripristino del DB
+- Avvia i file JAR all'interno della cartella bin oppure scaricali dalla sezione Release
 - Prima il server e poi il client
